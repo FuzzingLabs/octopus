@@ -7,16 +7,18 @@ README IN PROGRESS
 ## Features
 
 * BTC: Explorer, Disassembler
-* ETH: Explorer, Disassembler, CFG recover, SSA (WIP)
+* ETH: Explorer, Disassembler, CFG recover, SSA (WIP), Symbolic execution (WIP)
 * NEO: Explorer, Disassembler, CFG recover
 * EOS: Explorer, Disassembler, CFG recover (WIP)
 * Plugins: IDA (WIP), Binary ninja (WIP)
 
-## Install
+## Install & Tests
 
 ```
 git clone https://github.com/quoscient/octopus
 cd octopus
+pip install -r requirements.txt
+./run_tests
 ```
 
 Pypi package (WIP)

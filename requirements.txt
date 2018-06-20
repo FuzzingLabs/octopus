@@ -1,0 +1,10 @@
+# for BTC explorer 
+# blockchain
+
+# for CFG graph
+graphviz
+
+# for ETH symbolic_execution
+# ethereum
+# z3-solver
+
