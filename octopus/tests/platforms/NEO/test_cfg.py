@@ -26,11 +26,8 @@ class NeoCfgTestCase(unittest.TestCase):
     cfg2 = NeoCFG(instructions=instructions)
 
     # visualization
-    #graph = Graph(cfg.basicblocks, cfg.edges)
-    #graph.view()
-    #graph = CFGGraph(cfg)
-    #graph.view()
-    #graph.view_functions()
+    # graph = CFGGraph(cfg)
+    # graph.view()
 
     number_func = 1
     number_inst = 101
@@ -75,13 +72,9 @@ class NeoCfgTestCaseMedium(NeoCfgTestCase):
     cfg = NeoCFG(bytecode_hex)
     cfg2 = NeoCFG(instructions=instructions)
 
-    # visualization
-    #graph = Graph(cfg.basicblocks, cfg.edges)
-    #graph.view()
-
-    #graph = CFGGraph(cfg)
-    #graph.view()
-    #graph.view_functions()
+    # graph = CFGGraph(cfg)
+    # graph.view_functions()
+    # graph.view_functions(simplify=True)
 
     number_func = 4
     number_inst = 825

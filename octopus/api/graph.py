@@ -33,12 +33,12 @@ def insert_edges_to_graph(graph, edges, call):
 class Graph(object):
 
     def __init__(self, basicblocks, edges, functions=None,
-                 filename='graph.cfg.gv', design=None):
+                 filename='graph.gv', design=None):
         self.basicblocks = basicblocks
         self.edges = edges
         self.filename = filename
         self.design = design or {'shape': 'box', 'fontname': 'Courier',
-                                 'fontsize': '30.0'}
+                                 'fontsize': '30.0', 'rank': 'same'}
 
     def view_ssa(self, call=False, view=True):
         self.view(view=view, call=call, ssa=True)
@@ -62,8 +62,9 @@ class Graph(object):
                         label = basicblock.instructions_ssa()
                     else:
                         label = basicblock.instructions_details()
-                    # the escape sequences "\n", "\l" and "\r" divide the label into lines,
-                    # centered, left-justified, and right-justified, respectively.
+                    # the escape sequences "\n", "\l" and "\r"
+                    # divide the label into lines, centered,
+                    # left-justified, and right-justified, respectively.
                     label = label.replace('\n', '\l')
                     # create node
                     c.node(basicblock.name, label=label)
@@ -90,6 +91,10 @@ class CFGGraph(Graph):
 
     def view_functions(self, view=True, simplify=False, call=False, ssa=False, color='grey'):
         g = Digraph('G', filename=self.filename)
+        g.attr(rankdir='TB')
+        g.attr(overlap='scale')
+        g.attr(splines='spline')
+        g.attr(ratio='fill')
 
         count = 0
         for func in self.cfg.functions:
@@ -101,19 +106,23 @@ class CFGGraph(Graph):
                 c.attr(label=name)
                 c.attr(color=color)
                 c.attr(fontsize='50.0')
+                c.attr(overlap='false')
+                c.attr(splines='spline')
+                c.attr(ratio='fill')
 
                 # create all the basicblocks (blocks)
                 for basicblock in func.basicblocks:
                     if simplify:
                         # create node
-                        c.node(basicblock.name, label=basicblock.name)
+                        c.node(basicblock.name, label=basicblock.name, splines='true')
                     else:
                         if ssa:
                             label = basicblock.instructions_ssa()
                         else:
                             label = basicblock.instructions_details()
-                        # the escape sequences "\n", "\l" and "\r" divide the label into lines,
-                        # centered, left-justified, and right-justified, respectively.
+                        # the escape sequences "\n", "\l" and "\r"
+                        # divide the label into lines, centered,
+                        # left-justified, and right-justified, respectively.
                         label = label.replace('\n', '\l')
                         # create node
                         c.node(basicblock.name, label=label)

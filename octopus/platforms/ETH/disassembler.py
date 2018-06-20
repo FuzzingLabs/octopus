@@ -71,4 +71,5 @@ class EthereumDisassembler(Disassembler):
         self.instructions = list()
         self.reverse_instructions = dict()
 
-        return super().disassemble(self.bytecode, offset, r_format)
+        return super().disassemble(self.bytecode, offset,
+                                   r_format)
