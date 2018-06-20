@@ -1,6 +1,6 @@
 # Octopus
 
-![Logo](/images/logo.png)
+![Logo](/images/logo-medium.png)
 
 README IN PROGRESS
 
