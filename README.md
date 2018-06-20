@@ -1,6 +1,6 @@
 # Octopus
 
-<img src="/images/logo-medium.png" height="400px"/>
+<img src="/images/logo-medium.png" align="center" height="400px"/>
 
 README IN PROGRESS
 
@@ -12,9 +12,18 @@ README IN PROGRESS
 * EOS: Explorer, Disassembler, CFG recover (WIP)
 * Plugins: IDA (WIP), Binary ninja (WIP)
 
+## Install
+
+```
+git clone https://github.com/quoscient/octopus
+cd octopus
+```
+
+Pypi package (WIP)
+
 ## Publications and Videos
 
-* REcon Montreal 2018(https://recon.cx/2018/montreal/): Reverse Engineering Of Blockchain Smart Contracts
+* [REcon Montreal 2018](https://recon.cx/2018/montreal/): Reverse Engineering Of Blockchain Smart Contracts
 
 ## Examples
 
