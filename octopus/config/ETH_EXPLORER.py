@@ -9,5 +9,4 @@ INFURA_ROPSTEN = "ropsten.infura.io/"
 INFURA_INFURANET = "infuranet.infura.io/"
 INFURA_KOVAN = "kovan.infura.io/"
 INFURA_RINKEBY = "rinkeby.infura.io/"
-
 INFURA_RPC_PORT = 8545

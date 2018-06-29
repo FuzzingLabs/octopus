@@ -1196,8 +1196,8 @@ class EthereumInfuraExplorer(EthereumExplorerRPC):
     EthereumExplorer subclass for using Infura
     """
 
-    def __init__(self, key):
-        EthereumExplorerRPC.__init__(self, host=INFURA_MAINNET + key,
+    def __init__(self, key, network=INFURA_MAINNET):
+        EthereumExplorerRPC.__init__(self, host=network + key,
                                      port=INFURA_RPC_PORT, tls=True)
 
 
