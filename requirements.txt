@@ -1,9 +1,12 @@
-# for CFG graph
+# API explorer
+requests
+
+# API cfg graph
 graphviz
 
-# for ETH Explorer
+# ETH
 ethereum>=2.3.0
 # z3-solver
 
-# for NEO disassembler
+# EOS
 wasm
