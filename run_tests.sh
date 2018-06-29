@@ -1,13 +1,18 @@
-echo 'test BTC Disassembler'
+echo '[*] BTC tests'
+echo '[*] Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/BTC/test_disassembler.py
 
-echo 'test NEO Disassembler'
+echo '[*] NEO tests'
+echo '[*] Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/NEO/test_disassembler.py
-echo 'test NEO Cfg recovery'
+echo '[*] CFG recovery [*]'
 python3 -m unittest octopus/tests/platforms/NEO/test_cfg.py
 
-echo 'test ETH Disassembler'
+echo '[*] ETH tests'
+echo '[*] Explorer [*]'
+python3 -m unittest octopus/tests/platforms/ETH/test_explorer.py
+echo '[*] Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/ETH/test_disassembler.py
-echo 'test ETH Cfg recovery'
+echo '[*] CFG recovery [*]'
 python3 -m unittest octopus/tests/platforms/ETH/test_cfg.py
 
