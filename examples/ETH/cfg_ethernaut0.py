@@ -1,4 +1,3 @@
-
 from octopus.api.graph import CFGGraph
 from octopus.platforms.ETH.cfg import EthereumCFG
 
