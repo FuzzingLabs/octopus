@@ -1,4 +1,3 @@
-
 #
 # title: CFG reconstruction of Neo smart contract (.avm)
 # date: 06/13/18
@@ -11,7 +10,7 @@ from octopus.platforms.NEO.cfg import NeoCFG
 
 
 # lock contract
-file_name = "samples/Lock.bytecode"
+file_name = "examples/NEO/samples/Lock.bytecode"
 
 # read file
 with open(file_name) as f:
