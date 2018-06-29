@@ -21,5 +21,5 @@ with open(file_name) as f:
 cfg = NeoCFG(raw)
 
 # graph visualization
-graph = CFGGraph(cfg)
+graph = CFGGraph(cfg, filename="Lock_cfg")
 graph.view_functions()
