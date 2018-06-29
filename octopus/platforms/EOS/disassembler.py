@@ -1,9 +1,11 @@
 from octopus.api.disassembler import Disassembler
+from octopus.api.function import Function
 
 from .instruction import EosInstruction
 from .wasm import Wasm
 
 from wasm.decode import decode_module
+from wasm.modtypes import CodeSection
 from wasm.compat import byte2int
 from wasm.opcodes import OPCODE_MAP
 from wasm.formatter import format_instruction
@@ -57,5 +59,39 @@ class EosDisassembler(Disassembler):
 
         return super().disassemble(bytecode, offset, r_format)
 
-    def disassemble_module(self, bytecode=None, offset=0, r_format='list'):
-        return self.disassemble(bytecode, offset, r_format)
+    def extract_functions_code(self, module_bytecode):
+        functions = list()
+        mod_iter = iter(decode_module(module_bytecode))
+        _, _ = next(mod_iter)
+        sections = list(mod_iter)
+
+        # iterate over all section
+        for cur_sec, cur_sec_data in sections:
+            sec = cur_sec_data.get_decoder_meta()['types']['payload']
+            if isinstance(sec, CodeSection):
+                code_data = cur_sec_data
+        if not code_data:
+            raise ValueError('No functions/codes in the module')
+        for idx, func in enumerate(code_data.payload.bodies):
+            instructions = self.disassemble(func.code.tobytes())
+            cur_function = Function(0, instructions[0])
+            cur_function.instructions = instructions
+
+            functions.append(cur_function)
+        return functions
+
+    def disassemble_module(self, module_bytecode=None, offset=0, r_format='list'):
+
+        functions = self.extract_functions_code(module_bytecode[offset:])
+        self.instructions = [f.instructions for f in functions]
+
+        # return instructions
+        if r_format == 'list':
+            return self.instructions
+        elif r_format == 'text':
+            text = ''
+            for index, func in enumerate(functions):
+                text += ('func %d\n' % index)
+                text += ('\n'.join(map(str, func.instructions)))
+                text += ('\n\n')
+            return text
