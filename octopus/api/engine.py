@@ -10,7 +10,7 @@ class VMstate(object):
 
 
 # =======================================
-# #    Ethereum Symbolic Execution VM   #
+# #        Symbolic Execution VM        #
 # =======================================
 
 class SymbolicExecutionEngine(object):
@@ -29,7 +29,7 @@ class SymbolicExecutionEngine(object):
 
 
 # =======================================
-# #         Ethereum SSA Engine         #
+# #         SSA Engine                  #
 # =======================================
 
 class SSAEngine(object):
