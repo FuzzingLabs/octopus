@@ -8,7 +8,7 @@ from .util import hex_to_dec, clean_hex, validate_block
 
 from octopus.api.explorer import Explorer
 from octopus.config.ETH_EXPLORER import GETH_DEFAULT_RPC_PORT, ETH_DEFAULT_RPC_PORT, PARITY_DEFAULT_RPC_PORT
-
+from octopus.config.ETH_EXPLORER import INFURA_MAINNET, INFURA_RPC_PORT
 """
 This code is adapted from: ethjsonrpc
 https://github.com/ConsenSys/ethjsonrpc
@@ -1189,6 +1189,16 @@ class EthereumExplorerRPC(Explorer):
         NEEDS TESTING
         """
         return self.call('shh_getMessages', [filter_id])
+
+
+class EthereumInfuraExplorer(EthereumExplorerRPC):
+    """
+    EthereumExplorer subclass for using Infura
+    """
+
+    def __init__(self, key):
+        EthereumExplorerRPC.__init__(self, host=INFURA_MAINNET + key,
+                                     port=INFURA_RPC_PORT, tls=True)
 
 
 class EthereumParityExplorer(EthereumExplorerRPC):
