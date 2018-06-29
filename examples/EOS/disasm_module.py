@@ -21,5 +21,4 @@ disasm = EosDisassembler()
 # we need to use disassemble_module()
 # otherwise just disassemble() is enough
 text = disasm.disassemble_module(raw, r_format="text")
-print("EOS functions bodies disassembly")
 print(text)

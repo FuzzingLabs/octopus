@@ -10,7 +10,7 @@ from wasm.compat import byte2int
 from wasm.opcodes import OPCODE_MAP
 from wasm.formatter import format_instruction
 
-
+import binascii
 from collections import namedtuple
 inst_namedtuple = namedtuple('Instruction', 'op imm len')
 
@@ -82,7 +82,12 @@ class EosDisassembler(Disassembler):
 
     def disassemble_module(self, module_bytecode=None, offset=0, r_format='list'):
 
-        functions = self.extract_functions_code(module_bytecode[offset:])
+        if isinstance(module_bytecode, str):
+            bytecode = binascii.unhexlify(module_bytecode)
+        else:
+            bytecode = module_bytecode
+
+        functions = self.extract_functions_code(bytecode[offset:])
         self.instructions = [f.instructions for f in functions]
 
         # return instructions
