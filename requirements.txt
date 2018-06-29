@@ -5,3 +5,5 @@ graphviz
 ethereum>=2.3.0
 # z3-solver
 
+# for NEO disassembler
+wasm
