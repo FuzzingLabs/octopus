@@ -1,5 +1,6 @@
 from octopus.platforms.ETH.explorer import EthereumInfuraExplorer
 from octopus.config.ETH_EXPLORER import INFURA_ROPSTEN
+from octopus.platforms.ETH.contract import EthereumContract
 
 # connection to ROPSTEN network (testnet)
 explorer = EthereumInfuraExplorer("bHuaQhX91nkQBac8Wtgj",
@@ -15,3 +16,14 @@ print('blockNumber = %d' % block_number)
 addr = "0x3c6B10a5239B1a8A27398583F49771485382818F"
 code = explorer.eth_getCode(addr)
 print('code = %s' % code)
+
+# equivalent using contract class
+# get_online_bytecode used eth_getCode
+contract = EthereumContract(address=addr)
+contract.get_online_bytecode(explorer)
+code2 = contract.bytecode
+print('code2 = %s' % code2)
+
+# same value?
+print()
+print('code == code2: %s' % (str(code) == str(code2)))
