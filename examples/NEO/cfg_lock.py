@@ -1,6 +1,6 @@
 #
-# title: CFG reconstruction of Neo smart contract (.avm)
-# date: 06/13/18
+# Title: CFG reconstruction of Neo smart contract (.avm)
+# Date: 06/13/18
 #
 # Author: Patrick Ventuzelo - @Pat_Ventuzelo
 #

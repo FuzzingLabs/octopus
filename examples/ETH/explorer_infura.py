@@ -1,3 +1,10 @@
+#
+# Title: Retreive smart contract code using InfuraExplorer
+# Date: 06/29/18
+#
+# Author: Patrick Ventuzelo - @Pat_Ventuzelo
+#
+
 from octopus.platforms.ETH.explorer import EthereumInfuraExplorer
 from octopus.config.ETH_EXPLORER import INFURA_ROPSTEN
 from octopus.platforms.ETH.contract import EthereumContract

@@ -1,3 +1,10 @@
+#
+# Title: CFG reconstruction of ETH smart contract (evm)
+# Date: 06/29/18
+#
+# Author: Patrick Ventuzelo - @Pat_Ventuzelo
+#
+
 from octopus.api.graph import CFGGraph
 from octopus.platforms.ETH.cfg import EthereumCFG
 
