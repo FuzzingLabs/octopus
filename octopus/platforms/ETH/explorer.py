@@ -425,7 +425,8 @@ class EthereumExplorerRPC(Explorer):
         """
         address = address or self.eth_coinbase()
         block = validate_block(block)
-        return hex_to_dec(self.call('eth_getBalance', [address, block]))
+        v = hex_to_dec(self.call('eth_getBalance', [address, block]))
+        return (v if v else 0)
 
     def eth_getStorageAt(self, address=None, position=0, block=BLOCK_TAG_LATEST):
         """ Returns the value from a storage position at a given address.
@@ -971,9 +972,9 @@ class EthereumExplorerRPC(Explorer):
         """
         _filter = {
             'fromBlock': from_block,
-            'toBlock':   to_block,
-            'address':   address,
-            'topics':    topics,
+            'toBlock': to_block,
+            'address': address,
+            'topics': topics,
         }
         return self.call('eth_newFilter', [_filter])
 
@@ -1113,12 +1114,12 @@ class EthereumExplorerRPC(Explorer):
         NEEDS TESTING
         """
         whisper_object = {
-            'from':     from_,
-            'to':       to,
-            'topics':   topics,
-            'payload':  payload,
+            'from': from_,
+            'to': to,
+            'topics': topics,
+            'payload': payload,
             'priority': hex(priority),
-            'ttl':      hex(ttl),
+            'ttl': hex(ttl),
         }
         return self.call('shh_post', [whisper_object])
 
@@ -1161,7 +1162,7 @@ class EthereumExplorerRPC(Explorer):
         NEEDS TESTING
         """
         _filter = {
-            'to':     to,
+            'to': to,
             'topics': topics,
         }
         return self.call('shh_newFilter', [_filter])

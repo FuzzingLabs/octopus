@@ -3,11 +3,16 @@ from octopus.api.contract import Contract
 
 class EthereumContract(Contract):
 
-    def get_online_bytecode(self, explorer):
-        if self.address:
-            self.bytecode = explorer.eth_getCode(self.address)
-        else:
+    @property
+    def _address_defined(self):
+        if self.address is None:
             raise ValueError('self.address is None')
+        else:
+            return True
+
+    def get_online_bytecode(self, explorer):
+        if self._address_defined:
+            self.bytecode = explorer.eth_getCode(self.address)
 
     def get_online_abi(self, explorer):
         raise NotImplementedError
@@ -16,4 +21,10 @@ class EthereumContract(Contract):
         raise NotImplementedError
 
     def get_online_info(self, explorer):
-        raise NotImplementedError
+        # get the balance
+        if self._address_defined:
+            # self.name
+            self.balance = explorer.eth_getBalance(self.address)
+            self.bytecode = explorer.eth_getCode(self.address)
+            # self.abi
+            # self.source_code
