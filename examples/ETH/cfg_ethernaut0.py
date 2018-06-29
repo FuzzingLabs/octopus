@@ -3,7 +3,7 @@ from octopus.api.graph import CFGGraph
 from octopus.platforms.ETH.cfg import EthereumCFG
 
 # lock contract
-file_name = "bytecode/Zeppelin_Hello_ethernaut0.bytecode"
+file_name = "examples/ETH/bytecode/Zeppelin_Hello_ethernaut0.bytecode"
 
 # read file
 with open(file_name) as f:
@@ -14,4 +14,4 @@ cfg = EthereumCFG(bytecode_hex)
 
 # generic visualization api
 graph = CFGGraph(cfg)
-graph.view_function()
+graph.view()
