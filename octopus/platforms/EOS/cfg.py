@@ -8,6 +8,7 @@ from octopus.api.cfg import CFG
 
 
 from octopus.platforms.EOS.disassembler import EosDisassembler
+from octopus.platforms.EOS.constant import LANG_TYPE
 
 from wasm.decode import decode_module
 from wasm.modtypes import (TypeSection,
@@ -22,18 +23,6 @@ import logging
 log = logging.getLogger(__name__)
 log.setLevel(level=logging.DEBUG)
 
-# https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#language-types
-language_type = {
-    # Opcode, Type constructor
-    -0x01: 'i32',
-    -0x02: 'i64',
-    -0x03: 'f32',
-    -0x04: 'f64',
-    -0x10: 'anyfunc',
-    -0x20: 'func',
-    -0x40: 'block_type'
-}
-
 
 def decode_type_section(type_section):
     # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#type-section
@@ -42,15 +31,15 @@ def decode_type_section(type_section):
     for idx, entry in enumerate(type_section.payload.entries):
 
         param_str = '('
-        #for _id, _x in enumerate(entry.param_types):
-        #    param_str += '(param var$%d %s) ' % (_id, language_type.get(_x))
-        #param_str = param_str[:-1]
-        param_str += ' '.join([language_type.get(_x) for _x in entry.param_types])
+        # for _id, _x in enumerate(entry.param_types):
+        #    param_str += '(param var$%d %s) ' % (_id, LANG_TYPE.get(_x))
+        # param_str = param_str[:-1]
+        param_str += ' '.join([LANG_TYPE.get(_x) for _x in entry.param_types])
 
         return_str = ''
         if entry.return_type:
-            #return_str = ' (result %s)' % language_type.get(entry.return_type)
-            return_str = ' -> %s' % language_type.get(entry.return_type)
+            # return_str = ' (result %s)' % LANG_TYPE.get(entry.return_type)
+            return_str = ' -> %s' % LANG_TYPE.get(entry.return_type)
         return_str += ')'
 
         type_list.append((param_str, return_str))

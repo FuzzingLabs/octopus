@@ -45,7 +45,7 @@ class EosInstruction(Instruction):
         """ String representation of the instruction """
         if self.operand_interpretation:
             return self.operand_interpretation
-        #elif self.operand:
+        # elif self.operand:
         #    return self.name + str(self.operand)
         else:
             return self.name
