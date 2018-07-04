@@ -1,27 +1,20 @@
 from octopus.api.function import Function
 from octopus.api.basicblock import BasicBlock
-from octopus.api.edge import Edge
-from octopus.api.edge import (EDGE_UNCONDITIONAL,
+from octopus.api.edge import (Edge,
+                              EDGE_UNCONDITIONAL,
                               EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
                               EDGE_FALLTHROUGH, EDGE_CALL)
 from octopus.api.cfg import CFG
 
 from octopus.platforms.EOS.analyzer import EosAnalyzer
 from octopus.platforms.EOS.disassembler import EosDisassembler
+from octopus.platforms.EOS.format import (format_func_name,
+                                          format_bb_name)
 
 import binascii
 import logging
 log = logging.getLogger(__name__)
 log.setLevel(level=logging.WARNING)
-
-
-def format_func_name(name, param_str, return_str):
-    result = '{} '.format(return_str) if return_str else ''
-    return ('{}{}({})'.format(result, name, param_str))
-
-
-def format_bb_name(function_id, offset):
-    return ('block_%x_%x' % (function_id, offset))
 
 
 def enumerate_functions(module_bytecode):
