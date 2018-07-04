@@ -305,14 +305,12 @@ class WasmModuleAnalyzer(Analyzer):
         for idx, code in enumerate(self.codes):
             _param, _return = self.types[self.func_types[idx]]
             real_index = len(self.imports_func) + idx
-            name = ''
-            # if self.exports:
+            name = '$func%d' % real_index
+
+            # if exported function - overwrite name
             for x in self.exports:
                 if x.get('index') == real_index and x.get('kind') == 0:
                     name = x.get('field_str')
-                    print(name)
-            if not name:
-                name = '$func%d' % real_index
 
             # TODO: need to test
             if real_index == self.start:

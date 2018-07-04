@@ -5,8 +5,8 @@ from octopus.api.edge import (EDGE_UNCONDITIONAL,
                               EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
                               EDGE_FALLTHROUGH, EDGE_CALL)
 from octopus.api.cfg import CFG
-from octopus.api.wasm.analyzer import WasmModuleAnalyzer
 
+from octopus.platforms.EOS.analyzer import EosAnalyzer
 from octopus.platforms.EOS.disassembler import EosDisassembler
 
 import binascii
@@ -27,7 +27,7 @@ def format_bb_name(function_id, offset):
 def enumerate_functions(module_bytecode):
 
     functions = list()
-    analyzer = WasmModuleAnalyzer(module_bytecode)
+    analyzer = EosAnalyzer(module_bytecode)
 
     protos = analyzer.func_prototypes
     import_len = len(analyzer.imports_func)
@@ -188,7 +188,7 @@ class EosCFG(CFG):
         self.edges = list()
 
         if self.static_analysis:
-            self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
+            self.analyzer = EosAnalyzer(self.module_bytecode)
             self.run_static_analysis()
 
     def run_static_analysis(self):
@@ -206,7 +206,7 @@ class EosCFG(CFG):
         edges = list()
 
         if not self.analyzer:
-            self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
+            self.analyzer = EosAnalyzer(self.module_bytecode)
         if not self.functions:
             self.functions = enumerate_functions(self.module_bytecode)
 
