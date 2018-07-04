@@ -1,3 +1,7 @@
+# graphiz & associated pdf file
+*.gv
+*.gv.pdf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
