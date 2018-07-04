@@ -289,6 +289,7 @@ class WasmModuleAnalyzer(Analyzer):
             name_str = f.read(name_len)
             total += name_len
             names_list.append((index, name_len, name_str))
+        f.close()
         return names_list
 
     def _create_ordered_list(self):
