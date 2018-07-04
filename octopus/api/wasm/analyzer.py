@@ -40,7 +40,7 @@ class WasmModuleAnalyzer(Analyzer):
         self.memories = list()
         self.globals = list()
         self.exports = list()
-        self.start = list()
+        self.start = None
         self.elements = list()
         self.codes = list()
         self.datas = list()
@@ -110,9 +110,22 @@ class WasmModuleAnalyzer(Analyzer):
         import_func_list = []
 
         for idx, entry in enumerate(entries):
-            module_str = '{}'.format(entry.module_str.tobytes().decode('ascii'))
-            # field_str == function_name
-            field_str = '{}'.format(entry.field_str.tobytes().decode('ascii'))
+            #            for encoding in ('utf-8', 'utf-16-be'):
+            #                value = str(v)
+            #                try:
+            #                    value = v.decode(encoding)
+            #                    break
+            #                except UnicodeDecodeError:
+            #                    value = str(v)
+            try:
+                module_str = '{}'.format(entry.module_str.tobytes().decode('utf-8'))
+            except UnicodeDecodeError:
+                module_str = entry.module_str.tobytes()
+            try:
+                field_str = '{}'.format(entry.field_str.tobytes().decode('utf-8'))
+            except UnicodeDecodeError:
+                field_str = entry.field_str.tobytes()
+
             log.debug('%s %s', module_str, field_str)
             kind_type = KIND_TYPE.get(entry.kind)
 
@@ -200,7 +213,10 @@ class WasmModuleAnalyzer(Analyzer):
 
         for idx, entry in enumerate(entries):
             # field_str == function_name
-            field_str = '{}'.format(entry.field_str.tobytes().decode('ascii'))
+            try:
+                field_str = '{}'.format(entry.field_str.tobytes().decode('utf-8'))
+            except UnicodeDecodeError:
+                field_str = entry.field_str.tobytes()
             kind = entry.kind
             index = entry.index
 
@@ -211,8 +227,7 @@ class WasmModuleAnalyzer(Analyzer):
         return export_list
 
     def decode_start_section(self, start_section):
-        print(start_section.payload.entries)
-        raise NotImplementedError('decode_start_section')
+        return start_section.payload.index
 
     def decode_element_section(self, element_section):
         # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#element-section
@@ -291,20 +306,16 @@ class WasmModuleAnalyzer(Analyzer):
             _param, _return = self.types[self.func_types[idx]]
             real_index = len(self.imports_func) + idx
             name = ''
-            if self.exports:
-                try:
-                    name = [x.get('field_str') for x in self.exports if x.get('index') == real_index and x.get('kind') == 0]
-                    # test if multiple match == strange behaviour
-                    if len(name) > 1:
-                        log.error('export name: multiple match')
-                    name = name[0]
-                except IndexError:
-                    pass
+            # if self.exports:
+            for x in self.exports:
+                if x.get('index') == real_index and x.get('kind') == 0:
+                    name = x.get('field_str')
+                    print(name)
             if not name:
                 name = '$func%d' % real_index
 
             # TODO: need to test
-            if real_index in self.start:
+            if real_index == self.start:
                 name = '* ' + name
             func_prototypes.append((name, _param, _return))
         return func_prototypes
@@ -326,10 +337,13 @@ class WasmModuleAnalyzer(Analyzer):
         # Data       11  Data segments
 
         self.customs = list()
-
-        mod_iter = iter(decode_module(self.module_bytecode))
-        header, header_data = next(mod_iter)
-        sections = list(mod_iter)
+        try:
+            mod_iter = iter(decode_module(self.module_bytecode))
+            header, header_data = next(mod_iter)
+            sections = list(mod_iter)
+        except KeyError:
+            log.error('Module corrupted - Wasm KeyError')
+            return -1
 
         #
         # Wasm Header

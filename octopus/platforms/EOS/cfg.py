@@ -16,8 +16,8 @@ log.setLevel(level=logging.WARNING)
 
 
 def format_func_name(name, param_str, return_str):
-    result = "%s " % return_str if return_str else ""
-    return ('%s%s(%s)' % (result, name, param_str))
+    result = '{} '.format(return_str) if return_str else ''
+    return ('{}{}({})'.format(result, name, param_str))
 
 
 def format_bb_name(function_id, offset):
@@ -213,6 +213,7 @@ class EosCFG(CFG):
         # create nodes
         for name, param_str, return_str in self.analyzer.func_prototypes:
             nodes.append(format_func_name(name, param_str, return_str))
+
         log.info('nodes: %s', nodes)
 
         # create edges
