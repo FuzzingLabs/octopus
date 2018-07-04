@@ -2,8 +2,7 @@
 from octopus.api.graph import Graph, CFGGraph
 from octopus.platforms.NEO.disassembler import NeoDisassembler
 from octopus.platforms.NEO.cfg import NeoCFG
-from octopus.platforms.NEO.cfg import (enumerate_basicblocks_statically,
-                                       enumerate_edges_statically,
+from octopus.platforms.NEO.cfg import (enumerate_basicblocks_edges,
                                        enumerate_functions_statically,
                                        assign_basicblocks_to_functions)
 
@@ -17,10 +16,9 @@ class NeoCfgTestCase(unittest.TestCase):
     disasm = NeoDisassembler(bytecode_hex)
     instructions = disasm.disassemble()
 
-    bb = enumerate_basicblocks_statically(instructions)
+    bb, edges = enumerate_basicblocks_edges(instructions)
     func = enumerate_functions_statically(instructions)
     func = assign_basicblocks_to_functions(bb, func)
-    edges = enumerate_edges_statically(bb)
 
     cfg = NeoCFG(bytecode_hex)
     cfg2 = NeoCFG(instructions=instructions)
@@ -64,10 +62,9 @@ class NeoCfgTestCaseMedium(NeoCfgTestCase):
     disasm = NeoDisassembler(bytecode_hex)
     instructions = disasm.disassemble()
 
-    bb = enumerate_basicblocks_statically(instructions)
+    bb, edges = enumerate_basicblocks_edges(instructions)
     func = enumerate_functions_statically(instructions)
     func = assign_basicblocks_to_functions(bb, func)
-    edges = enumerate_edges_statically(bb)
 
     cfg = NeoCFG(bytecode_hex)
     cfg2 = NeoCFG(instructions=instructions)

@@ -1,12 +1,9 @@
 from octopus.api.function import Function
 from octopus.api.basicblock import BasicBlock
-from octopus.api.basicblock import (BASICBLOCK_TERMINAL,
-                                    BASICBLOCK_UNCONDITIONAL,
-                                    BASICBLOCK_CONDITIONAL,
-                                    BASICBLOCK_FALLTHROUGH)
 from octopus.api.edge import Edge
 from octopus.api.edge import (EDGE_UNCONDITIONAL,
-                              EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
+                              EDGE_CONDITIONAL_TRUE,
+                              EDGE_CONDITIONAL_FALSE,
                               EDGE_FALLTHROUGH)
 
 from octopus.api.cfg import CFG
@@ -36,6 +33,7 @@ def enumerate_functions_statically(instructions):
         # Worked because instruction between
         # function.start_offset and function.end_offset
         # are on the same function on Neo
+        # i.e linear disassembly
         function.instructions.append(inst)
 
         # terminator instruction or last one
@@ -53,29 +51,6 @@ def enumerate_functions_statically(instructions):
 def xref_of_instr(instr):
     """ Return xref for branch instruction """
     return int.from_bytes(instr.operand, byteorder='little', signed=True) + instr.offset_end - 2
-
-
-def enumerate_edges_statically(basicblocks):
-
-    edges = list()
-
-    for block in basicblocks:
-        # JMP
-        if block.is_unconditional:
-            jmp_instr = block.end_instr
-            edges.append(Edge(block.name, 'block_%x' % xref_of_instr(jmp_instr), EDGE_UNCONDITIONAL))
-
-        # JMPIF, JMPIFNOT
-        elif block.is_conditional:
-            jmp_instr = block.end_instr
-            edges.append(Edge(block.name, 'block_%x' % xref_of_instr(jmp_instr), EDGE_CONDITIONAL_TRUE))
-            edges.append(Edge(block.name, 'block_%x' % (block.end_offset + 1), EDGE_CONDITIONAL_FALSE))
-
-        elif block.is_fallthrough:
-            edges.append(Edge(block.name, 'block_%x' % (block.end_offset + 1), EDGE_FALLTHROUGH))
-
-    edges = list(set(edges))
-    return edges
 
 
 def enumerate_xref(instructions):
@@ -103,7 +78,7 @@ def assign_basicblocks_to_functions(basicblocks, functions):
     return functions
 
 
-def enumerate_basicblocks_statically(instructions):
+def enumerate_basicblocks_edges(instructions):
 
     """
     Return a list of basicblock after
@@ -111,6 +86,7 @@ def enumerate_basicblocks_statically(instructions):
     """
 
     basicblocks = list()
+    edges = list()
     xrefs = enumerate_xref(instructions)
     # create the first block
     new_block = True
@@ -125,24 +101,25 @@ def enumerate_basicblocks_statically(instructions):
         # add current instruction to the basicblock
         block.instructions.append(inst)
 
-        # next instruction in list_ref
+        # next instruction in xrefs list
         if (inst.offset_end + 1) in xrefs:
             # absolute JUMP
             if inst.is_branch_unconditional:
-                block.type = BASICBLOCK_UNCONDITIONAL
-                logging.debug("unconditional %x : %s", inst.offset, inst.name)
+                edges.append(Edge(block.name, 'block_%x' % xref_of_instr(inst),
+                                  EDGE_UNCONDITIONAL))
             # conditionnal JUMPI / JUMPIF / ...
             elif inst.is_branch_conditional:
-                block.type = BASICBLOCK_CONDITIONAL
-                logging.debug("conditional %x : %s", inst.offset, inst.name)
+                edges.append(Edge(block.name, 'block_%x' % xref_of_instr(inst),
+                                  EDGE_CONDITIONAL_TRUE))
+                edges.append(Edge(block.name, 'block_%x' % (inst.offset_end + 1),
+                                  EDGE_CONDITIONAL_FALSE))
             # Halt instruction : RETURN, STOP, RET, ...
-            elif inst.is_halt:  # and inst != func.instructions[-1]:
-                block.type = BASICBLOCK_TERMINAL
-                logging.debug("terminal %x : %s", inst.offset, inst.name)
+            elif inst.is_halt:
+                pass
             # just falls to the next instruction
             else:
-                block.type = BASICBLOCK_FALLTHROUGH
-                logging.debug("fallthrough %x : %s", inst.offset, inst.name)
+                edges.append(Edge(block.name, 'block_%x' % (inst.offset_end + 1),
+                                  EDGE_FALLTHROUGH))
 
             block.end_offset = inst.offset_end
             block.end_instr = inst
@@ -151,9 +128,9 @@ def enumerate_basicblocks_statically(instructions):
 
     # add the last block
     basicblocks.append(block)
-    basicblocks = list(set(basicblocks))
+    edges = list(set(edges))
 
-    return basicblocks
+    return (basicblocks, edges)
 
 
 class NeoCFG(CFG):
@@ -180,9 +157,8 @@ class NeoCFG(CFG):
 
     def run_static_analysis(self):
         self.functions = enumerate_functions_statically(self.instructions)
-        self.basicblocks = enumerate_basicblocks_statically(self.instructions)
+        self.basicblocks, self.edges = enumerate_basicblocks_edges(self.instructions)
         self.functions = assign_basicblocks_to_functions(self.basicblocks, self.functions)
-        self.edges = enumerate_edges_statically(self.basicblocks)
 
     def show(self):
         print("len bb = %d" % len(self.basicblocks))
