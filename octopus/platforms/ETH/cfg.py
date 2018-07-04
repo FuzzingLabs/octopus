@@ -1,11 +1,6 @@
 from octopus.api.cfg import CFG
 from octopus.api.function import Function
 from octopus.api.basicblock import BasicBlock
-from octopus.api.basicblock import (BASICBLOCK_TERMINAL,
-                                    BASICBLOCK_UNCONDITIONAL,
-                                    BASICBLOCK_CONDITIONAL,
-                                    BASICBLOCK_FALLTHROUGH,
-                                    BASICBLOCK_DEFAULT)
 
 from octopus.platforms.ETH.disassembler import EthereumDisassembler
 
@@ -87,6 +82,7 @@ def enumerate_basicblocks_statically(instructions):
 
     # create the first block
     new_block = False
+    end_block = False
     block = BasicBlock(instructions[0].offset,
                        instructions[0],
                        name='block_%x' % instructions[0].offset)
@@ -103,34 +99,31 @@ def enumerate_basicblocks_statically(instructions):
 
         # absolute JUMP
         if inst.is_branch_unconditional:
-            block.type = BASICBLOCK_UNCONDITIONAL
-            logging.debug("unconditional %x : %s", inst.offset, inst.name)
+            new_block = True
 
         # conditionnal JUMPI
         elif inst.is_branch_conditional:
-            block.type = BASICBLOCK_CONDITIONAL
-            logging.debug("conditional %x : %s", inst.offset, inst.name)
+            new_block = True
 
         # Halt instruction : RETURN, STOP, ...
         elif inst.is_halt:  # and inst != instructions[-1]:
-            block.type = BASICBLOCK_TERMINAL
-            logging.debug("terminal %x : %s", inst.offset, inst.name)
+            new_block = True
 
         # just falls to the next instruction
         elif inst != instructions[-1] and \
                 instructions[index + 1].name == 'JUMPDEST':
-            block.type = BASICBLOCK_FALLTHROUGH
-            logging.debug("fallthrough %x : %s", inst.offset, inst.name)
+            new_block = True
 
         # last instruction of the entire bytecode
         elif inst == instructions[-1]:
-            block.type = BASICBLOCK_TERMINAL
+            end_block = True
 
-        if block.type != BASICBLOCK_DEFAULT:
+        if new_block or end_block:
             block.end_offset = inst.offset_end
             block.end_instr = inst
             basicblocks.append(block)
             new_block = True
+            end_block = False
 
         index += 1
 
