@@ -1,12 +1,11 @@
 from octopus.api.instruction import Instruction
 
 from wasm.opcodes import (INSN_ENTER_BLOCK,
-                          INSN_LEAVE_BLOCK,
-                          INSN_BRANCH, INSN_NO_FLOW)
+                          INSN_LEAVE_BLOCK)  # INSN_BRANCH, INSN_NO_FLOW)
 
 
-class EosInstruction(Instruction):
-    """Eos Instruction
+class WasmInstruction(Instruction):
+    """Wasm Instruction
 
     TODO
 
