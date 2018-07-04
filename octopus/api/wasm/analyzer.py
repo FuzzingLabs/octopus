@@ -12,33 +12,17 @@ from wasm.modtypes import (TypeSection,
                            DataSection)
 
 from .constant import LANG_TYPE, KIND_TYPE
+from .format import (format_kind_function,
+                     format_kind_table,
+                     format_kind_memory,
+                     format_kind_global)
+
 from octopus.api.analyzer import Analyzer
 
 import io
 import logging
 log = logging.getLogger(__name__)
 log.setLevel(level=logging.INFO)
-
-
-def format_kind_function(f_type):
-    return f_type
-
-
-def format_kind_table(element_type, flags, initial, maximum):
-    return {'element_type': LANG_TYPE.get(element_type),
-            'limits_flags': flags,
-            'limits_initial': initial,
-            'limits_maximum': maximum}
-
-
-def format_kind_memory(flags, initial, maximum):
-    return {'limits_flags': flags,
-            'limits_initial': initial,
-            'limits_maximum': maximum}
-
-
-def format_kind_global(content_type, mutability):
-    return (content_type, mutability)
 
 
 class WasmModuleAnalyzer(Analyzer):
@@ -135,7 +119,7 @@ class WasmModuleAnalyzer(Analyzer):
             if kind_type == 'function':
                 f_type = format_kind_function(entry.type.type)
                 import_list.append((entry.kind, module_str, field_str, f_type))
-                # add also the info into the specific list
+                # add also the info into the specific import function list
                 import_func_list.append((module_str, field_str, f_type))
             elif kind_type == 'table':
                 tabl = format_kind_table(entry.type.element_type,
