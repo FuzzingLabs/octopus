@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 log.setLevel(level=logging.DEBUG)
 
 
-def insert_edges_to_graph(graph, edges, call):
+def insert_edges_to_graph(graph, edges, call=False):
     # remove duplicate edges
     edges = list(set(edges))
 
@@ -76,6 +76,33 @@ class Graph(object):
         # g.view()
 
 
+class CallGraph(object):
+    def __init__(self, nodes, edges,
+                 filename='call_graph.gv', design=None):
+        self.nodes = nodes
+        self.edges = edges
+        self.filename = filename
+        self.design = design or {'fontname': 'Courier',
+                                 'fontsize': '30.0'}
+
+    def view(self, view=True):
+        g = Digraph(self.filename, filename=self.filename,
+                    graph_attr=self.design)
+
+        with g.subgraph(name='global') as c:
+
+            # create all the graph nodes (function name)
+            for idx, node in enumerate(self.nodes):
+                # print('%d %s' % (idx, node))
+                c.node(node)
+
+            # insert edges on the graph
+            for edge in self.edges:
+                c.edge(edge.node_from, edge.node_to, color='blue')
+
+        g.render(self.filename, view=view)
+
+
 class CFGGraph(Graph):
 
     def __init__(self, cfg, filename='graph.cfg.gv', design=None):
@@ -96,9 +123,8 @@ class CFGGraph(Graph):
         g.attr(splines='spline')
         g.attr(ratio='fill')
 
-        count = 0
-        for func in self.cfg.functions:
-            with g.subgraph(name='cluster_%d' % count, node_attr=self.design) as c:
+        for idx, func in enumerate(self.cfg.functions):
+            with g.subgraph(name='cluster_%d' % idx, node_attr=self.design) as c:
                 if func.name == func.prefered_name:
                     name = func.name
                 else:
@@ -126,8 +152,6 @@ class CFGGraph(Graph):
                         label = label.replace('\n', '\l')
                         # create node
                         c.node(basicblock.name, label=label)
-
-            count += 1
 
         # insert edges on the graph
         insert_edges_to_graph(g, self.cfg.edges, call)

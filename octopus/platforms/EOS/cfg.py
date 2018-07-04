@@ -5,110 +5,68 @@ from octopus.api.edge import (EDGE_UNCONDITIONAL,
                               EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
                               EDGE_FALLTHROUGH, EDGE_CALL)
 from octopus.api.cfg import CFG
-
+from octopus.api.wasm.analyzer import WasmModuleAnalyzer
 
 from octopus.platforms.EOS.disassembler import EosDisassembler
-from octopus.platforms.EOS.constant import LANG_TYPE
-
-from wasm.decode import decode_module
-from wasm.modtypes import (TypeSection,
-                           ImportSection,
-                           FunctionSection,
-                           ExportSection,
-                           CodeSection)
 
 import logging
-
-
 log = logging.getLogger(__name__)
-log.setLevel(level=logging.DEBUG)
+log.setLevel(level=logging.WARNING)
 
 
-def decode_type_section(type_section):
-    # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#type-section
-    type_list = []
-
-    for idx, entry in enumerate(type_section.payload.entries):
-
-        param_str = '('
-        # for _id, _x in enumerate(entry.param_types):
-        #    param_str += '(param var$%d %s) ' % (_id, LANG_TYPE.get(_x))
-        # param_str = param_str[:-1]
-        param_str += ' '.join([LANG_TYPE.get(_x) for _x in entry.param_types])
-
-        return_str = ''
-        if entry.return_type:
-            # return_str = ' (result %s)' % LANG_TYPE.get(entry.return_type)
-            return_str = ' -> %s' % LANG_TYPE.get(entry.return_type)
-        return_str += ')'
-
-        type_list.append((param_str, return_str))
-    return type_list
+def format_func_name(name, param_str, return_str):
+    result = "%s " % return_str if return_str else ""
+    return ('%s%s(%s)' % (result, name, param_str))
 
 
-def decode_export_section(export_section):
-    # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#export-section
-    export_list = []
-
-    for idx, entry in enumerate(export_section.payload.entries):
-        field_str = '\"{}\"'.format(entry.field_str.tobytes().decode('ascii'))
-
-        # only if we export a function
-        if entry.kind == 0:
-            export_list.append((entry.index, field_str))
-    return export_list
+def format_bb_name(function_id, offset):
+    return ('block_%x_%x' % (function_id, offset))
 
 
-def enumerate_module_functions(module_bytecode):
+def enumerate_functions(module_bytecode):
 
     functions = list()
+    analyzer = WasmModuleAnalyzer(module_bytecode)
 
-    mod_iter = iter(decode_module(module_bytecode))
-    _, _ = next(mod_iter)
-    sections = list(mod_iter)
+    protos = analyzer.func_prototypes
+    import_len = len(analyzer.imports_func)
 
-    type_list = None
-    import_len = 0
-    function_list = None
-    export_list = None
-    code_data = None
-    # iterate over all section
-    for cur_sec, cur_sec_data in sections:
-        sec = cur_sec_data.get_decoder_meta()['types']['payload']
+    for idx, code in enumerate(analyzer.codes):
+        # get corresponding function prototype
+        name, param_str, return_str = protos[import_len + idx]
 
-        if isinstance(sec, TypeSection):
-            type_list = decode_type_section(cur_sec_data)
-        elif isinstance(sec, ImportSection):
-            import_len = cur_sec_data.payload.count
-        elif isinstance(sec, FunctionSection):
-            function_list = cur_sec_data.payload.types
-        elif isinstance(sec, ExportSection):
-            export_list = decode_export_section(cur_sec_data)
-        elif isinstance(sec, CodeSection):
-            code_data = cur_sec_data
-
-    for idx, func in enumerate(code_data.payload.bodies):
-
-        param_str, return_str = type_list[function_list[idx]]
-        func_id = import_len + idx
-        name = '$func%d %s%s' % (func_id, param_str, return_str)
-        prefered_name = ''
-        if export_list:
-            for index, field_str in export_list:
-                if index == func_id:
-                    #prefered_name = '%s %s%s' % (field_str, param_str, return_str)
-                    prefered_name = '%s' % (field_str)
-                    break
-        instructions = EosDisassembler().disassemble(func.code.tobytes())
-        cur_function = Function(0, instructions[0], name=name, prefered_name=prefered_name)
+        name = format_func_name(name, param_str, return_str)
+        instructions = EosDisassembler().disassemble(code)
+        cur_function = Function(0, instructions[0], name=name)
         cur_function.instructions = instructions
 
         functions.append(cur_function)
     return functions
 
 
-def bb_name_format(function_id, offset):
-    return ('block_%x_%x' % (function_id, offset))
+def enumerate_functions_call_edges(functions, len_imports):
+    ''' return a list of tuple with
+        (index_func_node_from, index_func_node_to)
+    '''
+    call_edges = list()
+
+    # iterate over functions
+    for index, func in enumerate(functions):
+        node_from = len_imports + index
+        # iterates over instruction
+        for inst in func.instructions:
+            # detect if inst is a call instructions
+            if inst.is_call:
+                log.info('%s', inst.operand_interpretation)
+                if inst.name == "call":
+                    # only get the import_id
+                    node_to = int(inst.operand_interpretation.split(' ')[1])
+                elif inst.name == "call_indirect":
+                    # the last operand is the index on the table
+                    node_to = int(inst.operand_interpretation.split(',')[-1].split(' ')[-1])
+                call_edges.append((node_from, node_to))
+
+    return call_edges
 
 
 def enumerate_basicblocks_edges(function_id, instructions):
@@ -155,13 +113,13 @@ def enumerate_basicblocks_edges(function_id, instructions):
     end_block = False
     block = BasicBlock(instructions[0].offset,
                        instructions[0],
-                       name=bb_name_format(function_id, instructions[0].offset))
+                       name=format_bb_name(function_id, instructions[0].offset))
 
     for index, inst in enumerate(instructions):
         if new_block:
             block = BasicBlock(inst.offset,
                                inst,
-                               name=bb_name_format(function_id, inst.offset))
+                               name=format_bb_name(function_id, inst.offset))
             new_block = False
 
         # add current instruction to the basicblock
@@ -169,33 +127,32 @@ def enumerate_basicblocks_edges(function_id, instructions):
 
         # absolute jump - br
         # br is *always* followed by end instruction
-
         if inst.is_branch_unconditional:
             end_block = True
             jump_offset = int(inst.operand_interpretation.split(' ')[1])
             if instructions[index + 1].name == 'end':
                 end_block = False
-            edges.append(Edge(block.name, bb_name_format(function_id, labels[jump_offset]  + 1), EDGE_UNCONDITIONAL))
+            edges.append(Edge(block.name, format_bb_name(function_id, labels[jump_offset]  + 1), EDGE_UNCONDITIONAL))
 
         # conditionnal jump - br_if
         elif inst.is_branch_conditional:
             end_block = True
             jump_offset = int(inst.operand_interpretation.split(' ')[1])
-            edges.append(Edge(block.name, bb_name_format(function_id, labels[jump_offset] + 1), EDGE_CONDITIONAL_TRUE))
-            edges.append(Edge(block.name, bb_name_format(function_id, instructions[index + 1].offset), EDGE_CONDITIONAL_FALSE))
+            edges.append(Edge(block.name, format_bb_name(function_id, labels[jump_offset] + 1), EDGE_CONDITIONAL_TRUE))
+            edges.append(Edge(block.name, format_bb_name(function_id, instructions[index + 1].offset), EDGE_CONDITIONAL_FALSE))
 
         # end of a block
         elif index < (len(instructions) - 1) and \
                 inst.name in ['end', 'else']:  # is_block_terminator
             end_block = True
             if not instructions[index - 1].is_branch_unconditional:
-                edges.append(Edge(block.name, bb_name_format(function_id, instructions[index + 1].offset), EDGE_FALLTHROUGH))
+                edges.append(Edge(block.name, format_bb_name(function_id, instructions[index + 1].offset), EDGE_FALLTHROUGH))
 
         # start of a block
         elif index < (len(instructions) - 1) and \
                 instructions[index + 1].is_block_starter:
             end_block = True
-            edges.append(Edge(block.name, bb_name_format(function_id, instructions[index + 1].offset), EDGE_FALLTHROUGH))
+            edges.append(Edge(block.name, format_bb_name(function_id, instructions[index + 1].offset), EDGE_FALLTHROUGH))
 
         # last instruction of the entire bytecode
         elif inst == instructions[-1]:
@@ -220,25 +177,56 @@ class EosCFG(CFG):
 
         self.module_bytecode = module_bytecode
         self.static_analysis = static_analysis
+        self.analyzer = None
 
         self.functions = list()
         self.basicblocks = list()
         self.edges = list()
 
         if self.static_analysis:
+            self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
             self.run_static_analysis()
 
     def run_static_analysis(self):
-        self.functions = enumerate_module_functions(self.module_bytecode)
-        # print(self.functions)
-        # for i in self.functions:
-        #    print(i.prefered_name)
+        self.functions = enumerate_functions(self.module_bytecode)
 
         for idx, func in enumerate(self.functions):
             func.basicblocks, edges = enumerate_basicblocks_edges(idx, func.instructions)
             # all bb name are unique so we can create global bb & edge list
             self.basicblocks += func.basicblocks
             self.edges += edges
+
+    def get_functions_call_edges(self):
+
+        nodes = list()
+        edges = list()
+
+        if not self.analyzer:
+            self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
+        if not self.functions:
+            self.functions = enumerate_functions(self.module_bytecode)
+
+        # create nodes
+        for name, param_str, return_str in self.analyzer.func_prototypes:
+            nodes.append(format_func_name(name, param_str, return_str))
+        log.info('nodes: %s', nodes)
+
+        # create edges
+        tmp_edges = enumerate_functions_call_edges(self.functions,
+                                                   len(self.analyzer.imports_func))
+
+        # tmp_edges = [(node_from, node_to), (...), ...]
+        for node_from, node_to in tmp_edges:
+            # node_from
+            name, param, ret = self.analyzer.func_prototypes[node_from]
+            from_final = format_func_name(name, param, ret)
+            # node_to
+            name, param, ret = self.analyzer.func_prototypes[node_to]
+            to_final = format_func_name(name, param, ret)
+            edges.append(Edge(from_final, to_final, EDGE_CALL))
+        log.info('edges: %s', edges)
+
+        return (nodes, edges)
 
     def show(self):
         print("len func = %d" % len(self.functions))

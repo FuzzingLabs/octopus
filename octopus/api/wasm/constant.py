@@ -9,3 +9,10 @@ LANG_TYPE = {
     -0x20: 'func',
     -0x40: 'block_type'
 }
+
+KIND_TYPE = {
+    0: 'function',
+    1: 'table',
+    2: 'memory',
+    3: 'global',
+}
