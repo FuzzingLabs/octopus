@@ -9,6 +9,7 @@ from octopus.api.wasm.analyzer import WasmModuleAnalyzer
 
 from octopus.platforms.EOS.disassembler import EosDisassembler
 
+import binascii
 import logging
 log = logging.getLogger(__name__)
 log.setLevel(level=logging.WARNING)
@@ -175,7 +176,10 @@ class EosCFG(CFG):
     """
     def __init__(self, module_bytecode, static_analysis=True):
 
-        self.module_bytecode = module_bytecode
+        if isinstance(module_bytecode, str):
+            self.module_bytecode = binascii.unhexlify(module_bytecode)
+        else:
+            self.module_bytecode = module_bytecode
         self.static_analysis = static_analysis
         self.analyzer = None
 
