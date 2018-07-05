@@ -55,6 +55,7 @@ def enumerate_functions_call_edges(functions, len_imports):
                 if inst.name == "call":
                     # only get the import_id
                     node_to = int(inst.operand_interpretation.split(' ')[1])
+                # The `call_indirect` operator takes a list of function arguments and as the last operand the index into the table.
                 elif inst.name == "call_indirect":
                     # the last operand is the index on the table
                     node_to = int(inst.operand_interpretation.split(',')[-1].split(' ')[-1])
