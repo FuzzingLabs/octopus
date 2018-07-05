@@ -4,12 +4,20 @@
 
 README IN PROGRESS
 
+Octopus is a security analysis framework focus on Blockchain Smart Contract. The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
+
 ## Features
 
+### Platforms
 * BTC: Explorer, Disassembler
-* ETH: Explorer, Disassembler, CFG recovery, SSA (WIP), Symbolic execution (WIP)
-* NEO: Explorer, Disassembler, CFG recovery
-* EOS: Explorer, Disassembler, CFG recovery (WIP)
+* ETH: Explorer, Disassembler, ControlFlowGraph, SSA (WIP), Symbolic execution (WIP)
+* NEO: Explorer, Disassembler, ControlFlowGraph
+* EOS: Explorer, Disassembler, ControlFlowGraph (WIP)
+
+### Architectures
+* WebAssembly: ModuleAnalyzer, Disassembler, Callgraph
+
+
 * Plugins: IDA (WIP), Binary ninja (WIP)
 
 ## Install & Tests
@@ -18,6 +26,7 @@ README IN PROGRESS
 git clone https://github.com/quoscient/octopus
 cd octopus
 pip install -r requirements.txt
+# require internet connectivity (explorer tests)
 ./run_tests
 ```
 
@@ -37,3 +46,7 @@ Inspired by:
 * [Manticore](https://github.com/trailofbits/manticore)
 * [Mythril](https://github.com/ConsenSys/mythril)
 * ...
+
+## Contact
+
+Creator: Patrick Ventuzelo - @Pat_Ventuzelo
