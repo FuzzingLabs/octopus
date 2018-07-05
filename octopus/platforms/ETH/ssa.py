@@ -367,7 +367,6 @@ class EthereumSSAEngine(SSAEngine):
                 else:
                     logging.info('[X] Bad JUMP to 0x%x' % jump_addr)
                     # modif current basicblock because jump is not valid
-                    self.current_basicblock.type = 'terminal'
                     halt = True
             else:
                 logging.warning('JUMP DYNAMIC TODO')
@@ -416,7 +415,6 @@ class EthereumSSAEngine(SSAEngine):
                 else:
 
                     logging.info('[X] Bad JUMP to 0x%x' % jump_addr)
-                    self.current_basicblock.type = 'terminal'
             else:
                 # tricks to exit properly this function
                 #depth = self.max_depth
