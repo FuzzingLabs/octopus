@@ -1,4 +1,4 @@
-from octopus.api.wasm.analyzer import WasmModuleAnalyzer
+from octopus.arch.wasm.analyzer import WasmModuleAnalyzer
 
 
 # Eos smart contract == wasm module

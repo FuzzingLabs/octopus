@@ -1,4 +1,4 @@
-from octopus.api.wasm.disassembler import WasmDisassembler
+from octopus.arch.wasm.disassembler import WasmDisassembler
 
 
 # Eos smart contract == wasm module
