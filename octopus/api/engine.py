@@ -10,7 +10,7 @@ class VMstate(object):
 
 
 # =======================================
-# #        Symbolic Execution VM        #
+# #     Symbolic Execution Engine       #
 # =======================================
 
 class SymbolicExecutionEngine(object):

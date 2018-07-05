@@ -212,7 +212,7 @@ class EthereumSSAEngine(SSAEngine):
 
         # UNKNOWN INSTRUCTION
         else:
-            print('UNKNOWN = ' + instr.name)
+            logging.warning('UNKNOWN = ' + instr.name)
             #raise ValueError("UNKNOWN INSTRUCTION " + str(instr.name))
 
         return halt
