@@ -19,5 +19,5 @@ python3 -m unittest octopus/tests/platforms/ETH/test_cfg.py
 echo '[*] EOS tests'
 echo '[*] Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/EOS/test_disassembler.py
-echo '[*] CFG - Call Graph [*]'
-python3 -m unittest octopus/tests/platforms/EOS/test_cfg.py
+echo '[*] Functions CallGraph [*]'
+python3 -m unittest octopus/tests/platforms/EOS/test_callgraph.py

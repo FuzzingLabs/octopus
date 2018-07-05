@@ -4,9 +4,9 @@ from octopus.platforms.EOS.cfg import EosCFG
 from octopus.api.graph import CallGraph
 
 
-class EosCFGTestCase(unittest.TestCase):
+class EosCallGraphTestCase(unittest.TestCase):
 
-    def testDisassemble(self):
+    def testCallGraph(self):
         def callgraph(bytecode, result_nodes, length_edges):
             cfg = EosCFG(bytecode)
             nodes, edges = cfg.get_functions_call_edges()
@@ -23,5 +23,5 @@ class EosCFGTestCase(unittest.TestCase):
         callgraph(bytecode_hex, r_nodes, len_edges)
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(EosCFGTestCase)
+    suite = unittest.TestLoader().loadTestsFromTestCase(EosCallGraphTestCase)
     unittest.TextTestRunner(verbosity=2).run(suite)
