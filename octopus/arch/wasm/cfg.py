@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 log.setLevel(level=logging.WARNING)
 
 
-def enumerate_functions(module_bytecode):
+def enum_func(module_bytecode):
 
     functions = list()
     analyzer = WasmModuleAnalyzer(module_bytecode)
@@ -186,7 +186,7 @@ class WasmCFG(CFG):
             self.run_static_analysis()
 
     def run_static_analysis(self):
-        self.functions = enumerate_functions(self.module_bytecode)
+        self.functions = enum_func(self.module_bytecode)
 
         for idx, func in enumerate(self.functions):
             func.basicblocks, edges = enum_blocks_edges(idx, func.instructions)
@@ -202,7 +202,7 @@ class WasmCFG(CFG):
         if not self.analyzer:
             self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
         if not self.functions:
-            self.functions = enumerate_functions(self.module_bytecode)
+            self.functions = enum_func(self.module_bytecode)
 
         # create nodes
         for name, param_str, return_str in self.analyzer.func_prototypes:

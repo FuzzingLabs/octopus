@@ -14,7 +14,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def enumerate_functions_statically(instructions):
+def enum_func_static(instructions):
 
     functions = list()
 
@@ -69,7 +69,7 @@ def enumerate_xref(instructions):
     return xrefs
 
 
-def assign_basicblocks_to_functions(basicblocks, functions):
+def assign_blocks_to_func(basicblocks, functions):
 
     for func in functions:
         for bb in basicblocks:
@@ -156,9 +156,9 @@ class NeoCFG(CFG):
             self.run_static_analysis()
 
     def run_static_analysis(self):
-        self.functions = enumerate_functions_statically(self.instructions)
+        self.functions = enum_func_static(self.instructions)
         self.basicblocks, self.edges = enum_blocks_edges(self.instructions)
-        self.functions = assign_basicblocks_to_functions(self.basicblocks, self.functions)
+        self.functions = assign_blocks_to_func(self.basicblocks, self.functions)
 
     def show(self):
         print("len bb = %d" % len(self.basicblocks))

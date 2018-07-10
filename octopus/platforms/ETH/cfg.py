@@ -16,7 +16,7 @@ log.setLevel(level=logging.DEBUG)
 SIGNATURE_FILE_PATH = '/utils/signatures.txt'
 
 
-def enumerate_functions_statically(instructions):
+def enum_func_static(instructions):
 
     functions = list()
 
@@ -53,7 +53,7 @@ def enumerate_functions_statically(instructions):
 
                     functions.append(function)
         except:
-            log.info('enumerate_functions_statically Exception')
+            log.info('enum_func_static Exception')
             pass
     return functions
 
@@ -70,7 +70,7 @@ def find_signature(sign):
     return None
 
 
-def enumerate_basicblocks_statically(instructions):
+def enum_blocks_static(instructions):
 
     """
     Return a list of basicblock after
@@ -155,8 +155,8 @@ class EthereumCFG(CFG):
             self.run_static_analysis()
 
     def run_static_analysis(self):
-        self.functions = enumerate_functions_statically(self.instructions)
-        self.basicblocks = enumerate_basicblocks_statically(self.instructions)
+        self.functions = enum_func_static(self.instructions)
+        self.basicblocks = enum_blocks_static(self.instructions)
 
     def run_dynamic_analysis(self):
 
