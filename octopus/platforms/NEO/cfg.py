@@ -78,7 +78,7 @@ def assign_basicblocks_to_functions(basicblocks, functions):
     return functions
 
 
-def enumerate_basicblocks_edges(instructions):
+def enum_blocks_edges(instructions):
 
     """
     Return a list of basicblock after
@@ -157,7 +157,7 @@ class NeoCFG(CFG):
 
     def run_static_analysis(self):
         self.functions = enumerate_functions_statically(self.instructions)
-        self.basicblocks, self.edges = enumerate_basicblocks_edges(self.instructions)
+        self.basicblocks, self.edges = enum_blocks_edges(self.instructions)
         self.functions = assign_basicblocks_to_functions(self.basicblocks, self.functions)
 
     def show(self):
