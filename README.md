@@ -26,8 +26,10 @@ Octopus is a security analysis framework focus on Blockchain Smart Contract. The
 git clone https://github.com/quoscient/octopus
 cd octopus
 pip install -r requirements.txt
+# run tests (disassembly, CFG, ...)
+./run_tests.sh
 # require internet connectivity (explorer tests)
-./run_tests
+./run_explorer_tests.sh
 ```
 
 Pypi package (WIP)
