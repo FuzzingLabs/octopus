@@ -1,11 +1,13 @@
 from octopus.api.edge import Edge, EDGE_UNCONDITIONAL, EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE, EDGE_FALLTHROUGH, EDGE_CALL
 from octopus.api.engine import SSAEngine
+from octopus.api.optimizer import SSAOptimizer
 from octopus.api.ssa import SSA, SSA_TYPE_FUNCTION, SSA_TYPE_CONSTANT
 
 from octopus.platforms.ETH.vmstate import EthereumVMstate
 from octopus.platforms.ETH.cfg import EthereumCFG
 
 from octopus.platforms.ETH.disassembler import EthereumDisassembler
+
 
 import copy
 import logging
@@ -24,6 +26,7 @@ class EthereumSSAEngine(SSAEngine):
             # disassemble bytecode to instructions
             disasm = EthereumDisassembler(bytecode)
             self.instructions = disasm.disassemble()
+        self.ssaoptimizer = SSAOptimizer()
 
         self.reverse_instructions = {k: v for k, v in enumerate(self.instructions)}
 
@@ -158,8 +161,10 @@ class EthereumSSAEngine(SSAEngine):
         #  60s & 70s: Push Operations
         #
         elif instr.name.startswith("PUSH"):
-            value = int.from_bytes(instr.operand, byteorder='big')
-            instr.ssa = SSA(new_assignement=self.ssa_counter, method_name=instr.name, args=value, instr_type=SSA_TYPE_CONSTANT)
+            #value = int.from_bytes(instr.operand, byteorder='big')
+            instr.ssa = SSA(new_assignement=self.ssa_counter, method_name=instr.name,
+                            args=instr.operand_interpretation,
+                            instr_type=SSA_TYPE_CONSTANT)
             state.ssa_stack.append(instr)
             self.ssa_counter += 1
         #
@@ -339,38 +344,46 @@ class EthereumSSAEngine(SSAEngine):
 
             # get instruction with this value as offset
             if push_instr.ssa.is_constant:
-                jump_addr = int.from_bytes(push_instr.operand, byteorder='big')
-
+                #jump_addr = int.from_bytes(push_instr.operand, byteorder='big')
+                jump_addr = push_instr.operand_interpretation
                 # get instruction with this value as offset
                 target = next(filter(lambda element: element.offset == jump_addr, self.instructions))
+            else:
+                jump_addr = self.ssaoptimizer.resolve_instr_ssa(push_instr)
+                target = next(filter(lambda element: element.offset == jump_addr, self.instructions))
+                if not jump_addr:
+                    logging.warning('JUMP DYNAMIC TODO')
+                    logging.warning('[X] push_instr %x: %s ' % (push_instr.offset, push_instr.name))
+                    logging.warning('[X] push_instr.ssa %s' % push_instr.ssa.format())
+                    list_args = [arg.ssa.format() for arg in push_instr.ssa.args]
+                    logging.warning('[X] push_instr.ssa %s' % list_args)
+                    return True
 
-                # depth of 1 - prevent looping
-                #if (depth < self.max_depth):
-                if target.name == "JUMPDEST":
-                    if target.offset not in state.instructions_visited:
-                    #if (depth < self.max_depth):
-                        logging.info('[X] follow JUMP branch offset 0x%x' % target.offset)
-                        new_state = copy.deepcopy(state)
-                        new_state.pc = self.instructions.index(target)
+            # depth of 1 - prevent looping
+            #if (depth < self.max_depth):
+            if target.name == "JUMPDEST":
+                if target.offset not in state.instructions_visited:
+                # if (depth < self.max_depth):
+                    logging.info('[X] follow JUMP branch offset 0x%x' % target.offset)
+                    new_state = copy.deepcopy(state)
+                    new_state.pc = self.instructions.index(target)
 
-                        # follow the JUMP
-                        self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_UNCONDITIONAL))
-                        self.emulate(new_state, depth=depth + 1)
+                    # follow the JUMP
+                    self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_UNCONDITIONAL))
+                    self.emulate(new_state, depth=depth + 1)
 
-                        halt = True
+                    halt = True
 
-                    else:
-                        #logging.info('[X] Max depth reached, skipping JUMP 0x%x' % jump_addr)
-                        self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_UNCONDITIONAL))
-                        logging.info('[X] Loop detected, skipping JUMP 0x%x' % jump_addr)
-                        halt = True
                 else:
-                    logging.info('[X] Bad JUMP to 0x%x' % jump_addr)
-                    # modif current basicblock because jump is not valid
+                    #logging.info('[X] Max depth reached, skipping JUMP 0x%x' % jump_addr)
+                    self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_UNCONDITIONAL))
+                    logging.info('[X] Loop detected, skipping JUMP 0x%x' % jump_addr)
                     halt = True
             else:
-                logging.warning('JUMP DYNAMIC TODO')
-                logging.warning('[X] push_instr %s push_instr %x' % (push_instr.name, push_instr.offset))
+                logging.info('[X] Bad JUMP to 0x%x' % jump_addr)
+                # modif current basicblock because jump is not valid
+                halt = True
+
                 #raise Exception('JUMP DYNAMIC TODO')
 
             self.current_basicblock = self.basicblock_per_instr[instr.offset]
@@ -392,7 +405,8 @@ class EthereumSSAEngine(SSAEngine):
             # get instruction with this value as offset
             #push_instr = next(filter(lambda element: element.offset == jump_addr, self.instructions))
             if push_instr.ssa.is_constant:
-                jump_addr = int.from_bytes(push_instr.operand, byteorder='big')
+                #jump_addr = int.from_bytes(push_instr.operand, byteorder='big')
+                jump_addr = push_instr.operand_interpretation
                 # get instruction with this value as offset
                 target = next(filter(lambda element: element.offset == jump_addr, self.instructions))
 
@@ -411,15 +425,18 @@ class EthereumSSAEngine(SSAEngine):
                     else:
                         self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_CONDITIONAL_TRUE))
                         logging.info('[X] Loop detected, skipping JUMP 0x%x' % jump_addr)
+                        logging.warning('[X] push_instr.ssa %s' % push_instr.ssa.format())
                         halt = True
                 else:
 
                     logging.info('[X] Bad JUMP to 0x%x' % jump_addr)
+                    halt = True
             else:
                 # tricks to exit properly this function
                 #depth = self.max_depth
-                logging.warning('JUMP DYNAMIC TODO')
-                logging.warning('[X] push_instr %s push_instr %x' % (push_instr.name, push_instr.offset))
+                logging.warning('JUMPI DYNAMIC TODO')
+                logging.warning('[X] push_instr %x: %s ' % (push_instr.offset, push_instr.name))
+                halt = True
                 #raise Exception('JUMP DYNAMIC TODO')
 
             halt = True
