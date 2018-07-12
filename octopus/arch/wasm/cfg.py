@@ -18,7 +18,9 @@ log.setLevel(level=logging.WARNING)
 
 
 def enum_func(module_bytecode):
-
+    ''' return a list of Function
+        see:: octopus.api.function
+    '''
     functions = list()
     analyzer = WasmModuleAnalyzer(module_bytecode)
 
@@ -73,44 +75,53 @@ def enum_blocks_edges(function_id, instructions):
 
     basicblocks = list()
     edges = list()
-    labels = []
+
+    branches = []
+    xrefs = []
 
     intent = 0
-    # find label first
-    for index, inst in enumerate(instructions):
-        if inst.is_block_starter:
-            if inst.name in ['block', 'loop']:
-                intent += 1
-        elif inst.name in ['end']:
-            if intent > 0:
-                intent -= 1
-                #tmp_labels.append({'intent': intent,
-                #                   'offset': inst.offset_end})
-                labels.append(inst.offset_end)
-    # print(function_id)
-    # print(labels)
-    '''
-    #e = [{'intent': 0, 'offset': 15}, {'intent': 1, 'offset': 17}, {'intent': 0, 'offset': 56}]
-    tmp_list = []
-    for index, x in enumerate(tmp_labels):
-        if x.get('intent') == 0:
-            labels += tmp_list[::-1]
-            tmp_list = []
-        tmp_list.append(x.get('offset'))
-    labels += tmp_list[::-1]
-    print(labels)
-    '''
+    blocks_tmp = []
+    blocks_list = []
+    # remove last instruction that is 'end' for the funtion
+    tt = instructions[:-1]
+    for index, inst in enumerate(tt):
+
+        if inst.is_block_terminator:
+            start, name = blocks_tmp.pop()
+            blocks_list.append((intent, start, inst.offset_end, name))
+            intent -= 1
+        if inst.is_block_starter:  # in ['block', 'loop']:
+            blocks_tmp.append((inst.offset, inst.name))
+            intent += 1
+        if inst.is_branch:
+            branches.append((intent, inst))
+
+    blocks_list = sorted(blocks_list, key=lambda tup: tup[1])
+
+    for depth, inst in branches:
+        d2 = int(inst.operand_interpretation.split(' ')[1])
+        rep = next(((i, s, e, n) for i, s, e, n in blocks_list if (i == (depth - d2) and s < inst.offset and e > inst.offset_end)), None)
+        if rep:
+            i, start, end, name = rep
+            if name == 'loop':
+                value = start  # else name == 'block'
+            elif name == 'block':
+                value = end
+            else:
+                value = None
+            inst.xref = value
+            xrefs.append(value)
 
     # remove "block" instruction - not usefull graphicaly
-    instructions = [x for x in instructions if x.name not in ['block', 'loop']]
-    # create the first block
-    new_block = False
-    end_block = False
-    block = BasicBlock(instructions[0].offset,
-                       instructions[0],
-                       name=format_bb_name(function_id, instructions[0].offset))
+    # instructions = [x for x in instructions if x.name not in ['block', 'loop']]
+
+    # enumerate blocks
+
+    new_block = True
 
     for index, inst in enumerate(instructions):
+
+        # creation of a block
         if new_block:
             block = BasicBlock(inst.offset,
                                inst,
@@ -120,46 +131,62 @@ def enum_blocks_edges(function_id, instructions):
         # add current instruction to the basicblock
         block.instructions.append(inst)
 
+        # next instruction is a jump target
+        if index < (len(instructions) - 1) and \
+           instructions[index + 1].offset in xrefs:
+            new_block = True
         # absolute jump - br
-        # br is *always* followed by end instruction
-        if inst.is_branch_unconditional:
-            end_block = True
-            jump_offset = int(inst.operand_interpretation.split(' ')[1])
-            if instructions[index + 1].name == 'end':
-                end_block = False
-            edges.append(Edge(block.name, format_bb_name(function_id, labels[jump_offset]  + 1), EDGE_UNCONDITIONAL))
-
+        elif inst.is_branch_unconditional:
+            new_block = True
         # conditionnal jump - br_if
         elif inst.is_branch_conditional:
-            end_block = True
-            jump_offset = int(inst.operand_interpretation.split(' ')[1])
-            edges.append(Edge(block.name, format_bb_name(function_id, labels[jump_offset] + 1), EDGE_CONDITIONAL_TRUE))
-            edges.append(Edge(block.name, format_bb_name(function_id, instructions[index + 1].offset), EDGE_CONDITIONAL_FALSE))
-
+            new_block = True
         # end of a block
         elif index < (len(instructions) - 1) and \
-                inst.name in ['end', 'else']:  # is_block_terminator
-            end_block = True
-            if not instructions[index - 1].is_branch_unconditional:
-                edges.append(Edge(block.name, format_bb_name(function_id, instructions[index + 1].offset), EDGE_FALLTHROUGH))
-
+                inst.name in ['end']:  # is_block_terminator
+            new_block = True
+        elif index < (len(instructions) - 1) and \
+                instructions[index + 1].name == 'else':  # is_block_terminator
+            new_block = True
         # start of a block
         elif index < (len(instructions) - 1) and \
                 instructions[index + 1].is_block_starter:
-            end_block = True
-            edges.append(Edge(block.name, format_bb_name(function_id, instructions[index + 1].offset), EDGE_FALLTHROUGH))
+            new_block = True
+        # last instruction of the bytecode
+        elif inst.offset == instructions[-1].offset:
+            new_block = True
 
-        # last instruction of the entire bytecode
-        elif inst == instructions[-1]:
-            end_block = True
-
-        if end_block:
+        if new_block:
             block.end_offset = inst.offset_end
             block.end_instr = inst
             basicblocks.append(block)
             new_block = True
-            end_block = False
 
+    # TODO: detect and remove end instruction that end loop
+
+    # enumerate edges
+    for index, block in enumerate(basicblocks):
+        # get the last instruction
+        inst = block.end_instr
+
+        # unconditional jump - br
+        if inst.is_branch_unconditional:
+            edges.append(Edge(block.name, format_bb_name(function_id, inst.xref), EDGE_UNCONDITIONAL))
+        # conditionnal jump - br_if
+        elif inst.is_branch_conditional:
+            if inst.name == 'if':
+                edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_CONDITIONAL_TRUE))
+                # if 'else' in [i.name for i in basicblocks[index + 1].instructions]:
+                #    edges.append(Edge(block.name, format_bb_name(function_id, basicblocks[index + 2].start_instr.offset), EDGE_CONDITIONAL_FALSE))
+                edges.append(Edge(block.name, format_bb_name(function_id, basicblocks[index + 2].start_instr.offset), EDGE_CONDITIONAL_FALSE)) 
+            else:
+                edges.append(Edge(block.name, format_bb_name(function_id, inst.xref), EDGE_CONDITIONAL_TRUE))
+                edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_CONDITIONAL_FALSE))
+        elif inst.offset != instructions[-1].offset:
+            # EDGE_FALLTHROUGH
+            edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_FALLTHROUGH))
+
+    # prevent duplicate edges
     edges = list(set(edges))
     return basicblocks, edges
 

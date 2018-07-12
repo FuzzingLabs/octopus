@@ -68,7 +68,7 @@ class WasmInstruction(Instruction):
     @property
     def is_branch_conditional(self):
         """ Return True if the instruction is a conditional jump """
-        return self.name in ['br_if']#, 'br_table']
+        return self.name in ['br_if', 'br_table', 'if']
 
     @property
     def is_branch_unconditional(self):
