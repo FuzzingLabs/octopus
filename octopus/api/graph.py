@@ -82,14 +82,14 @@ class CallGraph(object):
         self.nodes = nodes
         self.edges = edges
         self.filename = filename
-        self.design = design or {'fontname': 'Courier',
-                                 'fontsize': '30.0'}
+        self.design = design or {'shape': 'box'}
 
     def view(self, view=True):
         g = Digraph(self.filename, filename=self.filename,
                     graph_attr=self.design)
+        g.attr(rankdir='LR')
 
-        with g.subgraph(name='global') as c:
+        with g.subgraph(name='global', node_attr=self.design) as c:
 
             # create all the graph nodes (function name)
             for idx, node in enumerate(self.nodes):
@@ -98,7 +98,7 @@ class CallGraph(object):
 
             # insert edges on the graph
             for edge in self.edges:
-                c.edge(edge.node_from, edge.node_to, color='blue')
+                c.edge(edge.node_from, edge.node_to, color='black')
 
         g.render(self.filename, view=view)
 
