@@ -22,10 +22,12 @@ Octopus is a security analysis framework focus on Blockchain Smart Contract. The
 
 ## Install & Tests
 
+Octopus used Python>3.0 and should work ideally with python>=3.6
+
 ```
 git clone https://github.com/quoscient/octopus
 cd octopus
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 # run tests (disassembly, CFG, ...)
 ./run_tests.sh
 # require internet connectivity (explorer tests)
