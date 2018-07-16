@@ -99,7 +99,7 @@ def enum_blocks_edges(function_id, instructions):
     blocks_list = sorted(blocks_list, key=lambda tup: tup[1])
 
     for depth, inst in branches:
-        d2 = int(inst.operand_interpretation.split(' ')[1])
+        d2 = int(inst.operand_interpretation.split(' ')[-1])
         rep = next(((i, s, e, n) for i, s, e, n in blocks_list if (i == (depth - d2) and s < inst.offset and e > inst.offset_end)), None)
         if rep:
             i, start, end, name = rep
