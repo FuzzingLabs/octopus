@@ -1,7 +1,7 @@
 import warnings
 
-from ethereum import utils
-from ethereum.abi import encode_abi, decode_abi
+#from ethereum import utils
+#from ethereum.abi import encode_abi, decode_abi
 
 from .constants import DEFAULT_GAS_PER_TX, DEFAULT_GAS_PRICE, BLOCK_TAGS, BLOCK_TAG_LATEST
 from .util import hex_to_dec, clean_hex, validate_block
@@ -25,6 +25,7 @@ class EthereumExplorerRPC(Explorer):
     def call(self, method, params=None, jsonrpc='2.0', _id=1):
         return super().call(method, params, jsonrpc, _id)
 
+    '''
     def _encode_function(self, signature, param_values):
 
         prefix = utils.big_endian_to_int(utils.sha3(signature)[:4])
@@ -38,6 +39,7 @@ class EthereumExplorerRPC(Explorer):
         types = signature[signature.find('(') + 1: signature.find(')')].split(',')
         encoded_params = encode_abi(types, param_values)
         return utils.zpad(utils.encode_int(prefix), 4) + encoded_params
+    '''
 
     #######################
     # HIGHT-LEVEL METHODS #
@@ -95,12 +97,15 @@ class EthereumExplorerRPC(Explorer):
         Create a contract on the blockchain from compiled EVM code. Returns the
         transaction hash.
         """
+        '''
         from_ = from_ or self.eth_coinbase()
         if sig is not None and args is not None:
             types = sig[sig.find('(') + 1: sig.find(')')].split(',')
             encoded_params = encode_abi(types, args)
             code += encoded_params.encode('hex')
         return self.eth_sendTransaction(from_address=from_, gas=gas, data=code)
+        '''
+        return NotImplementedError()
 
     def get_contract_address(self, tx):
         """
@@ -114,23 +119,28 @@ class EthereumExplorerRPC(Explorer):
         Call a contract function on the RPC server, without sending a
         transaction (useful for reading data)
         """
+        '''
         data = self._encode_function(sig, args)
         data_hex = data.encode('hex')
         response = self.eth_call(to_address=address, data=data_hex)
         return decode_abi(result_types, response[2:].decode('hex'))
+        '''
+        return NotImplementedError()
 
     def call_with_transaction(self, from_, address, sig, args, gas=None, gas_price=None, value=None):
         """
         Call a contract function by sending a transaction (useful for storing
         data)
         """
+        '''
         gas = gas or DEFAULT_GAS_PER_TX
         gas_price = gas_price or DEFAULT_GAS_PRICE
         data = self._encode_function(sig, args)
         data_hex = data.encode('hex')
         return self.eth_sendTransaction(from_address=from_, to_address=address, data=data_hex, gas=gas,
                                         gas_price=gas_price, value=value)
-
+        '''
+        return NotImplementedError()
     ####################
     # JSON-RPC METHODS #
     ####################

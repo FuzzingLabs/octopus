@@ -5,8 +5,8 @@ requests
 graphviz
 
 # ETH
-ethereum>=2.3.0
-z3-solver
+# ethereum>=2.3.0
+z3-solver>=4.5
 
 # EOS
 wasm
