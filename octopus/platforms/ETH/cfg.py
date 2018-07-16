@@ -132,17 +132,12 @@ def enumerate_basicblocks_statically(instructions):
 
 class EthereumCFG(CFG):
 
-    def __init__(self, bytecode=None, instructions=None, analysis='dynamic'):
+    def __init__(self, bytecode=None, analysis='dynamic'):
         """ TODO """
 
-        if not bytecode and not instructions:
-            raise Exception("No bytecode/instructions provided")
-        if instructions:
-            self.instructions = instructions
-        else:
-            # disassemble bytecode to instructions
-            disasm = EthereumDisassembler(bytecode)
-            self.instructions = disasm.disassemble()
+        self.bytecode = bytecode
+        disasm = EthereumDisassembler(self.bytecode)
+        self.instructions = disasm.disassemble()
         self.analysis = analysis
 
         self.basicblocks = list()
@@ -160,9 +155,9 @@ class EthereumCFG(CFG):
 
     def run_dynamic_analysis(self):
 
-        from octopus.platforms.ETH.ssa import EthereumSSAEngine
+        from octopus.platforms.ETH.emulator import EthereumSSAEngine
 
-        emul = EthereumSSAEngine(instructions=self.instructions)
+        emul = EthereumSSAEngine(self.bytecode)
         emul.emulate()
         self.functions = emul.functions
         self.basicblocks = emul.basicblocks

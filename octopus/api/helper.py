@@ -2,7 +2,10 @@
 
 import re
 from z3 import *
-import logging
+
+TT256 = 2 ** 256
+TT256M1 = 2 ** 256 - 1
+TT255 = 2 ** 255
 
 
 class helper(object):
@@ -26,8 +29,8 @@ class helper(object):
         else:
             return bytes.fromhex(hex_encoded_string)
 
-    # def to_signed(i):
-    #    return i if i < TT255 else i - TT256
+    def to_signed(i):
+        return i if i < TT255 else i - TT256
 
     def get_trace_line(instr, state):
 
@@ -40,7 +43,6 @@ class helper(object):
 
     def convert_to_bitvec(item):
         # converting boolean expression to bitvector
-
         if type(item) == BoolRef:
             return If(item, BitVecVal(1, 256), BitVecVal(0, 256))
         elif type(item) == bool:
