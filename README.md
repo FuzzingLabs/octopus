@@ -24,6 +24,12 @@ Octopus is a security analysis framework focus on Blockchain Smart Contract. The
 
 Octopus used Python>3.0 and should work ideally with python>=3.6
 
+If you want to generate graph (dot, pdf), you will to install first [graphviz](https://graphviz.gitlab.io/download/):
+```
+# simple install for Ubuntu
+sudo apt install graphviz
+```
+
 ```
 git clone https://github.com/quoscient/octopus
 cd octopus
