@@ -3,8 +3,8 @@ from octopus.api.engine import EmulatorEngine
 from octopus.api.ssa import SSA, SSA_TYPE_FUNCTION, SSA_TYPE_CONSTANT
 
 from octopus.platforms.ETH.vmstate import EthereumVMstate
-from octopus.platforms.ETH.cfg import (enumerate_functions_statically,
-                                       enumerate_basicblocks_statically)
+from octopus.platforms.ETH.cfg import (enum_func_static,
+                                       enum_blocks_static)
 
 from octopus.platforms.ETH.disassembler import EthereumDisassembler
 from octopus.platforms.ETH.ssa import EthereumSSASimplifier
@@ -25,8 +25,8 @@ class EthereumEmulatorEngine(EmulatorEngine):
         disasm = EthereumDisassembler(bytecode)
         self.instructions = disasm.disassemble()
         self.reverse_instructions = {k: v for k, v in enumerate(self.instructions)}
-        self.functions = enumerate_functions_statically(self.instructions)
-        self.basicblocks = enumerate_basicblocks_statically(self.instructions)
+        self.functions = enum_func_static(self.instructions)
+        self.basicblocks = enum_blocks_static(self.instructions)
 
         self.simplify_ssa = EthereumSSASimplifier()
 
