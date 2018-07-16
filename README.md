@@ -12,10 +12,10 @@ Octopus is a security analysis framework focus on Blockchain Smart Contract. The
 * BTC: Explorer, Disassembler
 * ETH: Explorer, Disassembler, ControlFlowGraph, SSA (WIP), Symbolic execution (WIP)
 * NEO: Explorer, Disassembler, ControlFlowGraph
-* EOS: Explorer, Disassembler, ModuleAnalyzer, Callgraph, ControlFlowGraph (WIP)
+* EOS: Explorer, Disassembler, ModuleAnalyzer, CallGraph, ControlFlowGraph (WIP)
 
 ### Architectures
-* WebAssembly: Disassembler, ModuleAnalyzer, Callgraph, ControlFlowGraph (WIP)
+* WebAssembly: Disassembler, ModuleAnalyzer, CallGraph, ControlFlowGraph
 
 
 * Plugins: IDA (WIP), Binary ninja (WIP)
