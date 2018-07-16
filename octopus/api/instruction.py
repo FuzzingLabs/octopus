@@ -2,7 +2,8 @@ class Instruction(object):
     """Instruction """
     def __init__(self, opcode, name,
                  operand_size, pops, pushes, fee,
-                 description, operand=None, offset=0, xref=None):
+                 description, operand=None,
+                 operand_interpretation=None, offset=0, xref=None):
 
         self.opcode = opcode
         self.offset = offset
@@ -12,7 +13,7 @@ class Instruction(object):
         self.operand = operand  # Immediate operand if any
         # specific interpretation of operand value
         # ex: operand value for JUMP = xref
-        self.operand_interpretation = operand
+        self.operand_interpretation = operand_interpretation
         self.pops = pops
         self.pushes = pushes
         self.fee = fee

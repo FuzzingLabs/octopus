@@ -9,11 +9,13 @@ class NeoInstruction(Instruction):
     """
     def __init__(self, opcode, name,
                  operand_size, pops, pushes, fee,
-                 description, operand=None, offset=0, xref=None):
+                 description, operand=None,
+                 operand_interpretation=None, offset=0, xref=None):
         """ TODO """
         super().__init__(opcode=opcode, name=name,
                          operand_size=operand_size, pops=pops, pushes=pushes,
                          fee=fee, description=description, operand=operand,
+                         operand_interpretation=operand_interpretation,
                          offset=offset)
 
     @property

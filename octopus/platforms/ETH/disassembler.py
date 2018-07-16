@@ -54,6 +54,11 @@ class EthereumDisassembler(Disassembler):
                                           gas, description, offset=offset)
         if instruction.has_operand:
             instruction.operand = wallet.read(operand_size)
+            if instruction.is_push:
+                # directly calculate the operand int representation
+                instruction.operand_interpretation = \
+                    int.from_bytes(instruction.operand, byteorder='big')
+
         return instruction
 
     def disassemble(self, bytecode=None, offset=0, r_format='list',
