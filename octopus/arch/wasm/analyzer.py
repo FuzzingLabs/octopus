@@ -259,7 +259,6 @@ class WasmModuleAnalyzer(Analyzer):
         data_list = []
 
         for idx, entry in enumerate(entries):
-            # TODO fix offset
             data = entry.data.tobytes()
 
             fmt = {'index': entry.index,
