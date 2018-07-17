@@ -96,9 +96,15 @@ class CallGraph(object):
                 # print('%d %s' % (idx, node))
                 c.node(node)
 
+            # check if multiple same edges
+            # in that case, put the number into label
+            edges_counter = dict((x,self.edges.count(x)) for x in set(self.edges))
             # insert edges on the graph
-            for edge in self.edges:
-                c.edge(edge.node_from, edge.node_to, color='black')
+            for edge, count in edges_counter.items():
+                label = None
+                if count > 1:
+                    label = str(count)
+                c.edge(edge.node_from, edge.node_to, label=label, color='black')
 
         g.render(self.filename, view=view)
 
@@ -120,7 +126,7 @@ class CFGGraph(Graph):
         g = Digraph('G', filename=self.filename)
         g.attr(rankdir='TB')
         g.attr(overlap='scale')
-        g.attr(splines='spline')
+        g.attr(splines='polyline')
         g.attr(ratio='fill')
 
         for idx, func in enumerate(self.cfg.functions):
@@ -133,7 +139,7 @@ class CFGGraph(Graph):
                 c.attr(color=color)
                 c.attr(fontsize='50.0')
                 c.attr(overlap='false')
-                c.attr(splines='spline')
+                c.attr(splines='polyline')
                 c.attr(ratio='fill')
 
                 # create all the basicblocks (blocks)
