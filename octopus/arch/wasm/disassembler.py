@@ -66,10 +66,12 @@ class WasmDisassembler(Disassembler):
         sections = list(mod_iter)
 
         # iterate over all section
+        #code_data = [cur_sec_data for cur_sec, cur_sec_data in sections if isinstance(cur_sec_data.get_decoder_meta()['types']['payload'], CodeSection)][0]
         for cur_sec, cur_sec_data in sections:
             sec = cur_sec_data.get_decoder_meta()['types']['payload']
             if isinstance(sec, CodeSection):
                 code_data = cur_sec_data
+                break
         if not code_data:
             raise ValueError('No functions/codes in the module')
         for idx, func in enumerate(code_data.payload.bodies):
