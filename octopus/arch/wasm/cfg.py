@@ -168,20 +168,25 @@ def enum_blocks_edges(function_id, instructions):
     for index, block in enumerate(basicblocks):
         # get the last instruction
         inst = block.end_instr
-
         # unconditional jump - br
         if inst.is_branch_unconditional:
             edges.append(Edge(block.name, format_bb_name(function_id, inst.xref), EDGE_UNCONDITIONAL))
-        # conditionnal jump - br_if
+        # conditionnal jump - br_if, if
         elif inst.is_branch_conditional:
             if inst.name == 'if':
-                edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_CONDITIONAL_TRUE))
-                # if 'else' in [i.name for i in basicblocks[index + 1].instructions]:
-                #    edges.append(Edge(block.name, format_bb_name(function_id, basicblocks[index + 2].start_instr.offset), EDGE_CONDITIONAL_FALSE))
-                edges.append(Edge(block.name, format_bb_name(function_id, basicblocks[index + 2].start_instr.offset), EDGE_CONDITIONAL_FALSE)) 
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, inst.offset_end + 1),
+                             EDGE_CONDITIONAL_TRUE))
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, basicblocks[index + 2].start_instr.offset),
+                             EDGE_CONDITIONAL_FALSE))
             else:
-                edges.append(Edge(block.name, format_bb_name(function_id, inst.xref), EDGE_CONDITIONAL_TRUE))
-                edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_CONDITIONAL_FALSE))
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, inst.xref),
+                             EDGE_CONDITIONAL_TRUE))
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, inst.offset_end + 1),
+                             EDGE_CONDITIONAL_FALSE))
         elif inst.offset != instructions[-1].offset:
             # EDGE_FALLTHROUGH
             edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_FALLTHROUGH))
@@ -193,7 +198,7 @@ def enum_blocks_edges(function_id, instructions):
 
 class WasmCFG(CFG):
     """
-    TODO: fix some CFG issue related to block/end/if/else/end instructions
+    TODO: fix some CFG issue related to br_table instruction
     """
     def __init__(self, module_bytecode, static_analysis=True):
 
@@ -221,7 +226,7 @@ class WasmCFG(CFG):
             self.basicblocks += func.basicblocks
             self.edges += edges
 
-    def get_functions_call_edges(self):
+    def get_functions_call_edges(self, format_fname=True):
 
         nodes = list()
         edges = list()
@@ -233,7 +238,10 @@ class WasmCFG(CFG):
 
         # create nodes
         for name, param_str, return_str in self.analyzer.func_prototypes:
-            nodes.append(format_func_name(name, param_str, return_str))
+            if format_fname:
+                nodes.append(format_func_name(name, param_str, return_str))
+            else:
+                nodes.append(name)
 
         log.info('nodes: %s', nodes)
 
@@ -245,10 +253,17 @@ class WasmCFG(CFG):
         for node_from, node_to in tmp_edges:
             # node_from
             name, param, ret = self.analyzer.func_prototypes[node_from]
-            from_final = format_func_name(name, param, ret)
+            if format_fname:
+                from_final = format_func_name(name, param, ret)
+            else:
+                from_final = name
             # node_to
             name, param, ret = self.analyzer.func_prototypes[node_to]
             to_final = format_func_name(name, param, ret)
+            if format_fname:
+                to_final = format_func_name(name, param, ret)
+            else:
+                to_final = name
             edges.append(Edge(from_final, to_final, EDGE_CALL))
         log.info('edges: %s', edges)
 
