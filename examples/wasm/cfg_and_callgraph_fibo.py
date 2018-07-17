@@ -5,8 +5,9 @@
 # Author: Patrick Ventuzelo - @Pat_Ventuzelo
 #
 
-from octopus.platforms.EOS.cfg import EosCFG
-from octopus.api.graph import CallGraph, CFGGraph
+from octopus.arch.wasm.cfg import WasmCFG
+from octopus.arch.wasm.graph import WasmCallGraph
+from octopus.api.graph import CFGGraph
 
 # complete wasm module
 file_name = "examples/wasm/samples/fib.wasm"
@@ -16,18 +17,12 @@ with open(file_name, 'rb') as f:
     raw = f.read()
 
 # create the cfg
-cfg = EosCFG(raw)
-# retrieve nodes and edges
-nodes, edges = cfg.get_functions_call_edges()
+cfg = WasmCFG(raw)
 
 # visualize CFGGraph
 graph = CFGGraph(cfg)
 graph.view_functions()
 
 # visualize CallGraph
-graph = CallGraph(nodes, edges)
+graph = WasmCallGraph(cfg)
 graph.view()
-
-# visualize module content
-analyzer = cfg.analyzer
-print(analyzer.show())
