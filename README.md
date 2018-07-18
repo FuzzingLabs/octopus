@@ -83,7 +83,7 @@ cd octopus/tests/
 
 ## Examples
 
-Please find examples in ```examples```
+Please find examples in [examples](examples)
 
 ## Publications and Videos
 
