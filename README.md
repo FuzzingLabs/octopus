@@ -1,82 +1,107 @@
 # Octopus
 
-<img src="/images/logo-medium.png" height="400px"/>
+<p align="center">
+	<img src="/images/logo-medium.png" height="400px"/>
+</p>
 
-README IN PROGRESS
+Octopus is a security analysis framework for WebAssembly and Blockchain Smart Contract.
 
-Octopus is a security analysis framework focus on Blockchain Smart Contract. The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
+The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
+
 
 ## Features
-<!--- 
 
-| Platforms| Explorer | Disassembler |            | Cool  |
-|:--------:|:-------------:| -----:|
-| BTC      | right-aligned | $1600 |
-| ETH      | centered      |   $12 |
-| EOS      | are neat      |    $1 |
-| NEO      | 
--->
+- **Explorer**: Octopus JSON-RPC client implementation to communicate with platforms blockchains
+- **Disassembler**: Octopus can translate bytecode into assembly representation
+- **Control Flow Analysis**: Octopus can generate a Control Flow Graph (CFG) 
+- **Call Flow Analysis**: Octopus can generate a Call Flow Graph (function level) 
+- **IR conversion (SSA)**: Octopus can simplify assembly into Static Single Assignment (SSA) representation
+- **Symbolic Execution**: Octopus can use symbolic execution to find new paths into a program
 
-### Platforms
+Octopus support the following types of programs/smart contracts:
 
-| | BTC | ETH | EOS | NEO |
+- WebAssembly module (WASM)
+
+- Bitcoin script (BTC script)
+- Ethereum smart contracts (EVM bytecode)
+- EOS smart contracts (WASM)
+- NEO smart contracts (AVM bytecode)
+
+
+## Platforms / Architectures
+
+| | BTC | ETH | EOS | NEO || WASM
 |:--------------------:|:---:|:---:|:---:|:---:|
-| **Explorer**             | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: |
-| **Disassembler**         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| **ControlFlow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| **CallFlow Analysis**    | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: |
-| **Symbolic Execution**   | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: |
+| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| **Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| **Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| **Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | :heavy_check_mark: |
+| **IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | :heavy_plus_sign: |
+| **Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | :heavy_plus_sign: |
 
-Legends:
-* :heavy_check_mark: DONE
-* :heavy_plus_sign: WIP (Work In Progress)
-* :x: NOT(YET)
+- :heavy_check_mark: DONE
+- :heavy_plus_sign: WIP (Work In Progress)
+- :x: NOT(YET)
 
-### Architectures
+Other: IDA plugin (:heavy_plus_sign:), Binary ninja plugin (:heavy_plus_sign:), Pypi package (:heavy_plus_sign:)
 
-* WebAssembly: Disassembler, ModuleAnalyzer, CallGraph, ControlFlowGraph
+## Requirements
 
-### Extras
+Octopus is supported on Linux (ideally Ubuntu 16.04) and requires Python >= 3.0 (ideally 3.6).
 
-* Plugins: IDA (WIP), Binary ninja (WIP)
+Dependencies:
+- Graph generation: [graphviz](https://graphviz.gitlab.io/download/)
+- Explorer: [requests](http://docs.python-requests.org/en/master/#)
+- Symbolic Execution: [z3-solver](https://pypi.org/project/z3-solver/)
+- Wasm: [wasm](https://github.com/athre0z/wasm)
 
-## Install & Tests
+## Quick Start
 
-Octopus used Python>3.0 and should work ideally with python>=3.6
-
-If you want to generate graph (dot, pdf), you will to install first [graphviz](https://graphviz.gitlab.io/download/):
-```
-# simple install for Ubuntu
-sudo apt install graphviz
-```
+Install Octopus easily with:
 
 ```
+# Install system dependencies
+sudo apt-get update && sudo apt-get install python-pip graphviz -y
+
+# Download Octopus
 git clone https://github.com/quoscient/octopus
 cd octopus
+
+# Install Octopus and its dependencies
 pip3 install -r requirements.txt
-# run tests (disassembly, CFG, ...)
+
+# Run tests for all platforms (disassembly, CFG, ...)
 ./run_tests.sh
-# require internet connectivity (explorer tests)
+# Run tests that require internet access (explorer tests)
 ./run_explorer_tests.sh
+
+# Run tests for only one platforms
+# {btc, eth, eos, neo, wasm}_run_tests.sh
+cd octopus/tests/
+./wasm_run_tests.sh
 ```
-
-Pypi package (WIP)
-
-## Publications and Videos
-
-* REcon Montreal 2018: [Reverse Engineering Of Blockchain Smart Contracts](https://recon.cx/2018/montreal/schedule/system/event_attachments/attachments/000/000/053/original/RECON-MTL-2018-Reversing_blockchains_smart_contracts.pdf)
 
 ## Examples
 
 Please find examples in ```examples```
 
-## Credits
+## Publications and Videos
+
+* REcon Montreal 2018: [Reverse Engineering Of Blockchain Smart Contracts](https://recon.cx/2018/montreal/schedule/system/event_attachments/attachments/000/000/053/original/RECON-MTL-2018-Reversing_blockchains_smart_contracts.pdf)
+
+## Authors
+
+* **Patrick Ventuzelo** - *Creator* - [@Pat_Ventuzelo](https://twitter.com/pat_ventuzelo)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
 
 Inspired by:
 * [Manticore](https://github.com/trailofbits/manticore)
 * [Mythril](https://github.com/ConsenSys/mythril)
 * ...
-
-## Contact
-
-Creator: Patrick Ventuzelo - @Pat_Ventuzelo
