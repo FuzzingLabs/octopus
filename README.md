@@ -24,13 +24,13 @@ Octopus is a security analysis framework focus on Blockchain Smart Contract. The
 | Explorer             | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: |
 | Disassembler         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ControlFlow Analysis | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| CallFlow Analysis    | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_check_mark: |
-| Symbolic Execution   | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: |
+| CallFlow Analysis    | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: |
+| Symbolic Execution   | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: |
 
 Legends:
-* :heavy_check_mark:: DONE
-* :heavy_plus_sign:: WIP (Work In Progress)
-* :x:: NOT(YET)
+* :heavy_check_mark: DONE
+* :heavy_plus_sign: WIP (Work In Progress)
+* :x: NOT(YET)
 
 ### Architectures
 
