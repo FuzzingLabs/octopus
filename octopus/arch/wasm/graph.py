@@ -1,5 +1,5 @@
-from octopus.api.graph import CallGraph
 from graphviz import Digraph
+import logging
 
 DESIGN_IMPORT = {'fillcolor': 'turquoise',
                  'shape': 'box',
@@ -8,6 +8,9 @@ DESIGN_IMPORT = {'fillcolor': 'turquoise',
 DESIGN_EXPORT = {'fillcolor': 'grey',
                  'shape': 'box',
                  'style': 'filled'}
+
+log = logging.getLogger(__name__)
+log.setLevel(level=logging.WARNING)
 
 
 class WasmCallGraph(object):
@@ -25,20 +28,16 @@ class WasmCallGraph(object):
 
             export_list = [d['field_str'] for d in self.wasmcfg.analyzer.exports]
             import_list = [x for _, x, _ in self.wasmcfg.analyzer.imports_func]
-            #print(export_list)
-            #print(import_list)
             # create all the graph nodes (function name)
             for idx, node in enumerate(self.nodes):
-                #print(node)
-                # print('%d %s' % (idx, node))
                 if node in import_list:
-                    print('import ' + node)
+                    log.debug('import ' + node)
                     fillcolor = DESIGN_IMPORT.get('fillcolor')
                     shape = DESIGN_IMPORT.get('shape')
                     style = DESIGN_IMPORT.get('style')
                     c.node(node, fillcolor=fillcolor, shape=shape, style=style)
                 elif node in export_list:
-                    print('export ' + node)
+                    log.debug('export ' + node)
                     fillcolor = DESIGN_EXPORT.get('fillcolor')
                     shape = DESIGN_EXPORT.get('shape')
                     style = DESIGN_EXPORT.get('style')
@@ -54,6 +53,6 @@ class WasmCallGraph(object):
                 label = None
                 if count > 1:
                     label = str(count)
-                c.edge(edge.node_from, edge.node_to, label=label, color='black')
+                c.edge(edge.node_from, edge.node_to, label=label)
 
         g.render(self.filename, view=view)

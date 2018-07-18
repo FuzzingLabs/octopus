@@ -1,23 +1,22 @@
-echo '[*] BTC tests'
-echo '[*] Disassembler [*]'
+echo '[*] BTC Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/BTC/test_disassembler.py
 
-echo '[*] NEO tests'
-echo '[*] Disassembler [*]'
+echo '[*] NEO Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/NEO/test_disassembler.py
-echo '[*] CFG recovery [*]'
+echo '[*] NEO ControlFlowGraph analysis [*]'
 python3 -m unittest octopus/tests/platforms/NEO/test_cfg.py
 
-echo '[*] ETH tests'
-# echo '[*] Explorer [*]'
+# echo '[*] ETH Explorer [*]'
 # python3 -m unittest octopus/tests/platforms/ETH/test_explorer.py
-echo '[*] Disassembler [*]'
+echo '[*] ETH Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/ETH/test_disassembler.py
-echo '[*] CFG recovery [*]'
+echo '[*] ETH ControlFlowGraph analysis [*]'
 python3 -m unittest octopus/tests/platforms/ETH/test_cfg.py
 
-echo '[*] EOS tests'
-echo '[*] Disassembler [*]'
+echo '[*] EOS Disassembler [*]'
 python3 -m unittest octopus/tests/platforms/EOS/test_disassembler.py
-echo '[*] Functions CallGraph [*]'
+echo '[*] EOS CallGraph analysis [*]'
 python3 -m unittest octopus/tests/platforms/EOS/test_callgraph.py
+
+echo '[*] WebAssembly ControlFlowGraph & CallGraphanalysis [*]'
+python3 -m unittest octopus/tests/arch/wasm/test_cfg.py
