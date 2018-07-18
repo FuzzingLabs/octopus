@@ -2,6 +2,9 @@ import binascii
 
 
 class Disassembler(object):
+    """
+    Generic Disassembler class
+    """
 
     def __init__(self, bytecode, asm):
         self.bytecode = bytecode

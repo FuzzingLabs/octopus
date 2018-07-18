@@ -31,7 +31,7 @@ log.setLevel(level=logging.WARNING)
 
 def enum_func(module_bytecode):
     ''' return a list of Function
-        see:: octopus.api.function
+        see:: octopus.core.function
     '''
     functions = list()
     analyzer = WasmModuleAnalyzer(module_bytecode)

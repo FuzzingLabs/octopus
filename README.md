@@ -7,16 +7,36 @@ README IN PROGRESS
 Octopus is a security analysis framework focus on Blockchain Smart Contract. The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
 
 ## Features
+<!--- 
+
+| Platforms| Explorer | Disassembler |            | Cool  |
+|:--------:|:-------------:| -----:|
+| BTC      | right-aligned | $1600 |
+| ETH      | centered      |   $12 |
+| EOS      | are neat      |    $1 |
+| NEO      | 
+-->
 
 ### Platforms
-* BTC: Explorer, Disassembler
-* ETH: Explorer, Disassembler, ControlFlowGraph, SSA (WIP), Symbolic execution (WIP)
-* NEO: Explorer, Disassembler, ControlFlowGraph
-* EOS: Explorer, Disassembler, ModuleAnalyzer, CallGraph, ControlFlowGraph
+
+| Features             | BTC | ETH | EOS | NEO |
+|:--------------------:|:---:|:---:|:---:|:---:|
+| Explorer             | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: |
+| Disassembler         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| ControlFlow Analysis | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| CallFlow Analysis    | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_check_mark: |
+| Symbolic Execution   | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: |
+
+Legends:
+* :heavy_check_mark:: DONE
+* :heavy_plus_sign:: WIP (Work In Progress)
+* :x:: NOT(YET)
 
 ### Architectures
+
 * WebAssembly: Disassembler, ModuleAnalyzer, CallGraph, ControlFlowGraph
 
+### Extras
 
 * Plugins: IDA (WIP), Binary ninja (WIP)
 
