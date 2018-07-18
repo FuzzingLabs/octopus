@@ -4,7 +4,7 @@
 	<img src="/images/logo-medium.png" height="400px"/>
 </p>
 
-Octopus is a security analysis framework for WebAssembly and Blockchain Smart Contract.
+**Octopus is a security analysis framework for WebAssembly and Blockchain Smart Contract.**
 
 The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
 
@@ -20,40 +20,40 @@ The purpose of Octopus is to provide an easy way to analyze smart contract secur
 
 Octopus support the following types of programs/smart contracts:
 
-- WebAssembly module (WASM)
+* WebAssembly module (WASM)
 
-- Bitcoin script (BTC script)
-- Ethereum smart contracts (EVM bytecode)
-- EOS smart contracts (WASM)
-- NEO smart contracts (AVM bytecode)
+* Bitcoin script (BTC script)
+* Ethereum smart contracts (EVM bytecode)
+* EOS smart contracts (WASM)
+* NEO smart contracts (AVM bytecode)
 
 
 ## Platforms / Architectures
 
 | | BTC | ETH | EOS | NEO || WASM
 |:--------------------:|:---:|:---:|:---:|:---:|
-| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| **Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| **Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| **Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | :heavy_check_mark: |
-| **IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | :heavy_plus_sign: |
-| **Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | :heavy_plus_sign: |
+| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: || :heavy_check_mark: |
+| **Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: || :heavy_check_mark: |
+| **Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: || :heavy_check_mark: |
+| **Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: || :heavy_check_mark: |
+| **IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: || :heavy_plus_sign: |
+| **Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: || :heavy_plus_sign: |
 
-- :heavy_check_mark: DONE
-- :heavy_plus_sign: WIP (Work In Progress)
-- :x: NOT(YET)
+* DONE :heavy_check_mark: 
+* WIP (Work In Progress) :heavy_plus_sign: 
+* NOT PLANNED :x: 
 
-Other: IDA plugin (:heavy_plus_sign:), Binary ninja plugin (:heavy_plus_sign:), Pypi package (:heavy_plus_sign:)
+Other: IDA plugin :heavy_plus_sign:, Binary ninja plugin :heavy_plus_sign:, Pypi package :heavy_plus_sign:
 
 ## Requirements
 
 Octopus is supported on Linux (ideally Ubuntu 16.04) and requires Python >= 3.0 (ideally 3.6).
 
 Dependencies:
-- Graph generation: [graphviz](https://graphviz.gitlab.io/download/)
-- Explorer: [requests](http://docs.python-requests.org/en/master/#)
-- Symbolic Execution: [z3-solver](https://pypi.org/project/z3-solver/)
-- Wasm: [wasm](https://github.com/athre0z/wasm)
+* Graph generation: [graphviz](https://graphviz.gitlab.io/download/)
+* Explorer: [requests](http://docs.python-requests.org/en/master/#)
+* Symbolic Execution: [z3-solver](https://pypi.org/project/z3-solver/)
+* Wasm: [wasm](https://github.com/athre0z/wasm)
 
 ## Quick Start
 
