@@ -1,4 +1,4 @@
-from octopus.api.instruction import Instruction
+from octopus.core.instruction import Instruction
 
 from wasm.opcodes import (INSN_ENTER_BLOCK,
                           INSN_LEAVE_BLOCK)  # INSN_BRANCH, INSN_NO_FLOW)

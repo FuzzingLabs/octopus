@@ -1,4 +1,4 @@
-from octopus.api.instruction import Instruction
+from octopus.core.instruction import Instruction
 
 
 class NeoInstruction(Instruction):

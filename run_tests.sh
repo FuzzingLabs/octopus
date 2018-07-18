@@ -18,5 +18,5 @@ python3 -m unittest octopus/tests/platforms/EOS/test_disassembler.py
 echo '[*] EOS CallGraph analysis [*]'
 python3 -m unittest octopus/tests/platforms/EOS/test_callgraph.py
 
-echo '[*] WebAssembly ControlFlowGraph & CallGraphanalysis [*]'
+echo '[*] WebAssembly ControlFlowGraph & CallGraph analysis [*]'
 python3 -m unittest octopus/tests/arch/wasm/test_cfg.py

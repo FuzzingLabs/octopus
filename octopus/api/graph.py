@@ -1,8 +1,9 @@
 from graphviz import Digraph
 
-from octopus.api.edge import (EDGE_UNCONDITIONAL,
-                              EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
-                              EDGE_FALLTHROUGH, EDGE_CALL)
+from octopus.core.edge \
+    import (EDGE_UNCONDITIONAL,
+            EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
+            EDGE_FALLTHROUGH, EDGE_CALL)
 
 import logging
 log = logging.getLogger(__name__)

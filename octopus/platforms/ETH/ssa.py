@@ -1,6 +1,6 @@
 from octopus.api.simplifier import Simplifier
 
-from octopus.api.helper import helper as hlp
+from octopus.engine.helper import helper as hlp
 from z3 import UDiv, ULT, UGT
 
 import logging

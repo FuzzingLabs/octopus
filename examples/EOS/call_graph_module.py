@@ -17,10 +17,6 @@ with open(file_name, 'rb') as f:
 
 # create the cfg
 cfg = EosCFG(raw)
-# retrieve nodes and edges
-nodes, edges = cfg.get_functions_call_edges()
-
 
 # visualize
-graph = CallGraph(nodes, edges)
-graph.view()
+cfg.visualize_call_flow()

@@ -11,13 +11,12 @@ from wasm.modtypes import (TypeSection,
                            CodeSection,
                            DataSection)
 
-from .constant import LANG_TYPE, KIND_TYPE
-from .format import (format_kind_function,
-                     format_kind_table,
-                     format_kind_memory,
-                     format_kind_global)
+from octopus.arch.wasm.constant import LANG_TYPE, KIND_TYPE
+from octopus.arch.wasm.format import (format_kind_function,
+                                      format_kind_table,
+                                      format_kind_memory,
+                                      format_kind_global)
 
-from octopus.api.analyzer import Analyzer
 
 import io
 import logging
@@ -25,7 +24,7 @@ log = logging.getLogger(__name__)
 log.setLevel(level=logging.INFO)
 
 
-class WasmModuleAnalyzer(Analyzer):
+class WasmModuleAnalyzer(object):
     ''' analyze and extract informations from wasm module'''
 
     def __init__(self, module_bytecode, analysis=True):
@@ -334,13 +333,13 @@ class WasmModuleAnalyzer(Analyzer):
         # Data       11  Data segments
 
         self.customs = list()
-        try:
-            mod_iter = iter(decode_module(self.module_bytecode))
-            header, header_data = next(mod_iter)
-            sections = list(mod_iter)
-        except KeyError:
-            log.error('Module corrupted - Wasm KeyError')
-            return -1
+        #try:
+        mod_iter = iter(decode_module(self.module_bytecode))
+        header, header_data = next(mod_iter)
+        sections = list(mod_iter)
+        #except KeyError:
+        #    log.error('Module corrupted - Wasm KeyError')
+        #    return -1
 
         #
         # Wasm Header

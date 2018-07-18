@@ -3,8 +3,8 @@ import warnings
 #from ethereum import utils
 #from ethereum.abi import encode_abi, decode_abi
 
-from .constants import DEFAULT_GAS_PER_TX, DEFAULT_GAS_PRICE, BLOCK_TAGS, BLOCK_TAG_LATEST
-from .util import hex_to_dec, clean_hex, validate_block
+from octopus.platforms.ETH.constants import DEFAULT_GAS_PER_TX, DEFAULT_GAS_PRICE, BLOCK_TAGS, BLOCK_TAG_LATEST
+from octopus.platforms.ETH.util import hex_to_dec, clean_hex, validate_block
 
 from octopus.api.explorer import Explorer
 from octopus.config.ETH_EXPLORER import GETH_DEFAULT_RPC_PORT, ETH_DEFAULT_RPC_PORT, PARITY_DEFAULT_RPC_PORT

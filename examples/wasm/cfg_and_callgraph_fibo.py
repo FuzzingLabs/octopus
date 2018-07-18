@@ -6,7 +6,6 @@
 #
 
 from octopus.arch.wasm.cfg import WasmCFG
-from octopus.arch.wasm.graph import WasmCallGraph
 from octopus.api.graph import CFGGraph
 
 # complete wasm module
@@ -24,5 +23,4 @@ graph = CFGGraph(cfg)
 graph.view_functions()
 
 # visualize CallGraph
-graph = WasmCallGraph(cfg)
-graph.view()
+cfg.visualize_call_flow()

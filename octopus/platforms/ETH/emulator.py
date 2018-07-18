@@ -1,6 +1,6 @@
-from octopus.api.edge import Edge, EDGE_UNCONDITIONAL, EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE, EDGE_FALLTHROUGH, EDGE_CALL
-from octopus.api.engine import EmulatorEngine
-from octopus.api.ssa import SSA, SSA_TYPE_FUNCTION, SSA_TYPE_CONSTANT
+from octopus.core.edge import Edge, EDGE_UNCONDITIONAL, EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE, EDGE_FALLTHROUGH, EDGE_CALL
+from octopus.engine.emulator import EmulatorEngine
+from octopus.core.ssa import SSA, SSA_TYPE_FUNCTION, SSA_TYPE_CONSTANT
 
 from octopus.platforms.ETH.vmstate import EthereumVMstate
 from octopus.platforms.ETH.cfg import (enum_func_static,

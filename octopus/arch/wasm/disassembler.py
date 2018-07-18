@@ -1,8 +1,8 @@
-from octopus.api.disassembler import Disassembler
-from octopus.api.function import Function
+from octopus.engine.disassembler import Disassembler
+from octopus.core.function import Function
 
-from .instruction import WasmInstruction
-from .wasm import Wasm
+from octopus.arch.wasm.instruction import WasmInstruction
+from octopus.arch.wasm.wasm import Wasm
 
 from wasm.decode import decode_module
 from wasm.modtypes import CodeSection

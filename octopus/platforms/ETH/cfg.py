@@ -1,6 +1,6 @@
-from octopus.api.cfg import CFG
-from octopus.api.function import Function
-from octopus.api.basicblock import BasicBlock
+from octopus.analysis.control_flow import CFG
+from octopus.core.function import Function
+from octopus.core.basicblock import BasicBlock
 
 from octopus.platforms.ETH.disassembler import EthereumDisassembler
 

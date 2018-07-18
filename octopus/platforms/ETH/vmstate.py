@@ -1,4 +1,4 @@
-from octopus.api.engine import VMstate
+from octopus.engine.engine import VMstate
 
 
 class EthereumVMstate(VMstate):

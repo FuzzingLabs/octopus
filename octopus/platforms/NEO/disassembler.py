@@ -1,9 +1,9 @@
 import io
 
-from octopus.api.disassembler import Disassembler
+from octopus.engine.disassembler import Disassembler
 
-from .instruction import NeoInstruction
-from .avm import Avm
+from octopus.platforms.NEO.instruction import NeoInstruction
+from octopus.platforms.NEO.avm import Avm
 
 
 class NeoDisassembler(Disassembler):

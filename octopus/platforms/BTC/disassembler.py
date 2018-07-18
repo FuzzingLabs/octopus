@@ -1,9 +1,9 @@
 import io
 
-from octopus.api.disassembler import Disassembler
+from octopus.engine.disassembler import Disassembler
 
-from .instruction import BitcoinInstruction
-from .btcscript import BTCScript
+from octopus.platforms.BTC.instruction import BitcoinInstruction
+from octopus.platforms.BTC.btcscript import BTCScript
 
 # tested with http://chainquery.com/bitcoin-api/decodescript
 

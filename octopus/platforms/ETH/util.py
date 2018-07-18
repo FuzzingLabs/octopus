@@ -1,4 +1,4 @@
-from .constants import BLOCK_TAGS
+from octopus.platforms.ETH.constants import BLOCK_TAGS
 
 
 def hex_to_dec(x):

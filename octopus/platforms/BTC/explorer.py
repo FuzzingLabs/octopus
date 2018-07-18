@@ -1,6 +1,6 @@
 from octopus.api.explorer import Explorer
 from octopus.config.BTC_EXPLORER import BITCOIND_DEFAULT_RPC_PORT
-from .utils.bech32 import encode as bech32_encode
+from octopus.platforms.BTC.bech32 import encode as bech32_encode
 
 import binascii
 

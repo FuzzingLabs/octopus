@@ -1,12 +1,12 @@
-from octopus.api.function import Function
-from octopus.api.basicblock import BasicBlock
-from octopus.api.edge import Edge
-from octopus.api.edge import (EDGE_UNCONDITIONAL,
-                              EDGE_CONDITIONAL_TRUE,
-                              EDGE_CONDITIONAL_FALSE,
-                              EDGE_FALLTHROUGH)
+from octopus.core.function import Function
+from octopus.core.basicblock import BasicBlock
+from octopus.core.edge import Edge
+from octopus.core.edge import (EDGE_UNCONDITIONAL,
+                               EDGE_CONDITIONAL_TRUE,
+                               EDGE_CONDITIONAL_FALSE,
+                               EDGE_FALLTHROUGH)
 
-from octopus.api.cfg import CFG
+from octopus.analysis.control_flow import CFG
 
 from octopus.platforms.NEO.disassembler import NeoDisassembler
 

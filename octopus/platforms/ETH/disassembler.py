@@ -2,10 +2,10 @@ import io
 import logging
 import re
 
-from octopus.api.disassembler import Disassembler
+from octopus.engine.disassembler import Disassembler
 
-from .instruction import EthereumInstruction
-from .evm import EVM
+from octopus.platforms.ETH.instruction import EthereumInstruction
+from octopus.platforms.ETH.evm import EVM
 
 
 def runtime_code_detector(bytecode_hex):

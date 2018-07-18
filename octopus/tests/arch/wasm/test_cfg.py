@@ -1,7 +1,6 @@
 import unittest
 
 from octopus.arch.wasm.cfg import WasmCFG
-from octopus.api.graph import CallGraph, CFGGraph
 
 EXAMPLE_PATH = "examples/wasm/samples/"
 
@@ -13,8 +12,7 @@ class WasmCFGraphTestCase(unittest.TestCase):
             cfg = WasmCFG(bytecode)
             nodes, edges = cfg.get_functions_call_edges()
             # visualize
-            # graph = CallGraph(nodes, edges)
-            # graph.view()
+            # cfg.visualize_call_flow()
             self.assertEqual(nodes, result_nodes)
             self.assertEqual(len(edges), length_edges)
 
@@ -24,8 +22,7 @@ class WasmCFGraphTestCase(unittest.TestCase):
             basicblocks = cfg.basicblocks
             edges = cfg.edges
             # visualize
-            # graph = CFGGraph(cfg)
-            # graph.view()
+            # cfg.visualize_call_flow()
             self.assertEqual(len(functions), len_func)
             self.assertEqual(len(basicblocks), len_blocks)
             self.assertEqual(len(edges), len_edges)

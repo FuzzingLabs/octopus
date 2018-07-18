@@ -1,4 +1,4 @@
-from .constant import LANG_TYPE
+from octopus.arch.wasm.constant import LANG_TYPE
 
 
 def format_func_name(name, param_str, return_str):
