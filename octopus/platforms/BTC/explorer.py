@@ -1,9 +1,13 @@
 from octopus.api.explorer import Explorer
-from octopus.config.BTC_EXPLORER import BITCOIND_DEFAULT_RPC_PORT
 from octopus.platforms.BTC.bech32 import encode as bech32_encode
 
 import binascii
 
+RPC_USER = 'test'
+RPC_PASSWORD = 'test'
+RPC_HOST = 'localhost'
+
+BITCOIND_DEFAULT_RPC_PORT = 8332
 
 class BitcoinExplorerRPC(Explorer):
     '''

@@ -16,12 +16,7 @@ class NeoCfgTestCase(unittest.TestCase):
     disasm = NeoDisassembler(bytecode_hex)
     instructions = disasm.disassemble()
 
-    bb, edges = enum_blocks_edges(instructions)
-    func = enum_func_static(instructions)
-    func = assign_blocks_to_func(bb, func)
-
     cfg = NeoCFG(bytecode_hex)
-    cfg2 = NeoCFG(instructions=instructions)
 
     # visualization
     # graph = CFGGraph(cfg)
@@ -33,19 +28,15 @@ class NeoCfgTestCase(unittest.TestCase):
 
     def testReverseInstructions(self):
 
-        self.assertEqual(len(self.instructions), self.number_inst)
+        self.assertEqual(len(self.cfg.instructions), self.number_inst)
 
     def testEnumerateFunctions(self):
 
-        self.assertEqual(len(self.func), self.number_func)
-        self.assertEqual(len(self.func), len(self.cfg.functions))
-        self.assertEqual(len(self.cfg.functions), len(self.cfg2.functions))
+        self.assertEqual(len(self.cfg.functions), self.number_func)
 
     def testEnumerateBasicBlocks(self):
 
-        self.assertEqual(len(self.bb), self.number_basicblock)
-        self.assertEqual(len(self.bb), len(self.cfg.basicblocks))
-        self.assertEqual(len(self.cfg.basicblocks), len(self.cfg2.basicblocks))
+        self.assertEqual(self.number_basicblock, len(self.cfg.basicblocks))
 
     def testAssignBasicBlocksFunctions(self):
         # verify if every basicblock have been assign to a function
@@ -61,17 +52,10 @@ class NeoCfgTestCaseMedium(NeoCfgTestCase):
 
     disasm = NeoDisassembler(bytecode_hex)
     instructions = disasm.disassemble()
-
-    bb, edges = enum_blocks_edges(instructions)
-    func = enum_func_static(instructions)
-    func = assign_blocks_to_func(bb, func)
-
     cfg = NeoCFG(bytecode_hex)
-    cfg2 = NeoCFG(instructions=instructions)
 
     # graph = CFGGraph(cfg)
     # graph.view_functions()
-    # graph.view_functions(simplify=True)
 
     number_func = 4
     number_inst = 825

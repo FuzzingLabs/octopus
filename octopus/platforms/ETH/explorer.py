@@ -7,13 +7,22 @@ from octopus.platforms.ETH.constants import DEFAULT_GAS_PER_TX, DEFAULT_GAS_PRIC
 from octopus.platforms.ETH.util import hex_to_dec, clean_hex, validate_block
 
 from octopus.api.explorer import Explorer
-from octopus.config.ETH_EXPLORER import GETH_DEFAULT_RPC_PORT, ETH_DEFAULT_RPC_PORT, PARITY_DEFAULT_RPC_PORT
-from octopus.config.ETH_EXPLORER import INFURA_MAINNET, INFURA_RPC_PORT
 """
 This code is adapted from: ethjsonrpc
 https://github.com/ConsenSys/ethjsonrpc
 """
 
+GETH_DEFAULT_RPC_PORT = 8545
+ETH_DEFAULT_RPC_PORT = 8545
+PARITY_DEFAULT_RPC_PORT = 8545
+PYETHAPP_DEFAULT_RPC_PORT = 4000
+
+INFURA_MAINNET = "mainnet.infura.io/"
+INFURA_ROPSTEN = "ropsten.infura.io/"
+INFURA_INFURANET = "infuranet.infura.io/"
+INFURA_KOVAN = "kovan.infura.io/"
+INFURA_RINKEBY = "rinkeby.infura.io/"
+INFURA_RPC_PORT = 8545
 
 class EthereumExplorerRPC(Explorer):
     """

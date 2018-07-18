@@ -70,7 +70,7 @@ class EthereumSymbolicExecutionTestCaseMedium(EthereumCfgTestCase):
     # graph.view()
     # graph.view_functions(simplify=True)
 
-
+'''
 class EthereumSymbolicExecutionTestCaseBig(EthereumCfgTestCase):
 
     # Ponzicoin
@@ -87,7 +87,7 @@ class EthereumSymbolicExecutionTestCaseBig(EthereumCfgTestCase):
     # graph = CFGGraph(cfg)
     # graph.view_ssa()
     # graph.view_functions(simplify=True)
-
+'''
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(EthereumCfgTestCase)
     unittest.TextTestRunner(verbosity=2).run(suite)

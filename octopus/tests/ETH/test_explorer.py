@@ -5,6 +5,7 @@ import unittest
 
 class EthereumExplorerTestCase(unittest.TestCase):
 
+    # please only used this key for octopus - Infura registration is FREE
     explorer = EthereumInfuraExplorer("bHuaQhX91nkQBac8Wtgj")
 
     '''TODO'''

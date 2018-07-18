@@ -6,7 +6,7 @@
 #
 
 from octopus.platforms.ETH.explorer import EthereumInfuraExplorer
-from octopus.config.ETH_EXPLORER import INFURA_ROPSTEN
+from octopus.platforms.ETH.explorer import INFURA_ROPSTEN
 from octopus.platforms.ETH.contract import EthereumContract
 
 # connection to ROPSTEN network (testnet)

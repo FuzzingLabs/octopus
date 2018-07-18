@@ -4,6 +4,8 @@ from octopus.config.EOS_EXPLORER import EOS_DEFAULT_RPC_PORT
 from requests.exceptions import ConnectionError as RequestsConnectionError
 import json
 
+EOS_DEFAULT_RPC_PORT = 8888
+EOS_WALLET_RPC_PORT = 8889
 
 class EosExplorer(Explorer):
     """

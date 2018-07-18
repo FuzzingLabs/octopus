@@ -1,5 +1,5 @@
 from octopus.platforms.BTC.explorer import BitcoinExplorerRPC
-from octopus.config.BTC_EXPLORER import RPC_USER, RPC_PASSWORD, RPC_HOST
+from octopus.platforms.BTC.explorer import RPC_USER, RPC_PASSWORD, RPC_HOST
 
 import unittest
 
