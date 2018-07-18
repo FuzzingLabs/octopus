@@ -30,14 +30,14 @@ Octopus support the following types of programs/smart contracts:
 
 ## Platforms / Architectures
 
-| | BTC | ETH | EOS | NEO || WASM
-|:--------------------:|:---:|:---:|:---:|:---:|
-| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: || :heavy_check_mark: |
-| **Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: || :heavy_check_mark: |
-| **Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: || :heavy_check_mark: |
-| **Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: || :heavy_check_mark: |
-| **IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: || :heavy_plus_sign: |
-| **Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: || :heavy_plus_sign: |
+|| BTC | ETH | EOS | NEO || WASM
+|:--------------------:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | |  :heavy_check_mark: |
+|**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
+|**Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
+|**Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
+|**IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | | :heavy_plus_sign: |
+|**Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | | :heavy_plus_sign: |
 
 * DONE :heavy_check_mark: 
 * WIP (Work In Progress) :heavy_plus_sign: 
