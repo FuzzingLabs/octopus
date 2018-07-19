@@ -13,30 +13,10 @@ class Edge:
         self.node_from = node_from
         self.node_to = node_to
         self.type = edge_type
+        self.condition = condition
 
     def __str__(self):
         return str(self.as_dict())
-
-    def __eq__(self, other):
-        return self.node_from == other.node_from and\
-            self.node_to == other.node_to and\
-            self.type == other.type
-
-    def __hash__(self):
-        return hash(('from', self.node_from,
-                     'to', self.node_to,
-                     'type', self.type))
-
-    def as_dict(self):
-        return {'from': hex(self.node_from), 'to': hex(self.node_to), 'type': self.type}
-
-
-class SymbolicEdge:
-
-    def __init__(self, node_from, node_to, edge_type=EDGE_UNCONDITIONAL, condition=None):
-        Edge.__init__(self, node_from=node_from, node_to=node_to,
-                      edge_type=edge_type)
-        self.condition = condition
 
     def __eq__(self, other):
         return self.node_from == other.node_from and\
