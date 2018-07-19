@@ -23,13 +23,11 @@ The purpose of Octopus is to provide an easy way to analyze smart contract secur
 - **Symbolic Execution**: Octopus can use symbolic execution to find new paths into a program
 
 Octopus support the following types of programs/smart contracts:
-
-* WebAssembly module (WASM)
-
-* Bitcoin script (BTC script)
-* Ethereum smart contracts (EVM bytecode)
-* EOS smart contracts (WASM)
-* NEO smart contracts (AVM bytecode)
+    * WebAssembly module (WASM)
+    * Bitcoin script (BTC script)
+    * Ethereum smart contracts (EVM bytecode)
+    * EOS smart contracts (WASM)
+    * NEO smart contracts (AVM bytecode)
 
 
 ## Platforms / Architectures
