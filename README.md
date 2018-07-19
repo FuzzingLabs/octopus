@@ -51,7 +51,7 @@ Other: IDA plugin :heavy_plus_sign:, Binary ninja plugin :heavy_plus_sign:, Pypi
 
 ## Requirements
 
-Octopus is supported on Linux (ideally Ubuntu 16.04) and requires Python >= 3.0 (ideally 3.6).
+Octopus is supported on Linux (ideally Ubuntu 16.04) and requires Python >=3.3 (ideally 3.6).
 
 Dependencies:
 * Graph generation: [graphviz](https://graphviz.gitlab.io/download/)
