@@ -93,7 +93,7 @@ Please find examples in [examples](examples)
 
 * **Patrick Ventuzelo** - *Creator* - [@Pat_Ventuzelo](https://twitter.com/pat_ventuzelo)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/quoscient/octopus/contributors) who participated in this project.
 
 ## License
 
