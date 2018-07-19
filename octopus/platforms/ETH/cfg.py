@@ -1,4 +1,4 @@
-from octopus.analysis.control_flow import CFG
+from octopus.analysis.cfg import CFG
 from octopus.core.function import Function
 from octopus.core.basicblock import BasicBlock
 

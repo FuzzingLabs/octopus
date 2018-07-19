@@ -6,7 +6,7 @@ from octopus.core.edge import (EDGE_UNCONDITIONAL,
                                EDGE_CONDITIONAL_FALSE,
                                EDGE_FALLTHROUGH)
 
-from octopus.analysis.control_flow import CFG
+from octopus.analysis.cfg import CFG
 
 from octopus.platforms.NEO.disassembler import NeoDisassembler
 

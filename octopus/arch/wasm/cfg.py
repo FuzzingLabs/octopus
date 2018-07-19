@@ -4,7 +4,7 @@ from octopus.core.edge import (Edge,
                                EDGE_UNCONDITIONAL,
                                EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
                                EDGE_FALLTHROUGH, EDGE_CALL)
-from octopus.analysis.control_flow import CFG
+from octopus.analysis.cfg import ControlFlow
 
 from octopus.arch.wasm.analyzer import WasmModuleAnalyzer
 from octopus.arch.wasm.disassembler import WasmDisassembler
