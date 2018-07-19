@@ -1,13 +1,12 @@
 # Octopus
-
-<p align="center">
-	<img src="/images/logo-medium.png" height="400px"/>
-</p>
-
 [![Generic badge](https://img.shields.io/badge/REcon-MTL%202018-red.svg)](https://recon.cx/2018/montreal/)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
+<p align="center">
+	<img src="/images/logo-medium.png" height="400px"/>
+</p>
 
 **Octopus is a security analysis framework for WebAssembly and Blockchain Smart Contract.**
 
