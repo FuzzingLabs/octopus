@@ -41,11 +41,12 @@ Octopus support the following types of programs/smart contracts:
 |**IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | | :heavy_plus_sign: |
 |**Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | | :heavy_plus_sign: |
 
-* DONE :heavy_check_mark: 
-* WIP (Work In Progress) :heavy_plus_sign: 
-* NOT PLANNED :x: 
+DONE :heavy_check_mark: / WIP (Work In Progress) :heavy_plus_sign: / NOT PLANNED :x: 
 
-Other: IDA plugin :heavy_plus_sign:, Binary ninja plugin :heavy_plus_sign:, Pypi package :heavy_plus_sign:
+Other: 
+* IDA plugin :heavy_plus_sign:
+* Binary ninja plugin :heavy_plus_sign:
+* Pypi package :heavy_plus_sign:
 
 ## Requirements
 
