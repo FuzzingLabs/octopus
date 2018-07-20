@@ -1,28 +1,47 @@
 import binascii
 
 
-class Disassembler(object):
-    """
-    Generic Disassembler class
-    """
+class BytecodeEmptyException(Exception):
+    """Exception raised when bytecode is None"""
+    pass
 
-    def __init__(self, bytecode, asm):
+
+class Disassembler(object):
+    """ Generic Disassembler class """
+
+    def __init__(self, asm, bytecode=None):
         self.bytecode = bytecode
         self.instructions = list()
         self.reverse_instructions = dict()
         self.asm = asm
 
+    def attributes_reset(self):
+        """Reset instructions class attributes """
+        self.instructions = list()
+        self.reverse_instructions = dict()
+
     def disassemble_opcode(self, bytecode, offset=0):
-        '''
-        TODO
-        '''
+        """ Generic method to disassemble one instruction """
         raise NotImplementedError
 
     def disassemble(self, bytecode=None, offset=0, r_format='list'):
-        '''
-        TODO
-        '''
+        """Generic method to disassemble bytecode
+
+        :param bytecode: bytecode sequence
+        :param offset: start offset
+        :param r_format: output format ('list'/'text'/'reverse')
+        :type bytecode: bytes, str
+        :type offset: int
+        :type r_format: list, str, dict
+        :return: dissassembly result depending of r_format
+        :rtype: list, str, dict
+        """
+        # reinitialize class variable
+        self.attributes_reset()
+
         self.bytecode = bytecode if bytecode else self.bytecode
+        if not self.bytecode:
+            raise BytecodeEmptyException()
 
         # convert hex to bytes
         if str(self.bytecode).startswith('0x'):
@@ -48,11 +67,11 @@ class Disassembler(object):
             return self.reverse_instructions
 
     def disassemble_contract(self, contract):
-        '''
-        TODO
-        '''
-        self.instructions = list()
-        self.reverse_instructions = dict()
+        """ Generic method to disassemble a Contract """
 
+        # reinitialize class variable
+        self.attributes_reset()
+        # update class bytecode
         self.bytecode = contract.bytecode
+
         self.disassemble(self.bytecode)

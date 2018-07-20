@@ -18,8 +18,8 @@ inst_namedtuple = namedtuple('Instruction', 'op imm len')
 
 class WasmDisassembler(Disassembler):
 
-    def __init__(self, bytecode=None, asm=None):
-        Disassembler.__init__(self, bytecode=bytecode, asm=Wasm())
+    def __init__(self, bytecode=None, asm=Wasm()):
+        Disassembler.__init__(self, asm=asm, bytecode=bytecode)
 
     def disassemble_opcode(self, bytecode=None, offset=0):
         '''
@@ -54,9 +54,36 @@ class WasmDisassembler(Disassembler):
         return instruction
 
     def disassemble(self, bytecode=None, offset=0, r_format='list'):
+        """Disassemble WASM bytecode
 
-        self.instructions = list()
-        self.reverse_instructions = dict()
+        :param bytecode: bytecode sequence
+        :param offset: start offset
+        :param r_format: output format ('list'/'text'/'reverse')
+        :type bytecode: bytes, str
+        :type offset: int
+        :type r_format: list, str, dict
+        :return: dissassembly result depending of r_format
+        :rtype: list, str, dict
+
+        :Example:
+
+        >>> disasm = WasmDisassembler()
+        >>>
+        >>> disasm.disassemble(r_format='text')
+        >>> 'block -1\ni32.const 24\ncall 28\ni32.const 0\nreturn\nend'
+        >>>
+        >>> disasm.disassemble(r_format='text')
+        >>> [<octopus.arch.wasm.instruction.WasmInstruction at 0x7f80243120b8>,
+             ...
+             <octopus.arch.wasm.instruction.WasmInstruction at 0x7f8024312588>,
+             <octopus.arch.wasm.instruction.WasmInstruction at 0x7f80243121d0>]
+        >>>
+        >>> disasm.disassemble(r_format='reverse')
+        >>> {0: <octopus.arch.wasm.instruction.WasmInstruction at 0x7f8024319d68>,
+             ...
+             4: <octopus.arch.wasm.instruction.WasmInstruction at 0x7f802431fa58>,
+             5: <octopus.arch.wasm.instruction.WasmInstruction at 0x7f802431fc18>}
+        """
 
         return super().disassemble(bytecode, offset, r_format)
 
