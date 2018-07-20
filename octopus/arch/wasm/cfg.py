@@ -289,10 +289,6 @@ class WasmCFG(CFG):
 
         return (nodes, edges)
 
-    def show(self):
-        print("len func = %d" % len(self.functions))
-        print("len edges = %d" % len(self.edges))
-
     def visualize_call_flow(self, filename="wasm_call_graph_octopus.gv"):
 
         nodes, edges = self.get_functions_call_edges(format_fname=False)

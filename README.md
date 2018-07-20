@@ -34,20 +34,18 @@ Octopus support the following types of programs/smart contracts:
 
 || BTC | ETH | EOS | NEO || WASM
 |:--------------------:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | | :x: |
+| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | | :o: |
 |**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
-|**Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
-|**Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
-|**IR conversion (SSA)** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | | :heavy_plus_sign: |
-|**Symbolic Execution** | :x: | :heavy_plus_sign: | :heavy_plus_sign: | :x: | | :heavy_plus_sign: |
+|**Control Flow Analysis** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
+|**Call Flow Analysis** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
+|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
+|**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 
 * IDA plugin :heavy_plus_sign:
 * Binary ninja plugin :heavy_plus_sign:
 * Pypi package :heavy_plus_sign:
 
-
-
-:heavy_check_mark: **DONE** / :heavy_plus_sign: **WIP** / :x: **NOT PLANNED**
+:heavy_check_mark: **DONE** / :heavy_plus_sign: **WIP** / :heavy_multiplication_x: **TODO** / :o: **N/A**
 
 
 ## Requirements
@@ -93,8 +91,28 @@ cd octopus/tests/
 
 #### Disassembler
 
+Disassembly of a Wasm module:
+```python
+from octopus.arch.wasm.disassembler import WasmDisassembler
 
-code:
+FILE = "examples/wasm/samples/helloworld.wasm"
+
+with open(FILE, 'rb') as f:
+    module_bytecode = f.read()
+
+# return list of functions instructions (list)
+print(disasm.disassemble_module(module_bytecode))
+#[[<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904278>,<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904f60>,<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904ef0>]]
+
+# return text of functions code
+print(disasm.disassemble_module(module_bytecode, r_format='text'))
+# func 0
+# i32.const 0
+# call 0
+# end
+```
+
+Disassembly of wasm bytecode:
 ```python
 from octopus.arch.wasm.disassembler import WasmDisassembler
 
@@ -104,16 +122,14 @@ bytecode = b'\x02\x7fA\x18\x10\x1cA\x00\x0f\x0b'
 disasm = WasmDisassembler(bytecode)
 
 # disassemble bytecode into a list of WasmInstruction
-print(disasm.disassemble()) # r_format='list' by default
-'''
-[<octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904eb8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>]
-'''
+# attributes r_format='list' by default
+print(disasm.disassemble())
 
+#[<octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904eb8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>]
 
 print(disasm.disassemble(r_format='reverse'))
-'''
-{0: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>, 1: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904240>, 2: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, 3: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, 4: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, 5: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>}
-'''
+
+#{0: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>, 1: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904240>, 2: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, 3: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, 4: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, 5: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>}
 
 print(disasm.disassemble(r_format='text'))
 # block -1
@@ -127,20 +143,82 @@ print(disasm.disassemble(r_format='text'))
 #### ModuleAnalyzer
 
 ```python
-# TODO
+from octopus.arch.wasm.analyzer import WasmModuleAnalyzer
+
+FILE = "examples/wasm/samples/helloworld.wasm"
+
+with open(FILE, 'rb') as f:
+    module_bytecode = f.read()
+
+# return list of functions instructions (list)
+# attributes analysis=True by default
+analyzer = WasmModuleAnalyzer(module_bytecode)
+
+# show analyzer attributes
+print(analyzer.show())
+# {'datas': [{'data': b'Hello, world\x00',
+#    'index': 0,
+#    'offset': None,
+#    'size': 13}],
+#  'elements': [],
+#  'exports': [{'field_str': 'memory', 'index': 0, 'kind': 2},
+#   {'field_str': 'main', 'index': 1, 'kind': 0}],
+#  'func_types': [1],
+#  'globals': [],
+#  'imports_all': [(0, 'sys', 'print', 0)],
+#  'imports_func': [('sys', 'print', 0)],
+#  'length codes': 1,
+#  'magic': b'\x00asm',
+#  'memories': [{'limits_flags': 1,
+#    'limits_initial': 200,
+#    'limits_maximum': 200}],
+#  'start': None,
+#  'tables': [],
+#  'types': [('i32', ''), ('', '')],
+#  'version': b'\x01\x00\x00\x00'}
 ```
 
 #### Control Flow Analysis
 
 ```python
-# TODO
+from octopus.arch.wasm.cfg import WasmCFG
+from octopus.analysis.graph import CFGGraph
+
+# complete wasm module
+file_name = "examples/wasm/samples/fib.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# create the cfg
+cfg = WasmCFG(raw)
+
+# visualize CFGGraph 
+# generate graph.dot and graph.pdf file
+graph = CFGGraph(cfg)
+graph.view_functions()
 ```
 
 
 #### Call Flow Analysis
 
 ```python
-# TODO
+from octopus.platforms.wasm.cfg import WasmCFG
+
+# fibonacci wasm module
+file_name = "examples/wasm/samples/fib.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# create the cfg
+cfg = WasmCFG(raw)
+
+# visualize
+# generate call_graph.dot and call_graph.pdf file
+cfg.visualize_call_flow()
 ```
 
 </p>
@@ -256,6 +334,7 @@ code:
 
 </p>
 </details>
+
 
 Please find other examples in [examples](examples) folder.
 

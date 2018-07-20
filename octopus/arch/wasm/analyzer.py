@@ -30,9 +30,10 @@ class WasmModuleAnalyzer(object):
     def __init__(self, module_bytecode, analysis=True):
         self.module_bytecode = module_bytecode
 
-        self.header = {}
+        self.magic = None
+        self.version = None
         self.types = list()
-        self.imports = list()
+        self.imports_all = list()
         self.imports_func = list()
         self.func_types = list()
         self.tables = list()
@@ -45,18 +46,37 @@ class WasmModuleAnalyzer(object):
         self.datas = list()
         self.names = list()
         self.customs = list()
-
         self.func_prototypes = list()
         # self.strings = list() - TODO
 
         if analysis:
             self.analyze()
 
+    def attributes_reset(self):
+        self.magic = None
+        self.version = None
+        self.types = list()
+        self.imports_all = list()
+        self.imports_func = list()
+        self.func_types = list()
+        self.tables = list()
+        self.memories = list()
+        self.globals = list()
+        self.exports = list()
+        self.start = None
+        self.elements = list()
+        self.codes = list()
+        self.datas = list()
+        self.names = list()
+        self.customs = list()
+        self.func_prototypes = list()
+
     def show(self):
         """Return dict with WasmModuleAnalyzer attributes"""
-        return {'header': self.header,
+        return {'magic': self.magic,
+                'version': self.version,
                 'types': self.types,
-                'imports': self.imports,
+                'imports_all': self.imports_all,
                 'imports_func': self.imports_func,
                 'func_types': self.func_types,
                 'tables': self.tables,
@@ -81,22 +101,27 @@ class WasmModuleAnalyzer(object):
                 return cur_sec_data
         return None
 
-    def decode_header(self, header, h_data):
-        """Return list of wasm module header"""
-        result = {}
-        result['magic'] = \
+    def __decode_header(self, header, h_data):
+        """Decode wasm header
+        Return tuple (magic, version) of wasm module header
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
+        """
+        magic = \
             h_data.magic.to_bytes(header.magic.byte_size, 'little')
-        result['version'] = \
+        version = \
             h_data.version.to_bytes(header.version.byte_size, 'little')
-        return result
+        return (magic, version)
 
-    def decode_type_section(self, type_section):
-        """Decode type section to list"""
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#type-section
+    def __decode_type_section(self, type_section):
+        """Decode wasm type section
+        Return a list of tuple (param_str, return_str)
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#type-section
+        """
         type_list = []
 
         for idx, entry in enumerate(type_section.payload.entries):
-            param_str, return_str = '', ''
+            param_str = ''
+            return_str = ''
 
             param_str += ' '.join([LANG_TYPE.get(_x) for _x in entry.param_types])
             if entry.return_type:
@@ -105,9 +130,10 @@ class WasmModuleAnalyzer(object):
             type_list.append((param_str, return_str))
         return type_list
 
-    def decode_import_section(self, import_section):
-        """Decode import section to tuple of list"""
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#import-section
+    def __decode_import_section(self, import_section):
+        """Decode import section to tuple of list
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#import-section
+        """
         entries = import_section.payload.entries
         import_list = []
         import_func_list = []
@@ -159,12 +185,18 @@ class WasmModuleAnalyzer(object):
                           module_str, field_str)
         return (import_list, import_func_list)
 
-    def decode_function_section(self, function_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#function-section
+    def __decode_function_section(self, function_section):
+        """Decode function section
+        The function section declares the signatures of all functions in the module
+        Return list of indices (int)
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#function-section
+        """
         return function_section.payload.types
 
-    def decode_table_section(self, table_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#table-section
+    def __decode_table_section(self, table_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#table-section
+        """
         # on the MVP, table size == 1
         entries = table_section.payload.entries
         table_list = []
@@ -182,8 +214,10 @@ class WasmModuleAnalyzer(object):
             table_list.append(fmt)
         return table_list
 
-    def decode_memory_section(self, memory_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#memory-section
+    def __decode_memory_section(self, memory_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#memory-section
+        """
         # on the MVP, memory size == 1
         memory_l = list()
         entries = memory_section.payload.entries
@@ -201,7 +235,10 @@ class WasmModuleAnalyzer(object):
             memory_l.append(fmt)
         return memory_l
 
-    def decode_global_section(self, global_section):
+    def __decode_global_section(self, global_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#global-section
+        """
         globals_l = list()
         for entry in global_section.payload.globals:
             fmt = format_kind_global(entry.type.mutability,
@@ -209,8 +246,10 @@ class WasmModuleAnalyzer(object):
             globals_l.append(fmt)
         return globals_l
 
-    def decode_export_section(self, export_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#export-section
+    def __decode_export_section(self, export_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#export-section
+        """
         entries = export_section.payload.entries
         export_list = []
 
@@ -229,11 +268,13 @@ class WasmModuleAnalyzer(object):
             export_list.append(fmt)
         return export_list
 
-    def decode_start_section(self, start_section):
+    def __decode_start_section(self, start_section):
         return start_section.payload.index
 
-    def decode_element_section(self, element_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#element-section
+    def __decode_element_section(self, element_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#element-section
+        """
         entries = element_section.payload.entries
         element_list = []
 
@@ -246,8 +287,10 @@ class WasmModuleAnalyzer(object):
             element_list.append(fmt)
         return element_list
 
-    def decode_code_section(self, code_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#code-section
+    def __decode_code_section(self, code_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#code-section
+        """
         bodies = code_section.payload.bodies
         code_list = []
 
@@ -256,8 +299,10 @@ class WasmModuleAnalyzer(object):
             code_list.append(code_raw)
         return code_list
 
-    def decode_data_section(self, data_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#data-section
+    def __decode_data_section(self, data_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#data-section
+        """
         entries = data_section.payload.entries
         data_list = []
 
@@ -272,8 +317,10 @@ class WasmModuleAnalyzer(object):
             data_list.append(fmt)
         return data_list
 
-    def decode_name_section(self, name_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
+    def __decode_name_section(self, name_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
+        """
         payload = name_section.payload.tobytes()
         total = 0
         names_list = list()
@@ -293,18 +340,20 @@ class WasmModuleAnalyzer(object):
         f.close()
         return names_list
 
-    def decode_unknown_section(self, unknown_section):
-        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
+    def __decode_unknown_section(self, unknown_section):
+        """
+        .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
+        """
         sec_name = unknown_section.name.tobytes()
         payload = unknown_section.payload.tobytes()
         return (sec_name, payload)
 
     def _create_ordered_list(self):
-        ''' create ordered list of functions'''
+        """create ordered list of functions"""
 
         func_prototypes = list()
 
-        # get all imports functions
+        # get imported functions
         for _, name, type_idx in self.imports_func:
             _param, _return = self.types[type_idx]
             func_prototypes.append((name, _param, _return))
@@ -327,9 +376,9 @@ class WasmModuleAnalyzer(object):
         return func_prototypes
 
     def analyze(self):
-        ''' analyse the complete module & extract informations'''
-
+        """analyse the complete module & extract informations """
         # src: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md
+        # custom     0   name, .debug_str, ...
         # Type       1   Function signature declarations
         # Import     2   Import declarations
         # Function   3   Function declarations
@@ -341,49 +390,48 @@ class WasmModuleAnalyzer(object):
         # Element    9   Elements section
         # Code       10  Function bodies (code)
         # Data       11  Data segments
-        # custom     0   name, .debug_str, ...
 
-        self.customs = list()
+        # reset attributes
+        self.attributes_reset()
+
         mod_iter = iter(decode_module(self.module_bytecode))
+        # decode header version - usefull in the future (multiple versions)
         header, header_data = next(mod_iter)
-        sections = list(mod_iter)
-
-        #
-        # Wasm Header
-        #
-        self.header = self.decode_header(header, header_data)
+        self.magic, self.version = self.__decode_header(header, header_data)
 
         #
         # Wasm sections
         #
+        sections = list(mod_iter)
+
         for cur_sec, cur_sec_data in sections:
             sec = cur_sec_data.get_decoder_meta()['types']['payload']
 
             if isinstance(sec, TypeSection):
-                self.types = self.decode_type_section(cur_sec_data)
+                self.types = self.__decode_type_section(cur_sec_data)
             elif isinstance(sec, ImportSection):
-                self.imports, self.imports_func = \
-                    self.decode_import_section(cur_sec_data)
+                self.imports_all, self.imports_func = \
+                    self.__decode_import_section(cur_sec_data)
             elif isinstance(sec, FunctionSection):
-                self.func_types = self.decode_function_section(cur_sec_data)
+                self.func_types = self.__decode_function_section(cur_sec_data)
             elif isinstance(sec, TableSection):
-                self.tables = self.decode_table_section(cur_sec_data)
+                self.tables = self.__decode_table_section(cur_sec_data)
             elif isinstance(sec, MemorySection):
-                self.memories = self.decode_memory_section(cur_sec_data)
+                self.memories = self.__decode_memory_section(cur_sec_data)
             elif isinstance(sec, GlobalSection):
                 # TODO not analyzed
-                self.globals = self.decode_global_section(cur_sec_data)
+                self.globals = self.__decode_global_section(cur_sec_data)
             elif isinstance(sec, ExportSection):
-                self.exports = self.decode_export_section(cur_sec_data)
+                self.exports = self.__decode_export_section(cur_sec_data)
             elif isinstance(sec, StartSection):
                 # TODO not analyzed
-                self.start = self.decode_start_section(cur_sec_data)
+                self.start = self.__decode_start_section(cur_sec_data)
             elif isinstance(sec, ElementSection):
-                self.elements = self.decode_element_section(cur_sec_data)
+                self.elements = self.__decode_element_section(cur_sec_data)
             elif isinstance(sec, CodeSection):
-                self.codes = self.decode_code_section(cur_sec_data)
+                self.codes = self.__decode_code_section(cur_sec_data)
             elif isinstance(sec, DataSection):
-                self.datas = self.decode_data_section(cur_sec_data)
+                self.datas = self.__decode_data_section(cur_sec_data)
             else:
                 # name section
                 if cur_sec_data.id == 0 and cur_sec_data.name.tobytes() == b'name':
@@ -394,3 +442,4 @@ class WasmModuleAnalyzer(object):
 
         # create ordered list of functions
         self.func_prototypes = self._create_ordered_list()
+        return self.show()

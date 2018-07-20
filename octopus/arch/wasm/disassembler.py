@@ -5,7 +5,7 @@ from octopus.arch.wasm.instruction import WasmInstruction
 from octopus.arch.wasm.wasm import Wasm
 
 from octopus.arch.wasm.decode import decode_module
-#from wasm.decode import decode_module
+# from wasm.decode import decode_module
 from wasm.modtypes import CodeSection
 from wasm.compat import byte2int
 from wasm.opcodes import OPCODE_MAP
