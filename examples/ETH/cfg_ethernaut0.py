@@ -5,7 +5,7 @@
 # Author: Patrick Ventuzelo - @Pat_Ventuzelo
 #
 
-from octopus.api.graph import CFGGraph
+from octopus.analysis.graph import CFGGraph
 from octopus.platforms.ETH.cfg import EthereumCFG
 
 # lock contract

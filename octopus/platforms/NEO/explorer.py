@@ -1,4 +1,4 @@
-from octopus.api.explorer import Explorer
+from octopus.engine.explorer import Explorer
 from octopus.config.NEO_EXPLORER import NEO_HOST, MAINNET_HTTP_RPC_PORT
 
 # Inspired by https://github.com/ellmetha/neojsonrpc

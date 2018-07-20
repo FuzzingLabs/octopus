@@ -1,5 +1,3 @@
-from octopus.api.simplifier import Simplifier
-
 from octopus.engine.helper import helper as hlp
 from z3 import UDiv, ULT, UGT
 
@@ -11,7 +9,7 @@ logging.basicConfig(level=logging.WARN)
 # =======================================
 
 
-class EthereumSSASimplifier(Simplifier):
+class EthereumSSASimplifier(object):
     def __init__(self):
         self._dispatch_function = {
             # arithmetic

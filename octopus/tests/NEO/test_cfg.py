@@ -1,5 +1,5 @@
 
-from octopus.api.graph import Graph, CFGGraph
+from octopus.analysis.graph import Graph, CFGGraph
 from octopus.platforms.NEO.disassembler import NeoDisassembler
 from octopus.platforms.NEO.cfg import NeoCFG
 from octopus.platforms.NEO.cfg import (enum_blocks_edges,

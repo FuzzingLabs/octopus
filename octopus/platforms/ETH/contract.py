@@ -1,4 +1,4 @@
-from octopus.api.contract import Contract
+from octopus.core.contract import Contract
 
 
 class EthereumContract(Contract):

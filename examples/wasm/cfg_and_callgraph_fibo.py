@@ -6,7 +6,7 @@
 #
 
 from octopus.arch.wasm.cfg import WasmCFG
-from octopus.api.graph import CFGGraph
+from octopus.analysis.graph import CFGGraph
 
 # complete wasm module
 file_name = "examples/wasm/samples/fib.wasm"

@@ -1,4 +1,4 @@
-from octopus.api.explorer import Explorer
+from octopus.engine.explorer import Explorer
 from octopus.platforms.BTC.bech32 import encode as bech32_encode
 
 import binascii

@@ -6,7 +6,7 @@ import warnings
 from octopus.platforms.ETH.constants import DEFAULT_GAS_PER_TX, DEFAULT_GAS_PRICE, BLOCK_TAGS, BLOCK_TAG_LATEST
 from octopus.platforms.ETH.util import hex_to_dec, clean_hex, validate_block
 
-from octopus.api.explorer import Explorer
+from octopus.engine.explorer import Explorer
 """
 This code is adapted from: ethjsonrpc
 https://github.com/ConsenSys/ethjsonrpc
@@ -23,6 +23,7 @@ INFURA_INFURANET = "infuranet.infura.io/"
 INFURA_KOVAN = "kovan.infura.io/"
 INFURA_RINKEBY = "rinkeby.infura.io/"
 INFURA_RPC_PORT = 8545
+
 
 class EthereumExplorerRPC(Explorer):
     """

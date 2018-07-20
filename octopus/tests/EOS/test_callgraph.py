@@ -1,7 +1,7 @@
 import unittest
 
 from octopus.platforms.EOS.cfg import EosCFG
-from octopus.api.graph import CallGraph
+from octopus.analysis.graph import CallGraph
 
 
 class EosCallGraphTestCase(unittest.TestCase):

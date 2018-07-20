@@ -6,7 +6,7 @@
 #
 
 from octopus.platforms.EOS.cfg import EosCFG
-from octopus.api.graph import CallGraph
+from octopus.analysis.graph import CallGraph
 
 # complete wasm module
 file_name = "examples/EOS/samples/eos_ping.wasm"

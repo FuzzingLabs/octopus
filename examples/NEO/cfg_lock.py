@@ -5,7 +5,7 @@
 # Author: Patrick Ventuzelo - @Pat_Ventuzelo
 #
 
-from octopus.api.graph import CFGGraph
+from octopus.analysis.graph import CFGGraph
 from octopus.platforms.NEO.cfg import NeoCFG
 
 

@@ -1,4 +1,4 @@
-from octopus.api.explorer import Explorer
+from octopus.engine.explorer import Explorer
 from octopus.config.EOS_EXPLORER import EOS_DEFAULT_RPC_PORT
 
 from requests.exceptions import ConnectionError as RequestsConnectionError
