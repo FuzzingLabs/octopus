@@ -17,7 +17,7 @@ from octopus.arch.wasm.format import (format_kind_function,
                                       format_kind_global)
 
 from octopus.arch.wasm.decode import decode_module
-#from wasm.decode import decode_module
+# from wasm.decode import decode_module
 import io
 import logging
 log = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ log.setLevel(level=logging.INFO)
 
 
 class WasmModuleAnalyzer(object):
-    ''' analyze and extract informations from wasm module'''
+    '''Analyze and extract informations from wasm module'''
 
     def __init__(self, module_bytecode, analysis=True):
         self.module_bytecode = module_bytecode
@@ -53,6 +53,7 @@ class WasmModuleAnalyzer(object):
             self.analyze()
 
     def show(self):
+        """Return dict with WasmModuleAnalyzer attributes"""
         return {'header': self.header,
                 'types': self.types,
                 'imports': self.imports,
@@ -80,15 +81,17 @@ class WasmModuleAnalyzer(object):
                 return cur_sec_data
         return None
 
-    def decode_header(self, h, h_data):
+    def decode_header(self, header, h_data):
+        """Return list of wasm module header"""
         result = {}
         result['magic'] = \
-            h_data.magic.to_bytes(h.magic.byte_size, 'little')
+            h_data.magic.to_bytes(header.magic.byte_size, 'little')
         result['version'] = \
-            h_data.version.to_bytes(h.version.byte_size, 'little')
+            h_data.version.to_bytes(header.version.byte_size, 'little')
         return result
 
     def decode_type_section(self, type_section):
+        """Decode type section to list"""
         # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#type-section
         type_list = []
 
@@ -103,6 +106,7 @@ class WasmModuleAnalyzer(object):
         return type_list
 
     def decode_import_section(self, import_section):
+        """Decode import section to tuple of list"""
         # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#import-section
         entries = import_section.payload.entries
         import_list = []
