@@ -216,8 +216,12 @@ with open(file_name, 'rb') as f:
 # create the cfg
 cfg = WasmCFG(raw)
 
-# visualize
+# visualize Call Flow Graph
 # generate call_graph.dot and call_graph.pdf file
+# 
+# color similar to https://webassembly.studio/
+# imported func == turquoise / exported func == grey
+# edge label = number of different calls to the function
 cfg.visualize_call_flow()
 ```
 
