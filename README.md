@@ -34,7 +34,7 @@ Octopus support the following types of programs/smart contracts:
 
 || BTC | ETH | EOS | NEO || WASM
 |:--------------------:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | |  :heavy_check_mark: |
+| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | | :x: |
 |**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
 |**Control Flow Analysis** | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
 |**Call Flow Analysis** | :x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
@@ -88,7 +88,176 @@ cd octopus/tests/
 
 ## Examples
 
-Please find examples in [examples](examples)
+<details><summary>WebAssembly</summary>
+<p>
+
+#### Disassembler
+
+
+code:
+```python
+from octopus.arch.wasm.disassembler import WasmDisassembler
+
+# bytecode in WebAssembly is the function code (i.e. function body)
+bytecode = b'\x02\x7fA\x18\x10\x1cA\x00\x0f\x0b'
+# create a WasmDisassembler object
+disasm = WasmDisassembler(bytecode)
+
+# disassemble bytecode into a list of WasmInstruction
+print(disasm.disassemble()) # r_format='list' by default
+'''
+[<octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904eb8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>]
+'''
+
+
+print(disasm.disassemble(r_format='reverse'))
+'''
+{0: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>, 1: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904240>, 2: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, 3: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, 4: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, 5: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>}
+'''
+
+print(disasm.disassemble(r_format='text'))
+# block -1
+# i32.const 24
+# call 28
+# i32.const 0
+# return
+# end
+```
+
+#### ModuleAnalyzer
+
+```python
+# TODO
+```
+
+#### Control Flow Analysis
+
+```python
+# TODO
+```
+
+
+#### Call Flow Analysis
+
+```python
+# TODO
+```
+
+</p>
+</details>
+
+<details><summary>Ethereum (ETH)</summary>
+<p>
+
+#### Explorer
+
+```python
+# TODO
+```
+
+#### Disassembler
+
+```python
+# TODO
+```
+
+#### Control Flow Analysis
+
+```python
+# TODO
+```
+
+#### IR conversion (SSA)
+
+```python
+# TODO
+```
+</p>
+</details>
+
+<details><summary>NEO</summary>
+<p>
+
+#### Explorer
+
+```python
+# TODO
+```
+
+#### Disassembler
+
+```python
+# TODO
+```
+
+#### Control Flow Analysis
+
+```python
+# TODO
+```
+
+</p>
+</details>
+
+<details><summary>EOS</summary>
+<p>
+
+#### Explorer
+
+```python
+# TODO
+```
+
+#### Disassembler
+
+
+code:
+```python
+# TODO
+```
+
+#### ModuleAnalyzer
+
+```python
+# TODO
+```
+
+#### Control Flow Analysis
+
+```python
+# TODO
+```
+
+
+#### Call Flow Analysis
+
+```python
+# TODO
+```
+
+</p>
+</details>
+
+<details><summary>Bitcoin</summary>
+<p>
+
+#### Explorer
+
+```python
+# TODO
+```
+
+#### Disassembler
+
+code:
+```python
+# TODO
+```
+
+</p>
+</details>
+
+Please find other examples in [examples](examples) folder.
 
 ## Publications and Videos
 
