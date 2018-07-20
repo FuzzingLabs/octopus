@@ -35,8 +35,8 @@ def swarm_hash_detector(bytecode_hex):
 
 class EthereumDisassembler(Disassembler):
 
-    def __init__(self, bytecode):
-        Disassembler.__init__(self, bytecode=bytecode, asm=EVM())
+    def __init__(self, bytecode=None):
+        Disassembler.__init__(self, asm=EVM(), bytecode=bytecode)
 
     def disassemble_opcode(self, bytecode, offset=0):
         """

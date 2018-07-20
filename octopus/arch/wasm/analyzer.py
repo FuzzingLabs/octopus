@@ -435,10 +435,10 @@ class WasmModuleAnalyzer(object):
             else:
                 # name section
                 if cur_sec_data.id == 0 and cur_sec_data.name.tobytes() == b'name':
-                    self.names = self.decode_name_section(cur_sec_data)
+                    self.names = self.__decode_name_section(cur_sec_data)
                 else:
                     # TODO - handle properly .debug_str section
-                    self.customs.append(self.decode_unknown_section(cur_sec_data))
+                    self.customs.append(self.__decode_unknown_section(cur_sec_data))
 
         # create ordered list of functions
         self.func_prototypes = self._create_ordered_list()

@@ -104,6 +104,7 @@ with open(FILE, 'rb') as f:
 print(disasm.disassemble_module(module_bytecode))
 #[[<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904278>,<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904f60>,<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904ef0>]]
 
+print()
 # return text of functions code
 print(disasm.disassemble_module(module_bytecode, r_format='text'))
 # func 0
@@ -126,11 +127,11 @@ disasm = WasmDisassembler(bytecode)
 print(disasm.disassemble())
 
 #[<octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904eb8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>]
-
+print()
 print(disasm.disassemble(r_format='reverse'))
 
 #{0: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>, 1: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904240>, 2: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, 3: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, 4: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, 5: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>}
-
+print()
 print(disasm.disassemble(r_format='text'))
 # block -1
 # i32.const 24
@@ -156,26 +157,7 @@ analyzer = WasmModuleAnalyzer(module_bytecode)
 
 # show analyzer attributes
 print(analyzer.show())
-# {'datas': [{'data': b'Hello, world\x00',
-#    'index': 0,
-#    'offset': None,
-#    'size': 13}],
-#  'elements': [],
-#  'exports': [{'field_str': 'memory', 'index': 0, 'kind': 2},
-#   {'field_str': 'main', 'index': 1, 'kind': 0}],
-#  'func_types': [1],
-#  'globals': [],
-#  'imports_all': [(0, 'sys', 'print', 0)],
-#  'imports_func': [('sys', 'print', 0)],
-#  'length codes': 1,
-#  'magic': b'\x00asm',
-#  'memories': [{'limits_flags': 1,
-#    'limits_initial': 200,
-#    'limits_maximum': 200}],
-#  'start': None,
-#  'tables': [],
-#  'types': [('i32', ''), ('', '')],
-#  'version': b'\x01\x00\x00\x00'}
+# {'magic': b'\x00asm', 'version': b'\x01\x00\x00\x00', 'types': [('i32', ''), ('', '')], 'imports_all': [(0, 'sys', 'print', 0)], 'imports_func': [('sys', 'print', 0)], 'func_types': [1], 'tables': [], 'memories': [{'limits_flags': 1, 'limits_initial': 200, 'limits_maximum': 200}], 'globals': [], 'exports': [{'field_str': 'memory', 'kind': 2, 'index': 0}, {'field_str': 'main', 'kind': 0, 'index': 1}], 'start': None, 'elements': [], 'length codes': 1, 'datas': [{'index': 0, 'offset': None, 'size': 13, 'data': b'Hello, world\x00'}]}
 ```
 
 #### Control Flow Analysis
@@ -204,10 +186,10 @@ graph.view_functions()
 #### Call Flow Analysis
 
 ```python
-from octopus.platforms.wasm.cfg import WasmCFG
+from octopus.arch.wasm.cfg import WasmCFG
 
 # fibonacci wasm module
-file_name = "examples/wasm/samples/fib.wasm"
+file_name = "examples/wasm/samples/hello_wasm_studio.wasm"
 
 # read file
 with open(file_name, 'rb') as f:
@@ -233,20 +215,94 @@ cfg.visualize_call_flow()
 
 #### Explorer
 
+
 ```python
-# TODO
+from octopus.platforms.ETH.explorer import EthereumInfuraExplorer
+from octopus.platforms.ETH.explorer import INFURA_ROPSTEN
+
+KEY_API = "bHuaQhX91nkQBac8Wtgj"
+# connection to ROPSTEN network (testnet)
+explorer = EthereumInfuraExplorer(KEY_API, network=INFURA_ROPSTEN)
+
+# connection to MAINNET network (mainnet)
+# explorer = EthereumInfuraExplorer(KEY_API)
+
+# Test ROPSTEN network current block number
+block_number = explorer.eth_blockNumber()
+print(block_number)
+# 3675552
+
+# Retrieve code of this smart contract
+addr = "0x3c6B10a5239B1a8A27398583F49771485382818F"
+code = explorer.eth_getCode(addr)
+print(code)
+# 0x6060604052600436106049576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b114604e5780636d4ce63c14606e575b600080fd5b3415605857600080fd5b606c60048080359060200190919050506094565b005b3415607857600080fd5b607e609e565b6040518082815260200191505060405180910390f35b8060008190555050565b600080549050905600a165627a7a72305820e1f98c821c12eea52047d7324b034ddccc41eaa7365d369b34580ab73c71a8940029
 ```
 
 #### Disassembler
 
 ```python
-# TODO
+from octopus.platforms.ETH.disassembler import EthereumDisassembler
+
+# smart contract bytecode
+bytecode_hex = "60606040526000357c0100000000000000000000000000000000000000000000000000000000900480635fd8c7101461004f578063c0e317fb1461005e578063f8b2cb4f1461006d5761004d565b005b61005c6004805050610099565b005b61006b600480505061013e565b005b610083600480803590602001909190505061017d565b6040518082815260200191505060405180910390f35b3373ffffffffffffffffffffffffffffffffffffffff16611111600060005060003373ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060005054604051809050600060405180830381858888f19350505050151561010657610002565b6000600060005060003373ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600050819055505b565b34600060005060003373ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828282505401925050819055505b565b6000600060005060008373ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000505490506101b6565b91905056"
+
+disasm = EthereumDisassembler()
+disasm.disassemble(bytecode_hex)
+
+# disassemble bytecode into a list of EthereumInstruction
+# attributes r_format='list' by default
+print(disasm.disassemble(bytecode_hex))
+
+#[<octopus.platforms.ETH.instruction.EthereumInstruction object at 0x7f85d4add5c0>, <octopus.platforms.ETH.instruction.EthereumInstruction object at 0x7f85d4ad8588>, <octopus.platforms.ETH.instruction.EthereumInstruction object at 0x7f85d4ad8c50>]
+
+print()
+print(disasm.disassemble(bytecode_hex, r_format='reverse'))
+
+# {0: <octopus.platforms.ETH.instruction.EthereumInstruction object at 0x7f85d4ad8160>, ..., 229: <octopus.platforms.ETH.instruction.EthereumInstruction object at 0x7f85d4ad8630>, 230: <octopus.platforms.ETH.instruction.EthereumInstruction object at 0x7f85d4ad87b8>}
+
+print()
+print(disasm.disassemble(bytecode_hex,r_format='text'))
+# PUSH1 0x60
+# PUSH1 0x40
+# MSTORE
+# PUSH1 0x0
+# CALLDATALOAD
+# PUSH29 0x100000000000000000000000000000000000000000000000000000000
+# SWAP1
+# DIV
+# DUP1
+# PUSH4 0x5fd8c710
+# EQ
+# PUSH2 0x4f
+# JUMPI
+# ...
+# SWAP2
+# SWAP1
+# POP
+# JUMP
 ```
 
 #### Control Flow Analysis
 
 ```python
-# TODO
+from octopus.analysis.graph import CFGGraph
+from octopus.platforms.ETH.cfg import EthereumCFG
+
+# ethernaut0 bytecode
+file_name = "examples/ETH/bytecode/Zeppelin_Hello_ethernaut0.bytecode"
+
+# read file
+with open(file_name) as f:
+    bytecode_hex = f.read()
+
+# create the CFG
+cfg = EthereumCFG(bytecode_hex)
+
+# generic visualization api
+# generate graph.dot and graph.pdf file
+graph = CFGGraph(cfg)
+graph.view()
 ```
 
 #### IR conversion (SSA)

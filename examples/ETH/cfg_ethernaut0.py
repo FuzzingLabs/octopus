@@ -8,7 +8,7 @@
 from octopus.analysis.graph import CFGGraph
 from octopus.platforms.ETH.cfg import EthereumCFG
 
-# lock contract
+# ethernaut0 bytecode
 file_name = "examples/ETH/bytecode/Zeppelin_Hello_ethernaut0.bytecode"
 
 # read file

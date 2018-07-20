@@ -18,8 +18,8 @@ inst_namedtuple = namedtuple('Instruction', 'op imm len')
 
 class WasmDisassembler(Disassembler):
 
-    def __init__(self, bytecode=None, asm=Wasm()):
-        Disassembler.__init__(self, asm=asm, bytecode=bytecode)
+    def __init__(self, bytecode=None):
+        Disassembler.__init__(self, asm=Wasm(), bytecode=bytecode)
 
     def disassemble_opcode(self, bytecode=None, offset=0):
         '''
