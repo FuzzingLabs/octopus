@@ -1,4 +1,3 @@
-from wasm.decode import decode_module
 from wasm.modtypes import (TypeSection,
                            ImportSection,
                            FunctionSection,
@@ -17,7 +16,8 @@ from octopus.arch.wasm.format import (format_kind_function,
                                       format_kind_memory,
                                       format_kind_global)
 
-
+from octopus.arch.wasm.decode import decode_module
+#from wasm.decode import decode_module
 import io
 import logging
 log = logging.getLogger(__name__)
@@ -289,6 +289,12 @@ class WasmModuleAnalyzer(object):
         f.close()
         return names_list
 
+    def decode_unknown_section(self, unknown_section):
+        # https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
+        sec_name = unknown_section.name.tobytes()
+        payload = unknown_section.payload.tobytes()
+        return (sec_name, payload)
+
     def _create_ordered_list(self):
         ''' create ordered list of functions'''
 
@@ -331,15 +337,12 @@ class WasmModuleAnalyzer(object):
         # Element    9   Elements section
         # Code       10  Function bodies (code)
         # Data       11  Data segments
+        # custom     0   name, .debug_str, ...
 
         self.customs = list()
-        #try:
         mod_iter = iter(decode_module(self.module_bytecode))
         header, header_data = next(mod_iter)
         sections = list(mod_iter)
-        #except KeyError:
-        #    log.error('Module corrupted - Wasm KeyError')
-        #    return -1
 
         #
         # Wasm Header
@@ -379,10 +382,11 @@ class WasmModuleAnalyzer(object):
                 self.datas = self.decode_data_section(cur_sec_data)
             else:
                 # name section
-                if cur_sec_data.id == 0:
+                if cur_sec_data.id == 0 and cur_sec_data.name.tobytes() == b'name':
                     self.names = self.decode_name_section(cur_sec_data)
                 else:
-                    self.customs.append(cur_sec_data)
+                    # TODO - handle properly .debug_str section
+                    self.customs.append(self.decode_unknown_section(cur_sec_data))
 
         # create ordered list of functions
         self.func_prototypes = self._create_ordered_list()

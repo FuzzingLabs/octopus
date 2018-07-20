@@ -95,8 +95,8 @@ def enum_blocks_edges(function_id, instructions):
     blocks_tmp = []
     blocks_list = []
     # remove last instruction that is 'end' for the funtion
-    tt = instructions[:-1]
-    for index, inst in enumerate(tt):
+    #tt = instructions[:-1]
+    for index, inst in enumerate(instructions[:-1]):
 
         if inst.is_block_terminator:
             start, name = blocks_tmp.pop()
@@ -108,6 +108,8 @@ def enum_blocks_edges(function_id, instructions):
         if inst.is_branch:
             branches.append((intent, inst))
 
+    # add function body end
+    blocks_list.append((0, 0, instructions[-1].offset_end, 'func'))
     blocks_list = sorted(blocks_list, key=lambda tup: tup[1])
 
     for depth, inst in branches:
@@ -117,7 +119,7 @@ def enum_blocks_edges(function_id, instructions):
             i, start, end, name = rep
             if name == 'loop':
                 value = start  # else name == 'block'
-            elif name == 'block':
+            elif name == 'block' or name == 'func':
                 value = end
             else:
                 value = None
@@ -182,7 +184,10 @@ def enum_blocks_edges(function_id, instructions):
         inst = block.end_instr
         # unconditional jump - br
         if inst.is_branch_unconditional:
-            edges.append(Edge(block.name, format_bb_name(function_id, inst.xref), EDGE_UNCONDITIONAL))
+            if inst.xref is not None:
+                edges.append(Edge(block.name, format_bb_name(function_id, inst.xref), EDGE_UNCONDITIONAL))
+            else:
+                log.error('Bad branch target')
         # conditionnal jump - br_if, if
         elif inst.is_branch_conditional:
             if inst.name == 'if':
@@ -193,9 +198,12 @@ def enum_blocks_edges(function_id, instructions):
                              format_bb_name(function_id, basicblocks[index + 2].start_instr.offset),
                              EDGE_CONDITIONAL_FALSE))
             else:
-                edges.append(Edge(block.name,
-                             format_bb_name(function_id, inst.xref),
-                             EDGE_CONDITIONAL_TRUE))
+                if inst.xref is not None:
+                    edges.append(Edge(block.name,
+                                      format_bb_name(function_id, inst.xref),
+                                      EDGE_CONDITIONAL_TRUE))
+                else:
+                    log.error('Bad branch target')
                 edges.append(Edge(block.name,
                              format_bb_name(function_id, inst.offset_end + 1),
                              EDGE_CONDITIONAL_FALSE))
