@@ -215,7 +215,6 @@ cfg.visualize_call_flow()
 
 #### Explorer
 
-
 ```python
 from octopus.platforms.ETH.explorer import EthereumInfuraExplorer
 from octopus.platforms.ETH.explorer import INFURA_ROPSTEN
@@ -417,8 +416,6 @@ graph.view_functions()
 
 #### Disassembler
 
-
-code:
 ```python
 from octopus.platforms.EOS.disassembler import EosDisassembler
 
@@ -521,7 +518,6 @@ cfg.visualize_call_flow()
 
 #### Disassembler
 
-code:
 ```python
 from octopus.platforms.BTC.disassembler import BitcoinDisassembler
 
@@ -550,7 +546,7 @@ print(disasm.disassemble(bytecode, r_format='text'))
 </details>
 
 
-Please find other examples in [examples](examples) folder.
+Please find examples in [examples](examples) folder.
 
 ## Publications and Videos
 
