@@ -1,9 +1,8 @@
 from octopus.engine.explorer import Explorer
-from octopus.config.NEO_EXPLORER import NEO_HOST, MAINNET_HTTP_RPC_PORT
 
 # Inspired by https://github.com/ellmetha/neojsonrpc
 
-NEO_HOST = "seed3.neo.org"
+NEO_HOST = "seed1.neo.org"
 
 MAINNET_HTTP_RPC_PORT = 10332
 MAINNET_HTTPS_RPC_PORT = 10331

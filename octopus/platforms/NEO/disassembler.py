@@ -8,7 +8,7 @@ from octopus.platforms.NEO.avm import Avm
 
 class NeoDisassembler(Disassembler):
 
-    def __init__(self, bytecode):
+    def __init__(self, bytecode=None):
         Disassembler.__init__(self, bytecode=bytecode, asm=Avm())
 
     def disassemble_opcode(self, bytecode, offset=0):
