@@ -10,7 +10,7 @@ from octopus.platforms.BTC.btcscript import BTCScript
 
 class BitcoinDisassembler(Disassembler):
 
-    def __init__(self, bytecode):
+    def __init__(self, bytecode=None):
         Disassembler.__init__(self, bytecode=bytecode, asm=BTCScript())
 
     def disassemble_opcode(self, bytecode, offset=0):
