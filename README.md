@@ -420,7 +420,44 @@ graph.view_functions()
 
 code:
 ```python
-# TODO
+from octopus.platforms.EOS.disassembler import EosDisassembler
+
+# complete wasm module
+file_name = "examples/EOS/samples/eos_ping.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# just disassembly
+disasm = EosDisassembler()
+
+# because we provide full module bytecode
+# we need to use disassemble_module()
+# otherwise just disassemble() is enough
+text = disasm.disassemble_module(raw, r_format="text")
+print(text)
+# func 0
+# get_local 0
+# get_local 1
+# i32.const 32
+# call 12
+# i32.eqz
+# end
+# 
+# func 1
+# get_local 0
+# i64.load 3, 0
+# get_local 0
+# i64.load 3, 8
+# call 6
+# end
+# 
+# func 2
+# ...
+# end
+# 
+# ...
 ```
 
 #### ModuleAnalyzer
@@ -432,14 +469,42 @@ code:
 #### Control Flow Analysis
 
 ```python
-# TODO
+from octopus.platforms.EOS.cfg import EosCFG
+from octopus.analysis.graph import CFGGraph
+
+# complete wasm module
+file_name = "examples/EOS/samples/eos_ping.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# create the cfg
+cfg = EosCFG(raw)
+
+# visualize
+graph = CFGGraph(cfg)
+graph.view_functions()
 ```
 
 
 #### Call Flow Analysis
 
 ```python
-# TODO
+from octopus.platforms.EOS.cfg import EosCFG
+
+# complete wasm module
+file_name = "examples/EOS/samples/eos_ping.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# create the cfg
+cfg = EosCFG(raw)
+
+# visualize
+cfg.visualize_call_flow()
 ```
 
 </p>
@@ -458,7 +523,27 @@ code:
 
 code:
 ```python
-# TODO
+from octopus.platforms.BTC.disassembler import BitcoinDisassembler
+
+# Witness Script
+file_name = "examples/BTC/witness_script.hex"
+
+# read file
+with open(file_name) as f:
+    bytecode = f.read()
+
+disasm = BitcoinDisassembler()
+
+print(disasm.disassemble(bytecode, r_format='text'))
+# 0
+# OP_ROT
+# OP_ROT
+# 2
+# 0203f4d01d0b35588638631ebb7d46d8387fd1aeb3dbecfdd3faf7c056b023c833
+# 03aa6677e3ce1bd634f4f2e1cd60a60af002e1b30484d4d1611b183b16d391ee96
+# 03bf164811abb8c91ed39e58d4e307f86cb4e487c83f727a2c482bc71a0f96f1db
+# 3
+# OP_CHECKMULTISIG
 ```
 
 </p>
