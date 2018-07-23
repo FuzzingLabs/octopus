@@ -4,8 +4,8 @@ import re
 
 from octopus.engine.disassembler import Disassembler
 
-from octopus.platforms.ETH.instruction import EthereumInstruction
-from octopus.platforms.ETH.evm import EVM
+from octopus.arch.evm.instruction import EvmInstruction
+from octopus.arch.evm.evm import EVM
 
 
 def runtime_code_detector(bytecode_hex):
@@ -33,7 +33,7 @@ def swarm_hash_detector(bytecode_hex):
     return bytecode_hex
 
 
-class EthereumDisassembler(Disassembler):
+class EvmDisassembler(Disassembler):
 
     def __init__(self, bytecode=None):
         Disassembler.__init__(self, asm=EVM(), bytecode=bytecode)
@@ -50,8 +50,8 @@ class EthereumDisassembler(Disassembler):
         invalid = ('INVALID', 0, 0, 0, 0, 'Unknown opcode')
         name, operand_size, pops, pushes, gas, description = \
             self.asm.table.get(opcode, invalid)
-        instruction = EthereumInstruction(opcode, name, operand_size, pops, pushes,
-                                          gas, description, offset=offset)
+        instruction = EvmInstruction(opcode, name, operand_size, pops, pushes,
+                                     gas, description, offset=offset)
         if instruction.has_operand:
             instruction.operand = wallet.read(operand_size)
             if instruction.is_push:

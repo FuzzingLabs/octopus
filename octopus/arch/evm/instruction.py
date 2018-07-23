@@ -1,7 +1,7 @@
 from octopus.core.instruction import Instruction
 
 
-class EthereumInstruction(Instruction):
+class EvmInstruction(Instruction):
     """ETH Instruction
 
     TODO

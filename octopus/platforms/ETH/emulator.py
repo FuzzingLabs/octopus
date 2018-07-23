@@ -3,8 +3,8 @@ from octopus.engine.emulator import EmulatorEngine
 from octopus.core.ssa import SSA, SSA_TYPE_FUNCTION, SSA_TYPE_CONSTANT
 
 from octopus.platforms.ETH.vmstate import EthereumVMstate
-from octopus.platforms.ETH.cfg import (enum_func_static,
-                                       enum_blocks_static)
+from octopus.arch.evm.cfg import (enum_func_static,
+                                  enum_blocks_static)
 
 from octopus.platforms.ETH.disassembler import EthereumDisassembler
 from octopus.platforms.ETH.ssa import EthereumSSASimplifier

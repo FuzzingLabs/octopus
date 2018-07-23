@@ -2,7 +2,7 @@ from octopus.analysis.cfg import CFG
 from octopus.core.function import Function
 from octopus.core.basicblock import BasicBlock
 
-from octopus.platforms.ETH.disassembler import EthereumDisassembler
+from octopus.arch.evm.disassembler import EvmDisassembler
 
 import logging
 import json
@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 log.setLevel(level=logging.DEBUG)
 
 
-SIGNATURE_FILE_PATH = '/utils/signatures.txt'
+SIGNATURE_FILE_PATH = '/signatures.txt'
 
 
 def enum_func_static(instructions):
@@ -130,13 +130,13 @@ def enum_blocks_static(instructions):
     return basicblocks
 
 
-class EthereumCFG(CFG):
+class EvmCFG(CFG):
 
     def __init__(self, bytecode=None, analysis='dynamic'):
         """ TODO """
 
         self.bytecode = bytecode
-        disasm = EthereumDisassembler(self.bytecode)
+        disasm = EvmDisassembler(self.bytecode)
         self.instructions = disasm.disassemble()
         self.analysis = analysis
 
@@ -163,43 +163,8 @@ class EthereumCFG(CFG):
         self.basicblocks = emul.basicblocks
         self.edges = emul.edges
 
-    def details(self):
+    def show(self):
         print("len bb = %d" % len(self.basicblocks))
         print("len func = %d" % len(self.functions))
         print("len instructions = %d" % len(self.instructions))
         print("len edges = %d" % len(self.edges))
-
-    """
-    def assignXrefForInstruction(self):
-        ''' return list of beginning offset for Basic block '''
-
-        # remove potential older analysis result
-        self.xrefs = []
-        last_push = None
-
-        for inst in self.instructions:
-
-            # second case - relative jump : PUSH1/2 and JUMP/I
-            if inst.is_branch and last_push is not None:
-                inst.set_xref(last_push.operand)
-                self.xrefs.append(inst.xref)
-                self.xrefs.append(inst.offset_end + 1)
-                last_push = None
-
-            # first case : inst in ['RETURN', 'STOP', 'INVALID', 'JUMP', 'JUMPI', 'SELFDESTRUCT', 'REVERT']
-            if inst.is_terminator:
-                self.xrefs.append(inst.offset_end + 1)
-                last_push = None
-
-            # usually describe as basicblock delimiter
-            if inst.name == 'JUMPDEST':
-                self.xrefs.append(inst.offset)
-
-            # save last push for the second case
-            if inst.name in ['PUSH1', 'PUSH2']:
-                last_push = inst
-            else:
-                last_push = None
-        self.xrefs = list(set(self.xrefs))
-        return self.xrefs
-    """
