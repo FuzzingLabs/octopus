@@ -1,12 +1,12 @@
 # API explorer
-requests
+requests>=2.18.4
 
 # API cfg graph
-graphviz
+graphviz>=0.8.3
 
 # ETH
 # ethereum>=2.3.0
 z3-solver>=4.5
 
 # EOS
-wasm
+wasm>=1.1
