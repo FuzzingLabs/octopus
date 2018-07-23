@@ -1,5 +1,6 @@
 from octopus.engine.disassembler import Disassembler
 from octopus.core.function import Function
+from octopus.core.utils import bytecode_to_bytes
 
 from octopus.arch.wasm.instruction import WasmInstruction
 from octopus.arch.wasm.wasm import Wasm
@@ -11,7 +12,6 @@ from wasm.compat import byte2int
 from wasm.opcodes import OPCODE_MAP
 from wasm.formatter import format_instruction
 
-import binascii
 from collections import namedtuple
 inst_namedtuple = namedtuple('Instruction', 'op imm len')
 
@@ -112,10 +112,7 @@ class WasmDisassembler(Disassembler):
 
     def disassemble_module(self, module_bytecode=None, offset=0, r_format='list'):
 
-        if isinstance(module_bytecode, str):
-            bytecode = binascii.unhexlify(module_bytecode)
-        else:
-            bytecode = module_bytecode
+        bytecode = bytecode_to_bytes(module_bytecode)
 
         functions = self.extract_functions_code(bytecode[offset:])
         self.instructions = [f.instructions for f in functions]

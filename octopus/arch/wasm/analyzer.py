@@ -17,6 +17,8 @@ from octopus.arch.wasm.format import (format_kind_function,
                                       format_kind_global)
 
 from octopus.arch.wasm.decode import decode_module
+
+from octopus.core.utils import bytecode_to_bytes
 # from wasm.decode import decode_module
 import io
 import logging
@@ -28,7 +30,7 @@ class WasmModuleAnalyzer(object):
     '''Analyze and extract informations from wasm module'''
 
     def __init__(self, module_bytecode, analysis=True):
-        self.module_bytecode = module_bytecode
+        self.module_bytecode = bytecode_to_bytes(module_bytecode)
 
         self.magic = None
         self.version = None

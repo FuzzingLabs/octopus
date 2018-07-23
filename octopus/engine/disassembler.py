@@ -1,4 +1,4 @@
-import binascii
+from octopus.core.utils import bytecode_to_bytes
 
 
 class BytecodeEmptyException(Exception):
@@ -43,11 +43,7 @@ class Disassembler(object):
         if not self.bytecode:
             raise BytecodeEmptyException()
 
-        # convert hex to bytes
-        if str(self.bytecode).startswith('0x'):
-            self.bytecode = str(self.bytecode)[2:]
-        if isinstance(self.bytecode, str):
-            self.bytecode = binascii.unhexlify(self.bytecode)
+        self.bytecode = bytecode_to_bytes(self.bytecode)
 
         while offset < len(self.bytecode):
             instr = self.disassemble_opcode(self.bytecode[offset:], offset)

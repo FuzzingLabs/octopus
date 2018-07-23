@@ -12,7 +12,7 @@ from octopus.arch.wasm.format import (format_func_name,
                                       format_bb_name)
 
 
-import binascii
+from octopus.core.utils import bytecode_to_bytes
 import logging
 
 # for graph visualisation
@@ -222,10 +222,7 @@ class WasmCFG(CFG):
     """
     def __init__(self, module_bytecode, static_analysis=True):
 
-        if isinstance(module_bytecode, str):
-            self.module_bytecode = binascii.unhexlify(module_bytecode)
-        else:
-            self.module_bytecode = module_bytecode
+        self.module_bytecode = bytecode_to_bytes(module_bytecode)
         self.static_analysis = static_analysis
         self.analyzer = None
 
