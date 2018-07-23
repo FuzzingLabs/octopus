@@ -100,6 +100,7 @@ FILE = "examples/wasm/samples/helloworld.wasm"
 with open(FILE, 'rb') as f:
     module_bytecode = f.read()
 
+disasm = WasmDisassembler()
 # return list of functions instructions (list)
 print(disasm.disassemble_module(module_bytecode))
 #[[<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904278>,<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904f60>,<octopus.arch.wasm.instruction.WasmInstruction at 0x7f85e4904ef0>]]
