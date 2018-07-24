@@ -1,14 +1,18 @@
 from octopus.core.contract import Contract
 
 
+class ContractAdressEmptyException(Exception):
+    """Exception raised when address is None"""
+    pass
+
+
 class EthereumContract(Contract):
 
     @property
     def _address_defined(self):
         if self.address is None:
-            raise ValueError('self.address is None')
-        else:
-            return True
+            raise ContractAdressEmptyException()
+        return True
 
     def get_online_bytecode(self, explorer):
         if self._address_defined:
