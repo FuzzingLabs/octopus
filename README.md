@@ -41,16 +41,17 @@ Octopus support the following types of programs/smart contracts:
 |**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 |**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 
+
+* Pypi package :heavy_check_mark:
 * IDA plugin :heavy_plus_sign:
 * Binary ninja plugin :heavy_plus_sign:
-* Pypi package :heavy_plus_sign:
 
 :heavy_check_mark: **DONE** / :heavy_plus_sign: **WIP** / :heavy_multiplication_x: **TODO** / :o: **N/A**
 
 
 ## Requirements
 
-Octopus is supported on Linux (ideally Ubuntu 16.04) and requires Python >=3.3 (ideally 3.6).
+Octopus is supported on Linux (ideally Ubuntu 16.04) and requires Python >=3.5 (ideally 3.6).
 
 Dependencies:
 * Graph generation: [graphviz](https://graphviz.gitlab.io/download/)
@@ -60,19 +61,28 @@ Dependencies:
 
 ## Quick Start
 
-Install Octopus easily with:
-
+Install system dependencies
 ```
 # Install system dependencies
 sudo apt-get update && sudo apt-get install python-pip graphviz -y
+```
 
+Install Octopus easily with:
+```
+pip3 install octopus
+```
+or
+```
 # Download Octopus
 git clone https://github.com/quoscient/octopus
 cd octopus
 
 # Install Octopus and its dependencies
 pip3 install -r requirements.txt
+```
 
+Run tests
+```
 # Run tests for all platforms (disassembly, CFG, ...)
 ./run_tests.sh
 # Run tests that require internet access (explorer tests)
