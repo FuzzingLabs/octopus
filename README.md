@@ -3,7 +3,6 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/quoscient/octopus/graphs/commit-activity)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![PyPI version shields.io](https://img.shields.io/pypi/v/octopus.svg)](https://pypi.org/project/octopus/)
 
 <p align="center">
 	<img src="/images/logo-medium.png" height="400px"/>
