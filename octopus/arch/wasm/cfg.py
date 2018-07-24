@@ -122,10 +122,7 @@ def enum_blocks_edges(function_id, instructions):
         labl = list()
         if inst.name == 'br_table':
             labl = [i for i in inst.insn_byte[2:]]
-            print(inst.insn_byte)
-            print(labl)
         else:
-            #print(inst.imm_struct.default_target.from_raw(inst.imm_struct.default_target, inst.imm_struct.default_target))
             labl.append(int(inst.operand_interpretation.split(' ')[-1]))
 
         for d2 in labl:
@@ -201,56 +198,23 @@ def enum_blocks_edges(function_id, instructions):
         if inst.is_branch_unconditional:
             for ref in inst.xref:
                 edges.append(Edge(block.name, format_bb_name(function_id, ref), EDGE_UNCONDITIONAL))
-            else:
-                log.error('Bad branch target')
         # conditionnal jump - br_if, if
         elif inst.is_branch_conditional:
-            #if inst.name == 'br_table':
-            #print(inst.operand_interpretation)
-            #print(inst.imm_struct.__dir__())
-            #print(inst.imm_struct.default_target.__dir__())
-            #for i in byte2int
-            #print(inst.imm_struct.target_table.__dir__())
-            #print(inst.imm_struct.target_table)
-            #print(inst.imm_struct.from_raw(None, inst.operand))#imm_struct.from_raw(None, bytecode_wnd[1:])
             if inst.name == 'if':
                 edges.append(Edge(block.name,
                              format_bb_name(function_id, inst.offset_end + 1),
                              EDGE_CONDITIONAL_TRUE))
-                #if function_id == 53:
-                #print()
-                #print(blocks_list)
-                # find block in blocks_list
                 g_block = next(iter([b for b in blocks_list if b[1] == inst.offset]), None)
-                #print(g_block)
-                '''
-                if blocks_list[-1] != g_block:
-                    # find next block, get end offset, minus one because end size = 1
-                    if blocks_list[blocks_list.index(g_block)+1][3] == 'else':
-                        jump_target = blocks_list[blocks_list.index(g_block)+1][1]
-                    else:
-                        jump_target = blocks_list[blocks_list.index(g_block)+2][2]
-                    print('AAAAAAAAAAAAAAAA %d %x' % (jump_target, jump_target))
-                else:
-                    jump_target = blocks_list[-1][2]
-                '''
-                #print(g_block)
                 jump_target = g_block[2] + 1
-                #print(jump_target)
                 edges.append(Edge(block.name,
                              format_bb_name(function_id, jump_target),
                              EDGE_CONDITIONAL_FALSE))
-            #else:
-            #    edges.append(Edge(block.name,
-            #                 format_bb_name(function_id, basicblocks[index + 2].start_instr.offset),
-            #                 EDGE_CONDITIONAL_FALSE))
             else:
                 for ref in inst.xref:
-                    edges.append(Edge(block.name,
-                                      format_bb_name(function_id, ref),
-                                      EDGE_CONDITIONAL_TRUE))
-                #else:
-                #    log.error('Bad branch target')
+                    if ref != inst.offset_end + 1:
+                        edges.append(Edge(block.name,
+                                          format_bb_name(function_id, ref),
+                                          EDGE_CONDITIONAL_TRUE))
                 edges.append(Edge(block.name,
                              format_bb_name(function_id, inst.offset_end + 1),
                              EDGE_CONDITIONAL_FALSE))
