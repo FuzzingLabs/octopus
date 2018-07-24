@@ -26,7 +26,7 @@ class WasmInstruction(Instruction):
         self.pops = pops
         self.pushes = pushes
         self.imm_struct = imm_struct
-        self.xref = None
+        self.xref = list()
         self.ssa = None
 
     def __eq__(self, other):

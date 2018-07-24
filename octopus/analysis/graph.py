@@ -123,14 +123,19 @@ class CFGGraph(Graph):
     def view_functions_simplify(self, call=False, view=True):
         self.view_functions(view=view, call=call, simplify=True)
 
-    def view_functions(self, view=True, simplify=False, call=False, ssa=False, color='grey'):
+    def view_functions(self, only_func_name=None, view=True, simplify=False, call=False, ssa=False, color='grey'):
         g = Digraph('G', filename=self.filename)
         g.attr(rankdir='TB')
         g.attr(overlap='scale')
         g.attr(splines='polyline')
         g.attr(ratio='fill')
 
-        for idx, func in enumerate(self.cfg.functions):
+        functions = self.cfg.functions
+        # only show functions listed
+        if only_func_name:
+            functions = [func for func in self.cfg.functions if func.name in only_func_name]
+
+        for idx, func in enumerate(functions):
             with g.subgraph(name='cluster_%d' % idx, node_attr=self.design) as c:
                 if func.name == func.prefered_name:
                     name = func.name
@@ -160,8 +165,14 @@ class CFGGraph(Graph):
                         # create node
                         c.node(basicblock.name, label=label)
 
+        edges = self.cfg.edges
+        # only get corresponding edges
+        if only_func_name:
+            functions_block = [func.basicblocks for func in functions]
+            block_name = [b.name for block_l in functions_block for b in block_l]
+            edges = [edge for edge in edges if (edge.node_from in block_name or edge.node_to in block_name)]
         # insert edges on the graph
-        insert_edges_to_graph(g, self.cfg.edges, call)
+        insert_edges_to_graph(g, edges, call)
 
         g.render(self.filename, view=view)
         # g.view()

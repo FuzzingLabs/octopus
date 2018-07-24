@@ -36,7 +36,9 @@ class BasicBlock(object):
             line = '%x: ' % i.offset
             if i.operand is not None and not i.xref:
                 line += '%s' % str(i)
-            elif i.xref:
+            elif isinstance(i.xref, list):
+                line += '%s %s' % (i.name, i.xref)
+            elif isinstance(i.xref, int):
                 line += '%s %x' % (i.name, i.xref)
             else:
                 line += i.name + ' '
