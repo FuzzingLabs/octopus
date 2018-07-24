@@ -2,7 +2,7 @@
 [![Generic badge](https://img.shields.io/badge/REcon-MTL%202018-red.svg)](https://recon.cx/2018/montreal/)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/quoscient/octopus/graphs/commit-activity)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 <p align="center">
 	<img src="/images/logo-medium.png" height="400px"/>
@@ -561,7 +561,7 @@ See also the list of [contributors](https://github.com/quoscient/octopus/contrib
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
