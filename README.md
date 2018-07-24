@@ -43,7 +43,7 @@ Octopus support the following types of programs/smart contracts:
 |**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 
 
-* Pypi package :heavy_check_mark:
+* PyPI package :heavy_check_mark:
 * IDA plugin :heavy_plus_sign:
 * Binary ninja plugin :heavy_plus_sign:
 
@@ -62,13 +62,13 @@ Dependencies:
 
 ## Quick Start
 
-Install system dependencies
+- Install system dependencies
 ```
 # Install system dependencies
 sudo apt-get update && sudo apt-get install python-pip graphviz -y
 ```
 
-Install Octopus easily with:
+- Install Octopus easily with:
 ```
 pip3 install octopus
 ```
@@ -82,7 +82,7 @@ cd octopus
 pip3 install -r requirements.txt
 ```
 
-Run tests
+- Run tests
 ```
 # Run tests for all platforms (disassembly, CFG, ...)
 ./run_tests.sh
