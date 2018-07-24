@@ -8,7 +8,7 @@
 	<img src="/images/logo-medium.png" height="400px"/>
 </p>
 
-**Octopus is a security analysis framework for WebAssembly and Blockchain Smart Contract.**
+**Octopus is a security analysis framework for WebAssembly module and Blockchain Smart Contract.**
 
 The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
 
