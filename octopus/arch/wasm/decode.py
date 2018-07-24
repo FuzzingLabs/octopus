@@ -86,6 +86,6 @@ def decode_module(module, decode_name_subsections=False):
             yield ModuleFragment(sec, sec_data)
 
         # fix bug KeyError
-        #if sec_data.id == SEC_UNK and sec_data.name:
-        #    sec_len -= sec_data.name_len + 1
+        if sec_data.id == SEC_UNK and sec_data.name:
+            sec_len -= sec_data.name_len + 1
         module_wnd = module_wnd[sec_len:]
