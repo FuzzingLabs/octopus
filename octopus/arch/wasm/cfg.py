@@ -15,8 +15,6 @@ from octopus.arch.wasm.format import (format_func_name,
 from octopus.core.utils import bytecode_to_bytes
 import logging
 
-from wasm.compat import byte2int
-
 # for graph visualisation
 from graphviz import Digraph
 DESIGN_IMPORT = {'fillcolor': 'turquoise',
@@ -169,7 +167,7 @@ def enum_blocks_edges(function_id, instructions):
             new_block = True
         # end of a block
         elif index < (len(instructions) - 1) and \
-                inst.name in ['end']:  # is_block_terminator
+                inst.name in ['end'] and block.start_offset != inst.offset:  # is_block_terminator
             new_block = True
         #elif index < (len(instructions) - 1) and \
         #        instructions[index + 1].name == 'else':  # is_block_terminator
@@ -218,6 +216,10 @@ def enum_blocks_edges(function_id, instructions):
                 edges.append(Edge(block.name,
                              format_bb_name(function_id, inst.offset_end + 1),
                              EDGE_CONDITIONAL_FALSE))
+        elif [i.name for i in block.instructions if i.is_halt]:
+            pass
+        elif inst.is_halt:
+            pass
         elif inst.offset != instructions[-1].offset:
             # EDGE_FALLTHROUGH
             edges.append(Edge(block.name, format_bb_name(function_id, inst.offset_end + 1), EDGE_FALLTHROUGH))
@@ -229,7 +231,6 @@ def enum_blocks_edges(function_id, instructions):
 
 class WasmCFG(CFG):
     """
-    TODO: fix some CFG issue related to br_table instruction
     """
     def __init__(self, module_bytecode, static_analysis=True):
 

@@ -43,7 +43,7 @@ class WasmCFGraphTestCase(unittest.TestCase):
         r_nodes = ['i32 fib(i32)']
         len_call_edges = 2
         callgraph(module_bytecode, r_nodes, len_call_edges)
-        controlflowgraph(module_bytecode, 1, 4, 4)
+        controlflowgraph(module_bytecode, 1, 4, 3)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(WasmCFGraphTestCase)

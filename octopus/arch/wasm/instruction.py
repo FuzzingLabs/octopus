@@ -1,7 +1,8 @@
 from octopus.core.instruction import Instruction
 
 from wasm.opcodes import (INSN_ENTER_BLOCK,
-                          INSN_LEAVE_BLOCK)  # INSN_BRANCH, INSN_NO_FLOW)
+                          INSN_LEAVE_BLOCK,
+                          INSN_NO_FLOW)  # INSN_BRANCH
 
 
 class WasmInstruction(Instruction):
@@ -87,8 +88,8 @@ class WasmInstruction(Instruction):
     @property
     def is_halt(self):
         """ Return True if the instruction is a branch terminator """
-        # return self.flags & INSN_NO_FLOW
-        return self.name in ['return']  # unreachable
+        return self.flags & INSN_NO_FLOW
+        # return self.name in ['return']  # unreachable
 
     @property
     def is_terminator(self):
