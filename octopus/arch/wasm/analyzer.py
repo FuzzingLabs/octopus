@@ -149,11 +149,11 @@ class WasmModuleAnalyzer(object):
             #                except UnicodeDecodeError:
             #                    value = str(v)
             try:
-                module_str = '{}'.format(entry.module_str.tobytes().decode('utf-8'))
+                module_str = entry.module_str.tobytes().decode('utf-8')
             except UnicodeDecodeError:
                 module_str = entry.module_str.tobytes()
             try:
-                field_str = '{}'.format(entry.field_str.tobytes().decode('utf-8'))
+                field_str = entry.field_str.tobytes().decode('utf-8')
             except UnicodeDecodeError:
                 field_str = entry.field_str.tobytes()
 
@@ -258,7 +258,7 @@ class WasmModuleAnalyzer(object):
         for idx, entry in enumerate(entries):
             # field_str == function_name
             try:
-                field_str = '{}'.format(entry.field_str.tobytes().decode('utf-8'))
+                field_str = entry.field_str.tobytes().decode('utf-8')
             except UnicodeDecodeError:
                 field_str = entry.field_str.tobytes()
             kind = entry.kind
