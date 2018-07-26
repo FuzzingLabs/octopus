@@ -167,7 +167,7 @@ def enum_blocks_edges(function_id, instructions):
             new_block = True
         # end of a block
         elif index < (len(instructions) - 1) and \
-                inst.name in ['end'] and block.start_offset != inst.offset:  # is_block_terminator
+                inst.name in ['end']:# and block.start_offset != inst.offset:  # is_block_terminator
             new_block = True
         #elif index < (len(instructions) - 1) and \
         #        instructions[index + 1].name == 'else':  # is_block_terminator
