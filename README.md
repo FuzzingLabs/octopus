@@ -193,6 +193,9 @@ graph = CFGGraph(cfg)
 graph.view_functions()
 ```
 
+<p align="center">
+    <img src="/images/wasm-cfg-fib.png" height="400px"/>
+</p>
 
 #### Call Flow Analysis
 
@@ -217,6 +220,14 @@ cfg = WasmCFG(raw)
 # edge label = number of different calls to the function
 cfg.visualize_call_flow()
 ```
+
+Legend: 
+- turquoise: imported func
+- grey: exported func
+
+<p align="center">
+    <img src="/images/wasm-callflow-hello-studio.png" height="400px"/>
+</p>
 
 </p>
 </details>
