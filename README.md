@@ -221,13 +221,12 @@ cfg = WasmCFG(raw)
 cfg.visualize_call_flow()
 ```
 
-Legend: 
-- turquoise: imported func
-- grey: exported func
-
 <p align="center">
     <img src="/images/wasm-callflow-hello-studio.png" height="400px"/>
 </p>
+
+Legend:  `imported` ![#f03c15](https://placehold.it/15/40E0D0/000000?text=+) / ![#c5f015](https://placehold.it/15/808080/000000?text=+) 
+`exported` function
 
 </p>
 </details>
