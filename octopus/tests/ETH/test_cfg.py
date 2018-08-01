@@ -16,9 +16,8 @@ class EthereumCfgTestCase(unittest.TestCase):
     edges = 18
 
     # visualization
-    # graph = CFGGraph(cfg)
-    # graph.view()
-    # graph.view_functions()
+    #graph = CFGGraph(cfg)
+    #graph.view()
 
     def testInstructions(self):
 
