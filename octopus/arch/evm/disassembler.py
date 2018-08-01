@@ -25,14 +25,15 @@ def swarm_hash_detector(bytecode_hex):
     '''
     # we reduce to last 50 bytes to be sure it's the swarm hash
     # and not fake code
-    swarm_hash_off = bytecode_hex[-100:].find('65627a7a72')
+    swarm_hash_off = bytecode_hex[-100:].find('a165627a7a72')
     # bzzr == 0x65627a7a72
-    if swarm_hash_off:
+    if swarm_hash_off > 0:
         logging.info("[+] Swarm hash detected in bytecodes")
         swarm_hash = bytecode_hex[-100 + swarm_hash_off:]
         logging.info("[+] Swarm hash value: 0x%s", swarm_hash)
         logging.info("[+] Swarm hash removed")
-    return swarm_hash
+        return swarm_hash
+    return None
 
 
 class EvmDisassembler(Disassembler):
@@ -71,7 +72,7 @@ class EvmDisassembler(Disassembler):
         r_format: ('list' | 'text' | 'reverse')
         '''
 
-        self.bytecode = str(bytecode) if bytecode else str(self.bytecode)
+        self.bytecode = bytecode if bytecode else self.bytecode
 
         if analysis:
             self.bytecode = runtime_code_detector(self.bytecode)
