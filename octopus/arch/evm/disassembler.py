@@ -23,20 +23,23 @@ def swarm_hash_detector(bytecode_hex):
     '''Check for presence of Swarm hash at the end of bytecode
         https://github.com/ethereum/wiki/wiki/Swarm-Hash
     '''
-    swarm_hash = bytecode_hex[-86:]
-    # bzzr == 0x627a7a72
-    if '627a7a72' in swarm_hash:
+    # we reduce to last 50 bytes to be sure it's the swarm hash
+    # and not fake code
+    swarm_hash_off = bytecode_hex[-100:].find('65627a7a72')
+    # bzzr == 0x65627a7a72
+    if swarm_hash_off:
         logging.info("[+] Swarm hash detected in bytecodes")
-        bytecode_hex = bytecode_hex[:-86]
+        swarm_hash = bytecode_hex[-100 + swarm_hash_off:]
         logging.info("[+] Swarm hash value: 0x%s", swarm_hash)
         logging.info("[+] Swarm hash removed")
-    return bytecode_hex
+    return swarm_hash
 
 
 class EvmDisassembler(Disassembler):
 
     def __init__(self, bytecode=None):
         Disassembler.__init__(self, asm=EVM(), bytecode=bytecode)
+        self.swarm_hash = None
 
     def disassemble_opcode(self, bytecode, offset=0):
         """
@@ -71,7 +74,9 @@ class EvmDisassembler(Disassembler):
 
         if analysis:
             self.bytecode = runtime_code_detector(self.bytecode)
-            self.bytecode = swarm_hash_detector(self.bytecode)
+            self.swarm_hash = swarm_hash_detector(self.bytecode)
+            if self.swarm_hash:
+                self.bytecode = self.bytecode[:-len(self.swarm_hash)]
 
         self.instructions = list()
         self.reverse_instructions = dict()
