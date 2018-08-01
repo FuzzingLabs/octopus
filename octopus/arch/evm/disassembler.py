@@ -67,19 +67,22 @@ class EvmDisassembler(Disassembler):
     def disassemble(self, bytecode=None, offset=0, r_format='list',
                     analysis=True):
         '''
-        TODO
+        creation code remove if analysis param is set to True (default)
+        r_format: ('list' | 'text' | 'reverse')
         '''
 
         self.bytecode = str(bytecode) if bytecode else str(self.bytecode)
 
         if analysis:
             self.bytecode = runtime_code_detector(self.bytecode)
-            self.swarm_hash = swarm_hash_detector(self.bytecode)
-            if self.swarm_hash:
-                self.bytecode = self.bytecode[:-len(self.swarm_hash)]
+        self.swarm_hash = swarm_hash_detector(self.bytecode)
+        if self.swarm_hash:
+            self.bytecode = self.bytecode[:-len(self.swarm_hash)]
 
+        # reset lists
         self.instructions = list()
         self.reverse_instructions = dict()
 
+        # call generic Disassembler.disassemble method
         return super().disassemble(self.bytecode, offset,
                                    r_format)
