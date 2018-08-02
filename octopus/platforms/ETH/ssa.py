@@ -1,8 +1,8 @@
 from octopus.engine.helper import helper as hlp
 from z3 import UDiv, ULT, UGT
 
-import logging
-logging.basicConfig(level=logging.WARN)
+from logging import getLogger
+logging = getLogger(__name__)
 
 # =======================================
 # #            SSA Simplifier           #

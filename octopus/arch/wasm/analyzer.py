@@ -21,9 +21,9 @@ from octopus.arch.wasm.decode import decode_module
 from octopus.core.utils import bytecode_to_bytes
 # from wasm.decode import decode_module
 import io
-import logging
-log = logging.getLogger(__name__)
-log.setLevel(level=logging.INFO)
+
+from logging import getLogger
+logging = getLogger(__name__)
 
 
 class WasmModuleAnalyzer(object):
@@ -157,7 +157,7 @@ class WasmModuleAnalyzer(object):
             except UnicodeDecodeError:
                 field_str = entry.field_str.tobytes()
 
-            log.debug('%s %s', module_str, field_str)
+            logging.debug('%s %s', module_str, field_str)
             kind_type = KIND_TYPE.get(entry.kind)
 
             if kind_type == 'function':
@@ -183,7 +183,7 @@ class WasmModuleAnalyzer(object):
                                          entry.type.mutability)
                 import_list.append((entry.kind, module_str, field_str, gbl))
             else:
-                log.error('unknown %d %s %s', entry.kind,
+                logging.error('unknown %d %s %s', entry.kind,
                           module_str, field_str)
         return (import_list, import_func_list)
 

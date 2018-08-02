@@ -10,8 +10,9 @@ from octopus.platforms.ETH.disassembler import EthereumDisassembler
 from octopus.platforms.ETH.ssa import EthereumSSASimplifier
 
 import copy
-import logging
-logging.basicConfig(level=logging.WARN)
+
+from logging import getLogger
+logging = getLogger(__name__)
 
 
 class EthereumEmulatorEngine(EmulatorEngine):

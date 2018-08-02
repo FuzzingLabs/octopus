@@ -13,10 +13,12 @@ from octopus.arch.wasm.format import (format_func_name,
 
 
 from octopus.core.utils import bytecode_to_bytes
-import logging
-
 # for graph visualisation
 from graphviz import Digraph
+from logging import getLogger
+logging = getLogger(__name__)
+
+
 DESIGN_IMPORT = {'fillcolor': 'turquoise',
                  'shape': 'box',
                  'style': 'filled'}
@@ -25,8 +27,6 @@ DESIGN_EXPORT = {'fillcolor': 'grey',
                  'shape': 'box',
                  'style': 'filled'}
 
-log = logging.getLogger(__name__)
-log.setLevel(level=logging.WARNING)
 
 
 def enum_func(module_bytecode):
@@ -65,7 +65,7 @@ def enum_func_call_edges(functions, len_imports):
         for inst in func.instructions:
             # detect if inst is a call instructions
             if inst.is_call:
-                log.info('%s', inst.operand_interpretation)
+                logging.info('%s', inst.operand_interpretation)
                 if inst.name == "call":
                     # only get the import_id
                     node_to = int(inst.operand_interpretation.split(' ')[1])
@@ -272,7 +272,7 @@ class WasmCFG(CFG):
             else:
                 nodes.append(name)
 
-        log.info('nodes: %s', nodes)
+        logging.info('nodes: %s', nodes)
 
         # create edges
         tmp_edges = enum_func_call_edges(self.functions,
@@ -294,7 +294,7 @@ class WasmCFG(CFG):
             else:
                 to_final = name
             edges.append(Edge(from_final, to_final, EDGE_CALL))
-        log.info('edges: %s', edges)
+        logging.info('edges: %s', edges)
 
         return (nodes, edges)
 
@@ -312,13 +312,13 @@ class WasmCFG(CFG):
             # create all the graph nodes (function name)
             for idx, node in enumerate(nodes):
                 if node in import_list:
-                    log.debug('import ' + node)
+                    logging.debug('import ' + node)
                     fillcolor = DESIGN_IMPORT.get('fillcolor')
                     shape = DESIGN_IMPORT.get('shape')
                     style = DESIGN_IMPORT.get('style')
                     c.node(node, fillcolor=fillcolor, shape=shape, style=style)
                 elif node in export_list:
-                    log.debug('export ' + node)
+                    logging.debug('export ' + node)
                     fillcolor = DESIGN_EXPORT.get('fillcolor')
                     shape = DESIGN_EXPORT.get('shape')
                     style = DESIGN_EXPORT.get('style')

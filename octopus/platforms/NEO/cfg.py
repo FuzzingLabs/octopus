@@ -10,8 +10,8 @@ from octopus.analysis.cfg import CFG
 
 from octopus.platforms.NEO.disassembler import NeoDisassembler
 
-import logging
-logging.basicConfig(level=logging.INFO)
+from logging import getLogger
+logging = getLogger(__name__)
 
 
 def enum_func_static(instructions):

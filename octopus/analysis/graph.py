@@ -5,10 +5,6 @@ from octopus.core.edge \
             EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
             EDGE_FALLTHROUGH, EDGE_CALL)
 
-import logging
-log = logging.getLogger(__name__)
-log.setLevel(level=logging.DEBUG)
-
 
 def insert_edges_to_graph(graph, edges, call=False):
     # remove duplicate edges
