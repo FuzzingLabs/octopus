@@ -18,4 +18,7 @@ def bytecode_to_bytes(bytecode):
                 bytecode = unhexlify(bytecode)
             except:
                 pass
+    # already bytes or bytearray
+    except TypeError:
+        pass
     return bytecode
