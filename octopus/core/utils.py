@@ -6,10 +6,16 @@ def bytecode_to_bytes(bytecode):
         bytecode = bytecode[2:]
 
     try:
+        # python > 2.7
         bytecode = bytes.fromhex(bytecode)
-    except TypeError:
+    except AttributeError:
+        # python <= 2.7
         try:
-            bytecode = unhexlify(bytecode)
-        except:
-            pass
+            bytecode = bytecode.decode("hex")
+        except TypeError:
+            # last chance
+            try:
+                bytecode = unhexlify(bytecode)
+            except:
+                pass
     return bytecode
