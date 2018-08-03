@@ -57,7 +57,18 @@ class WasmInstruction(Instruction):
                    0x1A: 'Parametric',
                    0x20: 'Variable',
                    0x28: 'Memory',
-                   0x41: 'Numeric'}
+                   0x41: 'Constant',
+                   0x45: 'Logical_i32',
+                   0x50: 'Logical_i64',
+                   0x5b: 'Logical_f32',
+                   0x61: 'Logical_f64',
+                   0x67: 'Arithmetic_i32',
+                   0x71: 'Bitwise_i32',
+                   0x79: 'Arithmetic_i64',
+                   0x83: 'Bitwise_i64',
+                   0x8b: 'Arithmetic_f32',
+                   0x99: 'Arithmetic_f64',
+                   0xa7: 'Conversion'}
 
         last_class = classes.get(0)
         for k, v in classes.items():
@@ -65,6 +76,7 @@ class WasmInstruction(Instruction):
                 last_class = v
             else:
                 return last_class
+        return last_class
 
     @property
     def is_branch_conditional(self):

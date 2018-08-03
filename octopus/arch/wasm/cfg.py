@@ -28,7 +28,6 @@ DESIGN_EXPORT = {'fillcolor': 'grey',
                  'style': 'filled'}
 
 
-
 def enum_func(module_bytecode):
     ''' return a list of Function
         see:: octopus.core.function

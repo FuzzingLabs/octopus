@@ -51,6 +51,7 @@ class NeoInstruction(Instruction):
                 last_class = v
             else:
                 return last_class
+        return last_class
 
     @property
     def is_constant(self):
