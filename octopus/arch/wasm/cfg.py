@@ -5,13 +5,13 @@ from octopus.core.edge import (Edge,
                                EDGE_CONDITIONAL_TRUE, EDGE_CONDITIONAL_FALSE,
                                EDGE_FALLTHROUGH, EDGE_CALL)
 from octopus.analysis.cfg import CFG
-
+from octopus.analysis.graph import CFGGraph
 from octopus.arch.wasm.analyzer import WasmModuleAnalyzer
 from octopus.arch.wasm.disassembler import WasmDisassembler
 from octopus.arch.wasm.format import (format_func_name,
                                       format_bb_name)
 
-
+from octopus.arch.wasm.wasm import _groups
 from octopus.core.utils import bytecode_to_bytes
 # for graph visualisation
 from graphviz import Digraph
@@ -245,19 +245,15 @@ def enum_blocks_edges(function_id, instructions):
 class WasmCFG(CFG):
     """
     """
-    def __init__(self, module_bytecode, static_analysis=True):
-
+    def __init__(self, module_bytecode):
         self.module_bytecode = bytecode_to_bytes(module_bytecode)
-        self.static_analysis = static_analysis
-        self.analyzer = None
 
         self.functions = list()
         self.basicblocks = list()
         self.edges = list()
 
-        if self.static_analysis:
-            self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
-            self.run_static_analysis()
+        self.analyzer = WasmModuleAnalyzer(self.module_bytecode)
+        self.run_static_analysis()
 
     def run_static_analysis(self):
         self.functions = enum_func(self.module_bytecode)
@@ -311,8 +307,19 @@ class WasmCFG(CFG):
 
         return (nodes, edges)
 
-    def visualize_call_flow(self, filename="wasm_call_graph_octopus.gv"):
+    def visualize(self):
+        """Visualize the cfg
+        used CFGGraph
+        equivalent to:
+            graph = CFGGraph(cfg)
+            graph.view_functions()
+        """
+        graph = CFGGraph(self)
+        graph.view_functions()
 
+    def visualize_call_flow(self, filename="wasm_call_graph_octopus.gv"):
+        """Visualize the cfg call flow graph
+        """
         nodes, edges = self.get_functions_call_edges(format_fname=False)
 
         g = Digraph(filename, filename=filename)
@@ -350,3 +357,67 @@ class WasmCFG(CFG):
                 c.edge(edge.node_from, edge.node_to, label=label)
 
         g.render(filename, view=True)
+
+    def visualize_instrs_per_funcs(self, show=True, save=True,
+                                   out_filename="wasm_statictics.png",
+                                   fontsize=8):
+        """Visualize the instructions repartitions per functions
+        """
+
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        final = list()
+        datas = list()
+
+        # legend x axis - name functions
+        group_names = tuple([func.name for func in self.functions])
+        # number of functions
+        ind = [x for x, _ in enumerate(self.functions)]
+
+        # list all groups
+        all_groups = [v for _, v in _groups.items()]
+
+        # list()
+        for func in self.functions:
+            data = list()
+            group = [i.group for i in func.instructions]
+            for g in all_groups:
+                data.append(group.count(g))
+            datas.append(tuple(data))
+
+        for idx in range(len(all_groups)):
+            final.append(tuple([x[idx] for x in datas]))
+
+        # choice color: https://matplotlib.org/users/colormaps.html
+        color = iter(plt.cm.gist_rainbow(np.linspace(0, 1, len(all_groups))))
+        stack = np.array([0 * len(all_groups)])
+        for idx in range(len(all_groups)):
+            if idx == 0:
+                # first bar
+                plt.barh(ind, final[idx], label=all_groups[idx],
+                         align='center', color=next(color))
+            else:
+                plt.barh(ind, final[idx], label=all_groups[idx], left=stack,
+                         align='center', color=next(color))
+
+            stack = stack + np.array(final[idx])
+
+        # Rotate x-labels on the x-axis
+        plt.yticks(fontsize=fontsize)
+        plt.ylim([0, len(self.functions)])
+        plt.yticks(ind, group_names)
+        plt.ylabel('Functions')
+        plt.xlabel('Instructions count')
+        plt.legend(loc="lower right")
+        plt.title('Instructions count by function and group')
+
+        # save
+        if save:
+            plt.savefig(out_filename)
+        # show
+        if show:
+            plt.show()
+
+    def visualize_analytics(self):
+        pass

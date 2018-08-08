@@ -4,6 +4,8 @@ from wasm.opcodes import (INSN_ENTER_BLOCK,
                           INSN_LEAVE_BLOCK,
                           INSN_NO_FLOW)  # INSN_BRANCH
 
+from octopus.arch.wasm.wasm import _groups
+
 
 class WasmInstruction(Instruction):
     """Wasm Instruction
@@ -53,25 +55,8 @@ class WasmInstruction(Instruction):
     @property
     def group(self):
         """ Instruction classification per group """
-        classes = {0x00: 'Control',
-                   0x1A: 'Parametric',
-                   0x20: 'Variable',
-                   0x28: 'Memory',
-                   0x41: 'Constant',
-                   0x45: 'Logical_i32',
-                   0x50: 'Logical_i64',
-                   0x5b: 'Logical_f32',
-                   0x61: 'Logical_f64',
-                   0x67: 'Arithmetic_i32',
-                   0x71: 'Bitwise_i32',
-                   0x79: 'Arithmetic_i64',
-                   0x83: 'Bitwise_i64',
-                   0x8b: 'Arithmetic_f32',
-                   0x99: 'Arithmetic_f64',
-                   0xa7: 'Conversion'}
-
-        last_class = classes.get(0)
-        for k, v in classes.items():
+        last_class = _groups.get(0)
+        for k, v in _groups.items():
             if self.opcode >= k:
                 last_class = v
             else:

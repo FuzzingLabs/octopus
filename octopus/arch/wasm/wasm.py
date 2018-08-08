@@ -6,6 +6,23 @@
 from wasm.immtypes import *
 from wasm.opcodes import INSN_ENTER_BLOCK, INSN_LEAVE_BLOCK, INSN_BRANCH, INSN_NO_FLOW
 
+_groups = {0x00: 'Control',
+           0x1A: 'Parametric',
+           0x20: 'Variable',
+           0x28: 'Memory',
+           0x41: 'Constant',
+           0x45: 'Logical_i32',
+           0x50: 'Logical_i64',
+           0x5b: 'Logical_f32',
+           0x61: 'Logical_f64',
+           0x67: 'Arithmetic_i32',
+           0x71: 'Bitwise_i32',
+           0x79: 'Arithmetic_i64',
+           0x83: 'Bitwise_i64',
+           0x8b: 'Arithmetic_f32',
+           0x99: 'Arithmetic_f64',
+           0xa7: 'Conversion'}
+
 """
 TODO: add pop and pushes value per instructions
 """
@@ -170,8 +187,8 @@ _table = {
     0xa4: ('f64.min', None, 0, 0, 0, ''),
     0xa5: ('f64.max', None, 0, 0, 0, ''),
     0xa6: ('f64.copysign', None, 0, 0, 0, ''),
-    0xa7: ('i32.wrap/i64', None, 0, 0, 0, ''),
 
+    0xa7: ('i32.wrap/i64', None, 0, 0, 0, ''),
     0xa8: ('i32.trunc_s/f32', None, 0, 0, 0, ''),
     0xa9: ('i32.trunc_u/f32', None, 0, 0, 0, ''),
     0xaa: ('i32.trunc_s/f64', None, 0, 0, 0, ''),

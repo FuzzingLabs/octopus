@@ -197,6 +197,30 @@ graph.view_functions()
     <img src="/images/wasm-cfg-fib.png" height="400px"/>
 </p>
 
+
+#### Functions' instructions analytics
+
+```python
+from octopus.arch.wasm.cfg import WasmCFG
+
+# complete wasm module
+file_name = "examples/wasm/samples/hello_wasm_studio.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# create the cfg
+cfg = WasmCFG(raw)
+
+# visualization
+cfg.visualize_instrs_per_funcs()
+```
+
+<p align="center">
+    <img src="/images/wasm-instr-func-analytics.png" height="400px"/>
+</p>
+
 #### Call Flow Analysis
 
 ```python

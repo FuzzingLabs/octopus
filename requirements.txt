@@ -1,12 +1,17 @@
-# API explorer
+# Explorer
 requests>=2.18.4
 
-# API cfg graph
+# CFG graphical view
 graphviz>=0.8.3
+
+# bytecode analytics
+matplotlib>=2.2.2
+numpy>=1.15.0
 
 # ETH
 # ethereum>=2.3.0
 z3-solver>=4.5
 
-# EOS
+# WASM / EOS
 wasm>=1.1
+
