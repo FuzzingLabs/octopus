@@ -4,13 +4,11 @@ from octopus.core.basicblock import BasicBlock
 
 from octopus.arch.evm.disassembler import EvmDisassembler
 
-import logging
 import json
 import os
 
-
-log = logging.getLogger(__name__)
-log.setLevel(level=logging.DEBUG)
+from logging import getLogger
+logging = getLogger(__name__)
 
 
 SIGNATURE_FILE_PATH = '/signatures.txt'
@@ -53,7 +51,7 @@ def enum_func_static(instructions):
 
                     functions.append(function)
         except:
-            log.info('enum_func_static Exception')
+            logging.info('enum_func_static Exception')
             pass
     return functions
 
@@ -136,8 +134,8 @@ class EvmCFG(CFG):
         """ TODO """
 
         self.bytecode = bytecode
-        disasm = EvmDisassembler(self.bytecode)
-        self.instructions = disasm.disassemble()
+        self.disasm = EvmDisassembler(self.bytecode)
+        self.instructions = self.disasm.disassemble()
         self.analysis = analysis
 
         self.basicblocks = list()
