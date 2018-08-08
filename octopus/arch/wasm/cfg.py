@@ -359,7 +359,7 @@ class WasmCFG(CFG):
         g.render(filename, view=True)
 
     def visualize_instrs_per_funcs(self, show=True, save=True,
-                                   out_filename="wasm_statictics.png",
+                                   out_filename="wasm_func_analytic.png",
                                    fontsize=8):
         """Visualize the instructions repartitions per functions
         """
@@ -418,6 +418,3 @@ class WasmCFG(CFG):
         # show
         if show:
             plt.show()
-
-    def visualize_analytics(self):
-        pass
