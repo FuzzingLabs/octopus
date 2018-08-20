@@ -457,7 +457,7 @@ class WasmModuleAnalyzer(object):
     # * http://gauss.ececs.uc.edu/Courses/c4029/code/syscall_32.tbl.html
     def is_compiled_with_emscripten(self):
         matching_list = self.contains_emscripten_syscalls()
-        return (matching_list is not None)
+        return True if matching_list else False
 
     def contains_emscripten_syscalls(self):
         EMSCRIPTEN_SYSCALL_JSON = '/signatures/emscripten_syscalls.json'
