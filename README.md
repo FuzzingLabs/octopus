@@ -157,7 +157,7 @@ print(disasm.disassemble(r_format='text'))
 ```python
 from octopus.arch.wasm.analyzer import WasmModuleAnalyzer
 
-FILE = "examples/wasm/samples/helloworld.wasm"
+FILE = "examples/wasm/samples/hello_wasm_studio.wasm"
 
 with open(FILE, 'rb') as f:
     module_bytecode = f.read()
@@ -167,8 +167,40 @@ with open(FILE, 'rb') as f:
 analyzer = WasmModuleAnalyzer(module_bytecode)
 
 # show analyzer attributes
-print(analyzer.show())
-# {'magic': b'\x00asm', 'version': b'\x01\x00\x00\x00', 'types': [('i32', ''), ('', '')], 'imports_all': [(0, 'sys', 'print', 0)], 'imports_func': [('sys', 'print', 0)], 'func_types': [1], 'tables': [], 'memories': [{'limits_flags': 1, 'limits_initial': 200, 'limits_maximum': 200}], 'globals': [], 'exports': [{'field_str': 'memory', 'kind': 2, 'index': 0}, {'field_str': 'main', 'kind': 0, 'index': 1}], 'start': None, 'elements': [], 'length codes': 1, 'datas': [{'index': 0, 'offset': None, 'size': 13, 'data': b'Hello, world\x00'}]}
+print(analyzer.func_prototypes)
+# [('putc_js', 'i32', ''),
+#  ('__syscall0', 'i32', 'i32'),
+#  ('__syscall3', 'i32 i32 i32 i32', 'i32'),
+#  ('__syscall1', 'i32 i32', 'i32'),
+#  ('__syscall5', 'i32 i32 i32 i32 i32 i32', 'i32'),
+#  ('__syscall4', 'i32 i32 i32 i32 i32', 'i32'),
+#  ('$func6', '', ''),
+#  ('main', '', 'i32'),
+#  ('writev_c', 'i32 i32 i32', 'i32'),
+#  ('$func9', '', 'i32'),
+#  ('$func10', 'i32', 'i32'),
+#  ('$func11', 'i32', 'i32'),
+#  ('$func12', 'i32', ''),
+#  ('$func13', 'i32', 'i32'),
+#  ('$func14', 'i32 i32 i32 i32', 'i32'),
+#  ('$func15', 'i32 i32', 'i32'),
+#  ('$func16', 'i32 i32', 'i32'),
+#  ('$func17', 'i32', 'i32'),
+#  ('$func18', 'i32', 'i32'),
+#  ('$func19', 'i32', 'i32'),
+#  ('$func20', 'i32 i32 i32', 'i32'),
+#  ('$func21', 'i32 i32 i32', 'i32'),
+#  ('$func22', 'i32 i64 i32', 'i64'),
+#  ('$func23', 'i32 i32 i32', 'i32'),
+#  ('$func24', 'i32', 'i32'),
+#  ('$func25', 'i32 i32 i32 i32', '')]
+print()
+print(analyzer.contains_emscripten_syscalls())
+#[('__syscall0', 'restart_syscall'),
+# ('__syscall3', 'read'),
+# ('__syscall1', 'exit'),
+# ('__syscall5', 'open'),
+# ('__syscall4', 'write')]
 ```
 
 #### Control Flow Analysis

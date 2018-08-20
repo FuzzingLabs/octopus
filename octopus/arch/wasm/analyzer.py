@@ -21,6 +21,8 @@ from octopus.arch.wasm.decode import decode_module
 from octopus.core.utils import bytecode_to_bytes
 # from wasm.decode import decode_module
 import io
+import json
+import os
 
 from logging import getLogger
 logging = getLogger(__name__)
@@ -73,6 +75,9 @@ class WasmModuleAnalyzer(object):
         self.customs = list()
         self.func_prototypes = list()
 
+    def __str__(self):
+        return self.show()
+
     def show(self):
         """Return dict with WasmModuleAnalyzer attributes"""
         return {'magic': self.magic,
@@ -88,9 +93,10 @@ class WasmModuleAnalyzer(object):
                 'start': self.start,
                 'elements': self.elements,
                 'length codes': len(self.codes),
-                'datas': self.datas}
+                'datas': self.datas,
+                'func_prototypes': self.func_prototypes}
 
-    def get_section(self, section_type):
+    def __get_section(self, section_type):
         mod_iter = iter(decode_module(self.module_bytecode))
         _, _ = next(mod_iter)
         sections = list(mod_iter)
@@ -184,7 +190,7 @@ class WasmModuleAnalyzer(object):
                 import_list.append((entry.kind, module_str, field_str, gbl))
             else:
                 logging.error('unknown %d %s %s', entry.kind,
-                          module_str, field_str)
+                              module_str, field_str)
         return (import_list, import_func_list)
 
     def __decode_function_section(self, function_section):
@@ -350,7 +356,7 @@ class WasmModuleAnalyzer(object):
         payload = unknown_section.payload.tobytes()
         return (sec_name, payload)
 
-    def _create_ordered_list(self):
+    def get_func_prototypes_ordered(self):
         """create ordered list of functions"""
 
         func_prototypes = list()
@@ -443,5 +449,29 @@ class WasmModuleAnalyzer(object):
                     self.customs.append(self.__decode_unknown_section(cur_sec_data))
 
         # create ordered list of functions
-        self.func_prototypes = self._create_ordered_list()
-        return self.show()
+        self.func_prototypes = self.get_func_prototypes_ordered()
+        return True
+
+    # emscripten syscall from:
+    # * https://github.com/kripken/emscripten/blob/incoming/system/lib/fetch/asmfs.cpp
+    # * http://gauss.ececs.uc.edu/Courses/c4029/code/syscall_32.tbl.html
+    def is_compiled_with_emscripten(self):
+        matching_list = self.contains_emscripten_syscalls()
+        return (matching_list is not None)
+
+    def contains_emscripten_syscalls(self):
+        EMSCRIPTEN_SYSCALL_JSON = '/signatures/emscripten_syscalls.json'
+        path = os.path.dirname(os.path.realpath(__file__)) + EMSCRIPTEN_SYSCALL_JSON
+
+        json_data = open(path).read()
+        data = json.loads(json_data)
+
+        func_names = [x for x, _, _ in self.func_prototypes]
+        match = list()
+        for name in func_names:
+            try:
+                syscall = data[name]
+                match.append((name, syscall))
+            except KeyError:
+                pass
+        return match
