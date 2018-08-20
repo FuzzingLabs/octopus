@@ -452,13 +452,18 @@ class WasmModuleAnalyzer(object):
         self.func_prototypes = self.get_func_prototypes_ordered()
         return True
 
+    def is_compiled_with_emscripten(self):
+        matching_list = self.get_emscripten_calls()
+        return True if matching_list else False
+
+    def get_emscripten_calls(self):
+
+        res = [x for x, _, _ in self.func_prototypes if is_emscripten_func(x)]
+        return res
+
     # emscripten syscall from:
     # * https://github.com/kripken/emscripten/blob/incoming/system/lib/fetch/asmfs.cpp
     # * http://gauss.ececs.uc.edu/Courses/c4029/code/syscall_32.tbl.html
-    def is_compiled_with_emscripten(self):
-        matching_list = self.contains_emscripten_syscalls()
-        return True if matching_list else False
-
     def contains_emscripten_syscalls(self):
         EMSCRIPTEN_SYSCALL_JSON = '/signatures/emscripten_syscalls.json'
         path = os.path.dirname(os.path.realpath(__file__)) + EMSCRIPTEN_SYSCALL_JSON
@@ -470,8 +475,53 @@ class WasmModuleAnalyzer(object):
         match = list()
         for name in func_names:
             try:
-                syscall = data[name]
+                # remove '_' to match '__syscallXX' & '___syscallXX'
+                syscall = data[name.replace('_', '')]
                 match.append((name, syscall))
             except KeyError:
                 pass
         return match
+
+
+def is_emscripten_func(x):
+
+    # from https://github.com/kripken/emscripten/blob/master/emscripten.py
+    EMSCRIPTEN_LIST = [
+        # create_basic_funcs
+        'abort', 'assert', 'enlargeMemory', 'getTotalMemory',
+        'abortOnCannotGrowMemory',
+        'abortStackOverflow',
+        'abortStackOverflowEmterpreter',
+        'segfault', 'alignfault', 'ftfault',
+        'SAFE_HEAP_LOAD', 'SAFE_HEAP_LOAD_D', 'SAFE_HEAP_STORE', 'SAFE_HEAP_STORE_D', 'SAFE_FT_MASK',
+        # create_receiving
+        '_memcpy', '_memset', 'runPostSets', '_emscripten_replace_memory', '__start_module',
+        # create_asm_runtime_funcs
+        'stackAlloc', 'stackSave', 'stackRestore', 'establishStackSpace', 'setThrew',
+        'setTempRet0', 'getTempRet0',
+        'setDynamicTop',
+        'emterpret',
+        'setAsyncState', 'emtStackSave', 'emtStackRestore', 'getEmtStackMax', 'setEmtStackMax'
+        'setAsync']
+
+    if x.startswith('_emscripten_'):
+        return True
+    # function_tables(...)
+    elif x.startswith('dynCall_'):
+        return True
+    # create_basic_funcs(...)
+    elif x.startswith('nullFunc_'):
+        return True
+    elif x.startswith('invoke_'):
+        return True
+    elif x.startswith('jsCall_'):
+        return True
+    elif x.startswith('ftCall_'):
+        return True
+    # syscalls
+    elif x.replace('_', '').startswith('syscall'):
+        return True
+    elif x in EMSCRIPTEN_LIST:
+        return True
+    else:
+        return False
