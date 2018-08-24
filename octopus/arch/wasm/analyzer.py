@@ -457,7 +457,6 @@ class WasmModuleAnalyzer(object):
         return True if matching_list else False
 
     def get_emscripten_calls(self):
-
         res = [x for x, _, _ in self.func_prototypes if is_emscripten_func(x)]
         return res
 

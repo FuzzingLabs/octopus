@@ -15,7 +15,7 @@ The purpose of Octopus is to provide an easy way to analyze smart contract secur
 
 ## Features
 
-- **Explorer**: Octopus JSON-RPC client implementation to communicate with platforms blockchains
+- **Explorer**: Octopus JSON-RPC client implementation to communicate with blockchain platforms
 - **Disassembler**: Octopus can translate bytecode into assembly representation
 - **Control Flow Analysis**: Octopus can generate a Control Flow Graph (CFG) 
 - **Call Flow Analysis**: Octopus can generate a Call Flow Graph (function level) 
