@@ -117,6 +117,7 @@ class EthereumEmulatorEngine(EmulatorEngine):
             # execute single instruction
             halt = self.emulate_one_instruction(instr, state, depth)
             state.instructions_visited.append(instr.offset)
+            #state.instructions_visited[instr.offset] = instr.offset
 
         logging.info("[X] Returning from basicblock %s", self.current_basicblock.name)
 
@@ -370,6 +371,7 @@ class EthereumEmulatorEngine(EmulatorEngine):
                 logging.info('[X] follow JUMP branch offset 0x%x' % target.offset)
                 new_state = copy.deepcopy(state)
                 new_state.pc = self.instructions.index(target)
+                #state.pc = self.instructions.index(target)
 
                 # follow the JUMP
                 self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_UNCONDITIONAL))
@@ -430,7 +432,7 @@ class EthereumEmulatorEngine(EmulatorEngine):
 
             else:
                 self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%target.offset, EDGE_CONDITIONAL_TRUE))
-                logging.warning('[X] Loop detected, skipping JUMP 0x%x' % jump_addr)
+                logging.warning('[X] Loop detected, skipping JUMPI 0x%x' % jump_addr)
                 logging.warning('[X] push_instr.ssa %s' % push_instr.ssa.format())
                 halt = True
             halt = True

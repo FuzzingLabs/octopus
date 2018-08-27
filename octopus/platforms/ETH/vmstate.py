@@ -16,7 +16,8 @@ class EthereumVMstate(VMstate):
         self.pc = 0
         self.instr = None
 
-        self.instructions_visited = []
+        self.instructions_visited = list()
+        #self.instructions_visited = dict()
 
     def details(self):
 
