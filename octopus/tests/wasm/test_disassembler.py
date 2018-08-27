@@ -47,7 +47,7 @@ class WasmDisassemblerTestCase(unittest.TestCase):
 
         # fibonacci
         module_bytecode = read_file(EXAMPLE_PATH + "fib.wasm")
-        disasmModule(module_bytecode, 1, 18)      
+        disasmModule(module_bytecode, 1, 20)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(WasmDisassemblerTestCase)
