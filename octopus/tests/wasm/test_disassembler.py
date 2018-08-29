@@ -4,6 +4,7 @@ from octopus.arch.wasm.disassembler import WasmDisassembler
 
 EXAMPLE_PATH = "examples/wasm/samples/"
 
+
 class WasmDisassemblerTestCase(unittest.TestCase):
 
     def testDisassemble(self):

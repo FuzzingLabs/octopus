@@ -207,7 +207,6 @@ print(analyzer.contains_emscripten_syscalls())
 
 ```python
 from octopus.arch.wasm.cfg import WasmCFG
-from octopus.analysis.graph import CFGGraph
 
 # complete wasm module
 file_name = "examples/wasm/samples/fib.wasm"
@@ -221,8 +220,7 @@ cfg = WasmCFG(raw)
 
 # visualize CFGGraph 
 # generate graph.dot and graph.pdf file
-graph = CFGGraph(cfg)
-graph.view_functions()
+cfg.visualize()
 ```
 
 <p align="center">
