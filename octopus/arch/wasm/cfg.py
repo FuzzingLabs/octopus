@@ -40,7 +40,7 @@ def enum_func(module_bytecode):
 
     for idx, code in enumerate(analyzer.codes):
         # get corresponding function prototype
-        name, param_str, return_str = protos[import_len + idx]
+        name, param_str, return_str, _ = protos[import_len + idx]
 
         name = format_func_name(name, param_str, return_str)
         instructions = WasmDisassembler().disassemble(code)
@@ -264,7 +264,7 @@ class WasmCFG(CFG):
             self.basicblocks += func.basicblocks
             self.edges += edges
 
-    def get_functions_call_edges(self, format_fname=True):
+    def get_functions_call_edges(self, format_fname=False):
 
         nodes = list()
         edges = list()
@@ -275,7 +275,7 @@ class WasmCFG(CFG):
             self.functions = enum_func(self.module_bytecode)
 
         # create nodes
-        for name, param_str, return_str in self.analyzer.func_prototypes:
+        for name, param_str, return_str, _ in self.analyzer.func_prototypes:
             if format_fname:
                 nodes.append(format_func_name(name, param_str, return_str))
             else:
@@ -290,13 +290,13 @@ class WasmCFG(CFG):
         # tmp_edges = [(node_from, node_to), (...), ...]
         for node_from, node_to in tmp_edges:
             # node_from
-            name, param, ret = self.analyzer.func_prototypes[node_from]
+            name, param, ret, _ = self.analyzer.func_prototypes[node_from]
             if format_fname:
                 from_final = format_func_name(name, param, ret)
             else:
                 from_final = name
             # node_to
-            name, param, ret = self.analyzer.func_prototypes[node_to]
+            name, param, ret, _ = self.analyzer.func_prototypes[node_to]
             to_final = format_func_name(name, param, ret)
             if format_fname:
                 to_final = format_func_name(name, param, ret)
@@ -317,34 +317,42 @@ class WasmCFG(CFG):
         graph = CFGGraph(self)
         graph.view_functions()
 
-    def visualize_call_flow(self, filename="wasm_call_graph_octopus.gv"):
+    def visualize_call_flow(self, filename="wasm_call_graph_octopus.gv",
+                            format_fname=False):
         """Visualize the cfg call flow graph
         """
-        nodes, edges = self.get_functions_call_edges(format_fname=False)
+        nodes, edges = self.get_functions_call_edges()
+        if format_fname:
+            nodes_longname, edges = self.get_functions_call_edges(format_fname=True)
 
         g = Digraph(filename, filename=filename)
         g.attr(rankdir='LR')
 
         with g.subgraph(name='global') as c:
 
-            export_list = [d['field_str'] for d in self.analyzer.exports]
-            import_list = [x for _, x, _ in self.analyzer.imports_func]
+            export_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'export']
+            import_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'import']
             # create all the graph nodes (function name)
             for idx, node in enumerate(nodes):
+                # name graph bubble
+                node_name = node
+                if format_fname:
+                    node_name = nodes_longname[idx]
+
                 if node in import_list:
                     logging.debug('import ' + node)
                     fillcolor = DESIGN_IMPORT.get('fillcolor')
                     shape = DESIGN_IMPORT.get('shape')
                     style = DESIGN_IMPORT.get('style')
-                    c.node(node, fillcolor=fillcolor, shape=shape, style=style)
+                    c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
                 elif node in export_list:
                     logging.debug('export ' + node)
                     fillcolor = DESIGN_EXPORT.get('fillcolor')
                     shape = DESIGN_EXPORT.get('shape')
                     style = DESIGN_EXPORT.get('style')
-                    c.node(node, fillcolor=fillcolor, shape=shape, style=style)
+                    c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
                 else:
-                    c.node(node)
+                    c.node(node_name)
 
             # check if multiple same edges
             # in that case, put the number into label

@@ -330,14 +330,19 @@ class WasmModuleAnalyzer(object):
         .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
         """
         payload = name_section.payload.tobytes()
+        #print(payload)
+
         total = 0
         names_list = list()
 
         f = io.BytesIO(payload)
-        count = int.from_bytes(f.read(1), byteorder='big')
+        f.read(2)  # drop 2 bytes
+        total += 2
+        count = int.from_bytes(f.read(1), byteorder='little')
         total += 1
+        print(count)
 
-        while total < len(payload) - 1:
+        while total < len(payload):
             index = int.from_bytes(f.read(1), byteorder='big')
             total += 1
             name_len = int.from_bytes(f.read(1), byteorder='big')
@@ -364,23 +369,25 @@ class WasmModuleAnalyzer(object):
         # get imported functions
         for _, name, type_idx in self.imports_func:
             _param, _return = self.types[type_idx]
-            func_prototypes.append((name, _param, _return))
+            func_prototypes.append((name, _param, _return, 'import'))
 
         # get all internal functions
         for idx, code in enumerate(self.codes):
             _param, _return = self.types[self.func_types[idx]]
             real_index = len(self.imports_func) + idx
             name = '$func%d' % real_index
+            f_type = 'local'
 
             # if exported function - overwrite name
             for x in self.exports:
                 if x.get('index') == real_index and x.get('kind') == 0:
                     name = x.get('field_str')
+                    f_type = 'export'
 
             # TODO: need to test
             if real_index == self.start:
                 name = '* ' + name
-            func_prototypes.append((name, _param, _return))
+            func_prototypes.append((name, _param, _return, f_type))
         return func_prototypes
 
     def analyze(self):
@@ -457,7 +464,7 @@ class WasmModuleAnalyzer(object):
         return True if matching_list else False
 
     def get_emscripten_calls(self):
-        res = [x for x, _, _ in self.func_prototypes if is_emscripten_func(x)]
+        res = [x for x, _, _, _ in self.func_prototypes if is_emscripten_func(x)]
         return res
 
     # emscripten syscall from:
@@ -470,7 +477,7 @@ class WasmModuleAnalyzer(object):
         json_data = open(path).read()
         data = json.loads(json_data)
 
-        func_names = [x for x, _, _ in self.func_prototypes]
+        func_names = [x for x, _, _, _ in self.func_prototypes]
         match = list()
         for name in func_names:
             try:
