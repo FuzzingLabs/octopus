@@ -63,15 +63,18 @@ def enum_func_call_edges(functions, len_imports):
         # iterates over instruction
         for inst in func.instructions:
             # detect if inst is a call instructions
-            if inst.is_call:
+            if inst.name == "call":  #is_call:
                 logging.info('%s', inst.operand_interpretation)
-                if inst.name == "call":
-                    # only get the import_id
-                    node_to = int(inst.operand_interpretation.split(' ')[1])
+                #if inst.name == "call":
+                # only get the import_id
+                node_to = int(inst.operand_interpretation.split(' ')[1])
                 # The `call_indirect` operator takes a list of function arguments and as the last operand the index into the table.
-                elif inst.name == "call_indirect":
-                    # the last operand is the index on the table
-                    node_to = int(inst.operand_interpretation.split(',')[-1].split(' ')[-1])
+                #elif inst.name == "call_indirect":
+                # the last operand is the index on the table
+                #print(inst.operand_interpretation)
+                #print(type(inst.insn_byte[1]))
+                #node_to = inst.insn_byte[1]
+                #node_to = int(inst.operand_interpretation.split(',')[-1].split(' ')[-1])
                 call_edges.append((node_from, node_to))
 
     return call_edges
@@ -332,12 +335,19 @@ class WasmCFG(CFG):
 
             export_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'export']
             import_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'import']
+            indirect_target = [self.analyzer.func_prototypes[index][0] for index in self.analyzer.elements[0].get('elems')]
+            print(indirect_target)
             # create all the graph nodes (function name)
             for idx, node in enumerate(nodes):
                 # name graph bubble
                 node_name = node
                 if format_fname:
                     node_name = nodes_longname[idx]
+
+                # default style value
+                fillcolor = "white"
+                shape = "ellipse"
+                style = "filled"
 
                 if node in import_list:
                     logging.debug('import ' + node)
@@ -351,8 +361,12 @@ class WasmCFG(CFG):
                     shape = DESIGN_EXPORT.get('shape')
                     style = DESIGN_EXPORT.get('style')
                     c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
-                else:
-                    c.node(node_name)
+                elif node in indirect_target:
+                    logging.debug('indirect_target ' + node)
+                    #style += ", rounded"
+                    shape = "hexagon"
+
+                c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
 
             # check if multiple same edges
             # in that case, put the number into label
