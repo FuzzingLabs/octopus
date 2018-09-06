@@ -340,7 +340,6 @@ class WasmModuleAnalyzer(object):
         total += 2
         count = int.from_bytes(f.read(1), byteorder='little')
         total += 1
-        print(count)
 
         while total < len(payload):
             index = int.from_bytes(f.read(1), byteorder='big')
