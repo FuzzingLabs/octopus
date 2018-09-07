@@ -335,8 +335,10 @@ class WasmCFG(CFG):
 
             export_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'export']
             import_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'import']
-            indirect_target = [self.analyzer.func_prototypes[index][0] for index in self.analyzer.elements[0].get('elems')]
-
+            try:
+                indirect_target = [self.analyzer.func_prototypes[index][0] for index in self.analyzer.elements[0].get('elems')]
+            except IndexError:
+                indirect_target = []
             # create all the graph nodes (function name)
             for idx, node in enumerate(nodes):
                 # name graph bubble
