@@ -221,7 +221,7 @@ def enum_blocks_edges(function_id, instructions):
             #                             EDGE_CONDITIONAL_FALSE))
             #else:
             for ref in inst.xref:
-                if ref != inst.offset_end + 1:
+                if ref and ref != inst.offset_end + 1:
                     # create conditionnal true edges
                     edges.append(Edge(block.name,
                                       format_bb_name(function_id, ref),
