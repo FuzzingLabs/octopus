@@ -28,18 +28,19 @@ Octopus support the following types of programs/smart contracts:
 * WebAssembly module (WASM)
 * Bitcoin script (BTC script)
 * Ethereum smart contracts (EVM bytecode)
+* Ethereum smart contracts (WASM)
 * EOS smart contracts (WASM)
 * NEO smart contracts (AVM bytecode)
 
 
-|| BTC | ETH | EOS | NEO || WASM
-|:--------------------:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | | :o: |
-|**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
-|**Control Flow Analysis** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
-|**Call Flow Analysis** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
-|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
-|**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
+|| BTC | ETH (EVM) | ETH (WASM) | EOS | NEO || WASM |
+|:--------------------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Explorer** | :heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :o: |
+|**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
+|**Control Flow Analysis** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
+|**Call Flow Analysis** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
+|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
+|**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 
 
 * PyPI package :heavy_check_mark:
@@ -279,8 +280,11 @@ cfg.visualize_call_flow()
     <img src="/images/wasm-callflow-hello-studio.png" height="400px"/>
 </p>
 
-Legend:  `imported` ![#f03c15](https://placehold.it/15/40E0D0/000000?text=+) / ![#c5f015](https://placehold.it/15/808080/000000?text=+) 
-`exported` function
+Legend:  
+
+<p align="center">
+    <img src="/images/legend_callgraph.png" height="400px"/>
+</p>
 
 </p>
 </details>
@@ -387,6 +391,211 @@ graph.view()
 </p>
 </details>
 
+<details><summary>Ethereum (WASM)</summary>
+<p>
+
+#### Explorer
+
+```python
+from octopus.platforms.ETH.explorer import EthereumInfuraExplorer
+from octopus.platforms.ETH.explorer import INFURA_KOVAN
+
+# connection to ROPSTEN network (testnet)
+explorer = EthereumInfuraExplorer("bHuaQhX91nkQBac8Wtgj",
+                                  network=INFURA_KOVAN)
+# connection to MAINNET network (mainnet)
+# explorer = EthereumInfuraExplorer("bHuaQhX91nkQBac8Wtgj")
+
+# test infura access
+block_number = explorer.eth_blockNumber()
+print('blockNumber = %d' % block_number)
+
+# retrieve code of this smart contract
+addr = "0x1120e596b173d953ba52ce262f73ce3734b0e40e"
+code = explorer.eth_getCode(addr)
+print()
+print(code)
+# blockNumber = 8803487
+# 
+# 0x0061736d0100000001090260000060027f7f00021a0203656e7603726574000103656e76066d656d6f7279020102100303020000040501700101010501000601000708010463616c6c00010a120205001002000b0a00418008410b1000000b0b1201004180080b0b48656c6c6f20776f726c64000b076c696e6b696e6703010b0066046e616d65015f060003726574010570616e6963020463616c6c032f5f5a4e3134707761736d5f657468657265756d3365787433726574313768363034643830393864313638366338304504066465706c6f790511727573745f626567696e5f756e77696e64
+```
+
+#### Disassembler
+
+Disassembly of a Wasm module:
+```python
+from octopus.platforms.ETH.disassembler import EthereumDisassembler
+
+FILE = "examples/ETH/wasm/helloworld_kovan.bytecode"
+
+with open(FILE, 'r') as f:
+    module_bytecode = f.read()
+
+disasm = EthereumDisassembler(arch='wasm')
+# return list of functions instructions (list)
+print(disasm.disassemble_module(module_bytecode))
+#[[<octopus.arch.wasm.instruction.WasmInstruction object at 0x7efc0ceaa898>], [<octopus.arch.wasm.instruction.WasmInstruction object at 0x7efc0ceaa7b8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7efc0ceaa780>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7efc0ceaa748>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7efc0ceaa6d8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7efc0ceaa710>]]
+
+print()
+# return text of functions code
+print(disasm.disassemble_module(module_bytecode, r_format='text'))
+# func 0
+# end
+# 
+# func 1
+# call 1
+# i32.const 1036
+# i32.const 232
+# call 0
+# end
+
+```
+
+Disassembly of wasm bytecode:
+```python
+from octopus.platforms.ETH.disassembler import EthereumDisassembler
+
+# bytecode in WebAssembly is the function code (i.e. function body)
+bytecode = b'\x02\x7fA\x18\x10\x1cA\x00\x0f\x0b'
+# create a WasmDisassembler object
+disasm = EthereumDisassembler(bytecode, arch='wasm')
+
+# disassemble bytecode into a list of WasmInstruction
+# attributes r_format='list' by default
+print(disasm.disassemble())
+
+#[<octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904eb8>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>]
+print()
+print(disasm.disassemble(r_format='reverse'))
+
+#{0: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4901048>, 1: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904240>, 2: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904f60>, 3: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904ef0>, 4: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904278>, 5: <octopus.arch.wasm.instruction.WasmInstruction object at 0x7f85e4904390>}
+print()
+print(disasm.disassemble(r_format='text'))
+# block -1
+# i32.const 24
+# call 28
+# i32.const 0
+# return
+# end
+```
+
+#### ModuleAnalyzer
+
+```python
+from octopus.arch.wasm.analyzer import WasmModuleAnalyzer
+
+FILE = "examples/ETH/wasm/helloworld_kovan.bytecode"
+
+with open(FILE, 'r') as f:
+    module_bytecode = f.read()
+
+# return list of functions instructions (list)
+# attributes analysis=True by default
+analyzer = WasmModuleAnalyzer(module_bytecode)
+
+# show analyzer attributes
+print(analyzer.func_prototypes)
+# [('ret', 'i32 i32', '', 'import'), ('$func1', '', '', 'local'), ('call', '', '', 'export')]
+print()
+print(analyzer.exports)
+# [{'field_str': 'call', 'kind': 0, 'index': 2}]
+print()
+print(analyzer.imports_func)
+# [('env', 'ret', 1)]
+print()
+print(analyzer.datas)
+# [{'data': b'Hello world', 'index': 0, 'offset': None, 'size': 11},
+# {'data': b'\x00asm\x01\x00\x00\x00\x01\t\x02`\x00\x00`\x02\x7f\x7f\x00\x02\x1a\x02\x03env\x03ret\x00\x01\x03env\x06memory\x02\x01\x02\x10\x03\x03\x02\x00\x00\x04\x05\x01p\x01\x01\x01\x05\x01\x00\x06\x01\x00\x07\x08\x01\x04call\x00\x01\n\x12\x02\x05\x00\x10\x02\x00\x0b\n\x00A\x80\x08A\x0b\x10\x00\x00\x0b\x0b\x12\x01\x00A\x80\x08\x0b\x0bHello world\x00\x0b\x07linking\x03\x01\x0b\x00f\x04name\x01_\x06\x00\x03ret\x01\x05panic\x02\x04call\x03/_ZN14pwasm_ethereum3ext3ret17h604d8098d1686c80E\x04\x06deploy\x05\x11rust_begin_unwind',
+# 'index': 0,
+# 'offset': None,
+# 'size': 232}]
+
+```
+
+#### Control Flow Analysis
+
+```python
+from octopus.platforms.ETH.cfg import EthereumCFG
+
+# HelloWorld on Kovan Parity Network
+file_name = "examples/ETH/wasm/helloworld_kovan.bytecode"
+
+# read file
+with open(file_name) as f:
+    bytecode_hex = f.read()
+
+# create the CFG
+cfg = EthereumCFG(bytecode_hex, arch='wasm')
+cfg.visualize()
+```
+
+<p align="center">
+    <img src="/images/eth-wasm-cfg-hello-parity.png" height="400px"/>
+</p>
+
+#### Functions' instructions analytics
+
+```python
+from octopus.platforms.ETH.cfg import EthereumCFG
+
+# HelloWorld on Kovan Parity Network
+file_name = "examples/ETH/wasm/helloworld_kovan.bytecode"
+
+# read file
+with open(file_name) as f:
+    bytecode_hex = f.read()
+
+# create the CFG
+cfg = EthereumCFG(bytecode_hex, arch='wasm')
+
+# visualization
+cfg.visualize_instrs_per_funcs()
+```
+
+<p align="center">
+    <img src="/images/eth-wasm-func-analytics.png" height="400px"/>
+</p>
+
+#### Call Flow Analysis
+
+```python
+from octopus.platforms.ETH.cfg import EthereumCFG
+
+# HelloWorld on Kovan Parity Network
+file_name = "examples/ETH/wasm/helloworld_kovan.bytecode"
+
+# read file
+with open(file_name) as f:
+    bytecode_hex = f.read()
+
+# create the CFG
+cfg = EthereumCFG(bytecode_hex, arch='wasm')
+
+# visualization
+cfg.visualize_call_flow()
+```
+
+<p align="center">
+    <img src="/images/eth-wasm-callflow-hello-parity.png" height="400px"/>
+</p>
+
+Legend:  
+
+<p align="center">
+    <img src="/images/legend_callgraph.png" height="400px"/>
+</p>
+
+
+#### IR conversion (SSA)
+
+```python
+# TODO
+```
+
+
+</p>
+</details>
+
 <details><summary>NEO</summary>
 <p>
 
@@ -396,7 +605,7 @@ graph.view()
 from octopus.platforms.NEO.explorer import NeoExplorerRPC
 
 # get list nodes here: http://monitor.cityofzion.io/
-explorer = NeoExplorerRPC(host='pyrpc1.nodeneo.ch')
+explorer = NeoExplorerRPC(host='seed2.neo.org')
 
 # get current number of block on the blockchain
 print(explorer.getblockcount())
@@ -625,6 +834,8 @@ Please find examples in [examples](examples) folder.
 
 ## Publications and Videos
 
+* ToorCon XX - 2018 [Reversing Ethereum Smart Contracts](https://frab.toorcon.net/en/toorcon20/public/events/97)
+* ToorCon XX - 2018 [Dissection of WebAssembly module](https://frab.toorcon.net/en/toorcon20/public/events/92)
 * REcon Montreal 2018: [Reverse Engineering Of Blockchain Smart Contracts](https://recon.cx/2018/montreal/schedule/system/event_attachments/attachments/000/000/053/original/RECON-MTL-2018-Reversing_blockchains_smart_contracts.pdf)
 
 ## Authors

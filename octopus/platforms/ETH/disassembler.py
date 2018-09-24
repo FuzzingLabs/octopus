@@ -7,5 +7,5 @@ class EthereumDisassembler(object):
     def __new__(cls, bytecode=None, arch='evm'):
         if arch == 'evm':
             return EvmDisassembler(bytecode)
-        else:  # eWasm
+        else:  # Wasm
             return WasmDisassembler(bytecode)

@@ -2,7 +2,7 @@ from octopus.engine.explorer import Explorer
 
 # Inspired by https://github.com/ellmetha/neojsonrpc
 
-NEO_HOST = "pyrpc1.nodeneo.ch"
+NEO_HOST = 'seed2.neo.org'
 
 MAINNET_HTTP_RPC_PORT = 10332
 MAINNET_HTTPS_RPC_PORT = 10331
