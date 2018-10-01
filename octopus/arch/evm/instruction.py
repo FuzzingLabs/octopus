@@ -101,6 +101,12 @@ class EvmInstruction(Instruction):
         self._xref = int.from_bytes(v, byteorder='big')
 
     @property
+    def is_call(self):
+        """ Return list if the instruction is a basic block terminator """
+        return self.semantics in ('CALL', 'CALLCODE',
+                                  'DELEGATECALL', 'STATICCALL')
+
+    @property
     def is_halt(self):
         """ Return list if the instruction is a basic block terminator """
         return self.semantics in ('RETURN', 'STOP', 'INVALID',

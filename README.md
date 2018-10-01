@@ -1,12 +1,12 @@
 # Octopus
-[![Generic badge](https://img.shields.io/badge/REcon-MTL%202018-red.svg)](https://recon.cx/2018/montreal/)
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/quoscient/octopus/graphs/commit-activity)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 <p align="center">
 	<img src="/images/logo-medium.png" height="400px"/>
 </p>
+
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/quoscient/octopus/graphs/commit-activity)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Octopus is a security analysis framework for WebAssembly module and Blockchain Smart Contract.**
 
@@ -834,7 +834,7 @@ Please find examples in [examples](examples) folder.
 
 ## Publications and Videos
 
-* ToorCon XX - 2018 [Reversing Ethereum Smart Contracts](https://frab.toorcon.net/en/toorcon20/public/events/97)
+* ToorCon XX - 2018 [Reversing Ethereum Smart Contracts (Introduction)](https://frab.toorcon.net/en/toorcon20/public/events/97)
 * ToorCon XX - 2018 [Dissection of WebAssembly module](https://frab.toorcon.net/en/toorcon20/public/events/92)
 * REcon Montreal 2018: [Reverse Engineering Of Blockchain Smart Contracts](https://recon.cx/2018/montreal/schedule/system/event_attachments/attachments/000/000/053/original/RECON-MTL-2018-Reversing_blockchains_smart_contracts.pdf)
 

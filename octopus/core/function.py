@@ -14,8 +14,8 @@ class Function(object):
         self.instructions = list()
 
     def show(self):
-        line = str(self.start_offset) + ': ' + str(self.name) + '\n'
-        line += 'prefered_name: %s' % self.prefered_name
+        line = ('%x' % self.start_offset) + ': ' + str(self.name) + '\n'
+        line += 'prefered_name: %s\n' % self.prefered_name
         line += 'start_offset = %x\n' % self.start_offset
         line += 'start_instr = ' + str(self.start_instr.name) + '\n'
         if self.size:
@@ -24,8 +24,8 @@ class Function(object):
             line += 'end_offset = ' + str(self.end_offset) + '\n'
         if self.end_instr:
             line += 'end_instr = ' + str(self.end_instr.name) + '\n'
-        line += 'lenght basicblocks: %s' % len(self.basicblocks)
-        line += 'lenght instructions: %s' % len(self.instructions)
+        line += 'lenght basicblocks: %s\n' % len(self.basicblocks)
+        line += 'lenght instructions: %s\n' % len(self.instructions)
         line += '\n\n'
         return line
 '''

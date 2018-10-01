@@ -1,4 +1,5 @@
 from octopus.analysis.cfg import CFG
+from octopus.analysis.graph import CFGGraph
 from octopus.core.function import Function
 from octopus.core.basicblock import BasicBlock
 
@@ -127,6 +128,15 @@ def enum_blocks_static(instructions):
 
     return basicblocks
 
+'''
+def enum_calls(instructions):
+    for inst in instructions:
+        # inst is a call instruction and ssa repr is not null
+        if inst.is_call and inst.ssa:
+            to_addr = inst.ssa.args[1]
+            print('%s to %s' % (inst.name, str(to_addr)))
+'''
+
 
 class EvmCFG(CFG):
 
@@ -160,6 +170,16 @@ class EvmCFG(CFG):
         self.functions = emul.functions
         self.basicblocks = emul.basicblocks
         self.edges = emul.edges
+
+    def visualize(self, simplify=False):
+        """Visualize the cfg
+        used CFGGraph
+        equivalent to:
+            graph = CFGGraph(cfg)
+            graph.view_functions()
+        """
+        graph = CFGGraph(self)
+        graph.view(simplify=simplify)
 
     def show(self):
         print("len bb = %d" % len(self.basicblocks))
