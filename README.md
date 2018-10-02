@@ -825,6 +825,7 @@ graph = CFGGraph(cfg)
 graph.view_functions()
 ```
 
+
 <p align="center">
     <img src="/images/eos-cfg.png"/>
 </p>
@@ -850,6 +851,29 @@ cfg.visualize_call_flow()
 
 <p align="center">
     <img src="/images/eos-callgraph.png"/>
+</p>
+
+#### Functions' instructions analytics
+
+```python
+from octopus.platforms.EOS.cfg import EosCFG
+
+# complete wasm module
+file_name = "examples/EOS/samples/eos_ping.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+# create the cfg
+cfg = EosCFG(raw)
+
+# visualize
+cfg.visualize_instrs_per_funcs()
+```
+
+<p align="center">
+    <img src="/images/eos-func-instrucs.png"/>
 </p>
 
 </p>
