@@ -39,7 +39,7 @@ Octopus support the following types of programs/smart contracts:
 |**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
 |**Control Flow Analysis** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
 |**Call Flow Analysis** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
-|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
+|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 |**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 
 
@@ -377,17 +377,48 @@ with open(file_name) as f:
 # create the CFG
 cfg = EthereumCFG(bytecode_hex)
 
+
 # generic visualization api
 # generate graph.dot and graph.pdf file
 graph = CFGGraph(cfg)
 graph.view()
+# or directly using the cfg binding
+# cfg.visualize()
+# and you can get a simplify cfg representation using
+# cfg.visualize(simplify=True) or graph.view(simplify=True)
 ```
+
+<p align="center">
+    <img src="/images/eth-cfg-evm.png" height="400px"/>
+</p>
 
 #### IR conversion (SSA)
 
 ```python
-# TODO
+# The conversion to SSA is already done by the SSAEmulator
+# when the CFG is reconstruct
+# by default you have just to visualize it
+from octopus.platforms.ETH.cfg import EthereumCFG
+
+# ethernaut0 bytecode
+file_name = "examples/ETH/evm_bytecode/Zeppelin_Hello_ethernaut0.bytecode"
+
+# read file
+with open(file_name) as f:
+    bytecode_hex = f.read()
+
+# create the CFG
+cfg = EthereumCFG(bytecode_hex)
+
+# SSA visualization
+cfg.visualize(ssa=True)
 ```
+
+<p align="center">
+    <img src="/images/eth-cfg-evm-ssa.png" height="400px"/>
+</p>
+
+
 </p>
 </details>
 

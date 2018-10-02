@@ -171,7 +171,7 @@ class EvmCFG(CFG):
         self.basicblocks = emul.basicblocks
         self.edges = emul.edges
 
-    def visualize(self, simplify=False):
+    def visualize(self, simplify=False, ssa=False):
         """Visualize the cfg
         used CFGGraph
         equivalent to:
@@ -179,7 +179,7 @@ class EvmCFG(CFG):
             graph.view_functions()
         """
         graph = CFGGraph(self)
-        graph.view(simplify=simplify)
+        graph.view(simplify=simplify, ssa=ssa)
 
     def show(self):
         print("len bb = %d" % len(self.basicblocks))
