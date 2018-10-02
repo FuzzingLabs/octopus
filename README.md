@@ -389,7 +389,7 @@ graph.view()
 ```
 
 <p align="center">
-    <img src="/images/eth-cfg-evm.png" height="400px"/>
+    <img src="/images/eth-cfg-evm.png"/>
 </p>
 
 #### IR conversion (SSA)
@@ -415,7 +415,7 @@ cfg.visualize(ssa=True)
 ```
 
 <p align="center">
-    <img src="/images/eth-cfg-evm-ssa.png" height="400px"/>
+    <img src="/images/eth-cfg-evm-ssa.png"/>
 </p>
 
 
