@@ -4,7 +4,6 @@
 # * https://github.com/athre0z/wasm/blob/master/wasm/opcodes.py
 
 from wasm.immtypes import *
-from wasm.opcodes import INSN_ENTER_BLOCK, INSN_LEAVE_BLOCK, INSN_BRANCH, INSN_NO_FLOW
 
 _groups = {0x00: 'Control',
            0x1A: 'Parametric',
