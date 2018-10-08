@@ -234,11 +234,10 @@ class EthereumEmulatorEngine(EmulatorEngine):
             args = [state.ssa_stack.pop(), state.ssa_stack.pop(), state.ssa_stack.pop()]
 
         # SSA emulation
-        if self.ssa:
-            instr.ssa = SSA(self.ssa_counter,
-                            instr.name, args=args)
-            state.ssa_stack.append(instr)
-            self.ssa_counter += 1
+        instr.ssa = SSA(self.ssa_counter,
+                        instr.name, args=args)
+        state.ssa_stack.append(instr)
+        self.ssa_counter += 1
 
         # Symbolic Execution emulation
         if self.symbolic_exec:
@@ -254,11 +253,10 @@ class EthereumEmulatorEngine(EmulatorEngine):
             args = [state.ssa_stack.pop()]
 
         # SSA emulation
-        if self.ssa:
-            instr.ssa = SSA(self.ssa_counter,
-                            instr.name, args=args)
-            state.ssa_stack.append(instr)
-            self.ssa_counter += 1
+        instr.ssa = SSA(self.ssa_counter,
+                        instr.name, args=args)
+        state.ssa_stack.append(instr)
+        self.ssa_counter += 1
 
         # Symbolic Execution emulation
         if self.symbolic_exec:
