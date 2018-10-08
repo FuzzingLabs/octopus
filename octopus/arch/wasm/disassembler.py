@@ -32,9 +32,9 @@ class WasmDisassembler(Disassembler):
         opcode_id = byte2int(bytecode_wnd[0])
 
         # default value
-        # opcode:(mnemonic/name, imm_struct, flags, pops, pushes, description)
-        invalid = ('INVALID', 0, 0, 0, 0, 0, 'Unknown opcode')
-        name, imm_struct, flags, pops, pushes, description = \
+        # opcode:(mnemonic/name, imm_struct, pops, pushes, description)
+        invalid = ('INVALID', 0, 0, 0, 'Unknown opcode')
+        name, imm_struct, pops, pushes, description = \
             self.asm.table.get(opcode_id, invalid)
 
         operand_size = 0
@@ -46,7 +46,7 @@ class WasmDisassembler(Disassembler):
             insn = inst_namedtuple(OPCODE_MAP[opcode_id], operand, 1 + operand_size)
             operand_interpretation = format_instruction(insn)
         insn_byte = bytecode_wnd[:1 + operand_size].tobytes()
-        instruction = WasmInstruction(opcode_id, name, imm_struct, operand_size, flags,
+        instruction = WasmInstruction(opcode_id, name, imm_struct, operand_size,
                                       insn_byte, pops, pushes, description,
                                       operand_interpretation=operand_interpretation,
                                       offset=offset)

@@ -1,19 +1,13 @@
 from octopus.core.instruction import Instruction
-
-from wasm.opcodes import (INSN_ENTER_BLOCK,
-                          INSN_LEAVE_BLOCK,
-                          INSN_NO_FLOW)  # INSN_BRANCH
-
 from octopus.arch.wasm.wasm import _groups
 
 
 class WasmInstruction(Instruction):
     """Wasm Instruction
-
     TODO
 
     """
-    def __init__(self, opcode, name, imm_struct, operand_size, flags, insn_byte,
+    def __init__(self, opcode, name, imm_struct, operand_size, insn_byte,
                  pops, pushes, description, operand_interpretation=None, offset=0):
         """ TODO """
         self.opcode = opcode
@@ -21,7 +15,6 @@ class WasmInstruction(Instruction):
         self.name = name
         self.description = description
         self.operand_size = operand_size
-        self.flags = flags
         self.operand = insn_byte  # Immediate operand if any
         # specific interpretation of operand value
         self.operand_interpretation = operand_interpretation
@@ -85,8 +78,7 @@ class WasmInstruction(Instruction):
     @property
     def is_halt(self):
         """ Return True if the instruction is a branch terminator """
-        return self.flags & INSN_NO_FLOW
-        # return self.name in ['return']  # unreachable
+        return self.name in ['unreachable', 'return']
 
     @property
     def is_terminator(self):
@@ -96,9 +88,9 @@ class WasmInstruction(Instruction):
     @property
     def is_block_starter(self):
         """ Return True if the instruction is a basic block starter """
-        return self.flags & INSN_ENTER_BLOCK
+        return self.name in ['block', 'loop', 'if', 'else']
 
     @property
     def is_block_terminator(self):
         """ Return True if the instruction is a basic block terminator """
-        return self.flags & INSN_LEAVE_BLOCK
+        return self.name in ['else', 'end']
