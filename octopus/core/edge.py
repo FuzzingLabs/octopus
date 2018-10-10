@@ -31,5 +31,5 @@ class Edge:
                      'condition', self.condition))
 
     def as_dict(self):
-        return {'from': hex(self.node_from), 'to': hex(self.node_to),
+        return {'from': str(self.node_from), 'to': str(self.node_to),
                 'type': self.type, 'condition': self.condition}
