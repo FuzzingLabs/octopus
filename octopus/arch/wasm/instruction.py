@@ -15,8 +15,11 @@ class WasmInstruction(Instruction):
         self.name = name
         self.description = description
         self.operand_size = operand_size
-        self.operand = insn_byte  # Immediate operand if any
-        # specific interpretation of operand value
+        if len(insn_byte) > 1:
+            self.operand = insn_byte[-operand_size:]  # Immediate operand if any
+        else:
+            self.operand = None
+            # specific interpretation of operand value
         self.operand_interpretation = operand_interpretation
         self.insn_byte = insn_byte
         self.pops = pops
@@ -38,7 +41,7 @@ class WasmInstruction(Instruction):
 
     def __str__(self):
         """ String representation of the instruction """
-        if self.operand_interpretation:
+        if self.operand:
             return self.operand_interpretation
         # elif self.operand:
         #    return self.name + str(self.operand)
@@ -55,6 +58,70 @@ class WasmInstruction(Instruction):
             else:
                 return last_class
         return last_class
+
+    @property
+    def is_control(self):
+        return self.group == 'Control'
+
+    @property
+    def is_parametric(self):
+        return self.group == 'Parametric'
+
+    @property
+    def is_variable(self):
+        return self.group == 'Variable'
+
+    @property
+    def is_memory(self):
+        return self.group == 'Memory'
+
+    @property
+    def is_constant(self):
+        return self.group == 'Constant'
+
+    @property
+    def is_logical_i32(self):
+        return self.group == 'Logical_i32'
+
+    @property
+    def is_logical_i64(self):
+        return self.group == 'Logical_i64'
+
+    @property
+    def is_logical_f32(self):
+        return self.group == 'Logical_f32'
+
+    @property
+    def is_logical_f64(self):
+        return self.group == 'Logical_f64'
+
+    @property
+    def is_arithmetic_i32(self):
+        return self.group == 'Arithmetic_i32'
+
+    @property
+    def is_bitwise_i32(self):
+        return self.group == 'Bitwise_i32'
+
+    @property
+    def is_arithmetic_i64(self):
+        return self.group == 'Arithmetic_i64'
+
+    @property
+    def is_bitwise_i64(self):
+        return self.group == 'Bitwise_i64'
+
+    @property
+    def is_arithmetic_f32(self):
+        return self.group == 'Arithmetic_f32'
+
+    @property
+    def is_arithmetic_f64(self):
+        return self.group == 'Arithmetic_f64'
+
+    @property
+    def is_conversion(self):
+        return self.group == 'Conversion'
 
     @property
     def is_branch_conditional(self):

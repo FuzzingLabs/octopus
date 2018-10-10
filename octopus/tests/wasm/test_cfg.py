@@ -49,6 +49,15 @@ class WasmCFGraphTestCase(unittest.TestCase):
         callgraph(module_bytecode, r_nodes2, len_call_edges, fname=False)
         controlflowgraph(module_bytecode, 1, 3, 2)
 
+        # fibonacci 2 with if-else
+        module_bytecode = read_file(EXAMPLE_PATH + "fibc.wasm")
+        r_nodes = ['i32 _fib(i32)', 'runPostSets()', '__post_instantiate()']
+        r_nodes2 = ['_fib', 'runPostSets', '__post_instantiate']
+        len_call_edges = 2
+        callgraph(module_bytecode, r_nodes, len_call_edges, fname=True)
+        callgraph(module_bytecode, r_nodes2, len_call_edges, fname=False)
+        controlflowgraph(module_bytecode, 3, 10, 9)
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(WasmCFGraphTestCase)
     unittest.TextTestRunner(verbosity=2).run(suite)

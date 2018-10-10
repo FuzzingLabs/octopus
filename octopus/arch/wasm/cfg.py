@@ -42,9 +42,9 @@ def enum_func(module_bytecode):
         # get corresponding function prototype
         name, param_str, return_str, _ = protos[import_len + idx]
 
-        name = format_func_name(name, param_str, return_str)
+        prefered_name = format_func_name(name, param_str, return_str)
         instructions = WasmDisassembler().disassemble(code)
-        cur_function = Function(0, instructions[0], name=name)
+        cur_function = Function(0, instructions[0], name=name, prefered_name=prefered_name)
         cur_function.instructions = instructions
 
         functions.append(cur_function)
@@ -127,6 +127,7 @@ def enum_blocks_edges(function_id, instructions):
 
         for d2 in labl:
             rep = next(((i, s, e, n) for i, s, e, n in blocks_list if (i == (depth - d2) and s < inst.offset and e > inst.offset_end)), None)
+
             if rep:
                 i, start, end, name = rep
                 # if we branch to a 'loop' label
@@ -147,6 +148,11 @@ def enum_blocks_edges(function_id, instructions):
     # needed because 'if' don't used label
     for index, inst in enumerate(instructions[:-1]):
         if inst.name == 'if':
+            g_block = next(iter([b for b in blocks_list if b[1] == inst.offset]), None)
+            jump_target = g_block[2] + 1
+            inst.xref.append(jump_target)
+            xrefs.append(jump_target)
+        elif inst.name == 'else':
             g_block = next(iter([b for b in blocks_list if b[1] == inst.offset]), None)
             jump_target = g_block[2] + 1
             inst.xref.append(jump_target)
@@ -176,18 +182,11 @@ def enum_blocks_edges(function_id, instructions):
         # conditionnal jump - br_if
         elif inst.is_branch_conditional:
             new_block = True
-        # end of a block
-        #elif index < (len(instructions) - 1) and \
-        #        inst.name in ['end']:# and block.start_offset != inst.offset:  # is_block_terminator
-        #    new_block = True
+        # is_block_terminator
+        # GRAPHICAL OPTIMIZATION: merge end together
         elif index < (len(instructions) - 1) and \
                 instructions[index + 1].name in ['else', 'loop']:  # is_block_terminator
             new_block = True
-        # start of a block
-        #elif index < (len(instructions) - 1) and \
-        #        instructions[index + 1].is_block_starter and \
-        #        instructions[index + 1].name not in ['if', 'block', 'end']:
-        #    new_block = True
         # last instruction of the bytecode
         elif inst.offset == instructions[-1].offset:
             new_block = True
@@ -197,8 +196,6 @@ def enum_blocks_edges(function_id, instructions):
             block.end_instr = inst
             basicblocks.append(block)
             new_block = True
-
-    # TODO: detect and remove end instruction that end loop
 
     # enumerate edges
     for index, block in enumerate(basicblocks):
@@ -210,31 +207,42 @@ def enum_blocks_edges(function_id, instructions):
                 edges.append(Edge(block.name, format_bb_name(function_id, ref), EDGE_UNCONDITIONAL))
         # conditionnal jump - br_if, if
         elif inst.is_branch_conditional:
-            #if inst.name == 'if':
-            #                edges.append(Edge(block.name,
-            #                             format_bb_name(function_id, inst.offset_end + 1),
-            #                             EDGE_CONDITIONAL_TRUE))
-            #                g_block = next(iter([b for b in blocks_list if b[1] == inst.offset]), None)
-            #                jump_target = g_block[2] + 1
-            #                edges.append(Edge(block.name,
-            #                             format_bb_name(function_id, jump_target),
-            #                             EDGE_CONDITIONAL_FALSE))
-            #else:
-            for ref in inst.xref:
-                if ref and ref != inst.offset_end + 1:
-                    # create conditionnal true edges
-                    edges.append(Edge(block.name,
-                                      format_bb_name(function_id, ref),
-                                      EDGE_CONDITIONAL_TRUE))
-            # create conditionnal false edge
-            edges.append(Edge(block.name,
-                         format_bb_name(function_id, inst.offset_end + 1),
-                         EDGE_CONDITIONAL_FALSE))
+            if inst.name == 'if':
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, inst.offset_end + 1),
+                             EDGE_CONDITIONAL_TRUE))
+                if_b = next(iter([b for b in blocks_list if b[1] == inst.offset]), None)
+                #else_block = blocks_list[blocks_list.index(if_block) + 1]
+                jump_target = if_b[2] + 1
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, jump_target),
+                             EDGE_CONDITIONAL_FALSE))
+            else:
+                for ref in inst.xref:
+                    if ref and ref != inst.offset_end + 1:
+                        # create conditionnal true edges
+                        edges.append(Edge(block.name,
+                                          format_bb_name(function_id, ref),
+                                          EDGE_CONDITIONAL_TRUE))
+                # create conditionnal false edge
+                edges.append(Edge(block.name,
+                             format_bb_name(function_id, inst.offset_end + 1),
+                             EDGE_CONDITIONAL_FALSE))
         # instruction that end the flow
         elif [i.name for i in block.instructions if i.is_halt]:
             pass
         elif inst.is_halt:
             pass
+
+        # handle the case when you have if and else following
+        elif inst.offset != instructions[-1].offset and \
+                block.start_instr.name != 'else' and \
+                instructions[instructions.index(inst) + 1].name == 'else':
+
+            else_ins = instructions[instructions.index(inst) + 1]
+            else_b = next(iter([b for b in blocks_list if b[1] == else_ins.offset]), None)
+
+            edges.append(Edge(block.name, format_bb_name(function_id, else_b[2] + 1), EDGE_FALLTHROUGH))
         # add the last intruction "end" in the last block
         elif inst.offset != instructions[-1].offset:
             # EDGE_FALLTHROUGH
@@ -266,6 +274,14 @@ class WasmCFG(CFG):
             # all bb name are unique so we can create global bb & edge list
             self.basicblocks += func.basicblocks
             self.edges += edges
+
+    def get_function(self, name=None, prefered_name=None):
+        if name:
+            return [x for x in self.functions if x.name == name][0]
+        elif prefered_name:
+            return [x for x in self.functions if x.prefered_name == prefered_name][0]
+        else:
+            raise Exception('name/prefered_name not found, please check again')
 
     def get_functions_call_edges(self, format_fname=False):
 
@@ -310,7 +326,7 @@ class WasmCFG(CFG):
 
         return (nodes, edges)
 
-    def visualize(self):
+    def visualize(self, function=True, simplify=False, ssa=False):
         """Visualize the cfg
         used CFGGraph
         equivalent to:
@@ -318,7 +334,10 @@ class WasmCFG(CFG):
             graph.view_functions()
         """
         graph = CFGGraph(self)
-        graph.view_functions()
+        if function:
+            graph.view_functions(simplify=simplify, ssa=ssa)
+        else:
+            graph.view(simplify=simplify, ssa=ssa)
 
     def visualize_call_flow(self, filename="wasm_call_graph_octopus.gv",
                             format_fname=False):
