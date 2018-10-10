@@ -181,7 +181,7 @@ class EvmCFG(CFG):
         graph = CFGGraph(self)
         graph.view(simplify=simplify, ssa=ssa)
 
-    def show(self):
+    def __str__(self):
         print("len bb = %d" % len(self.basicblocks))
         print("len func = %d" % len(self.functions))
         print("len instructions = %d" % len(self.instructions))

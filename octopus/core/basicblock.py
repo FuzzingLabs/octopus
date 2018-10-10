@@ -17,7 +17,7 @@ class BasicBlock(object):
     def size(self):
         return self.end_offset - self.start_offset
 
-    def show(self):
+    def __str__(self):
         out = ''
         line = ''
         line = str(self.start_offset) + ': ' + str(self.name) + '\n'

@@ -13,7 +13,7 @@ class Function(object):
         self.basicblocks = list()
         self.instructions = list()
 
-    def show(self):
+    def __str__(self):
         line = ('%x' % self.start_offset) + ': ' + str(self.name) + '\n'
         line += 'prefered_name: %s\n' % self.prefered_name
         line += 'start_offset = %x\n' % self.start_offset
@@ -28,8 +28,3 @@ class Function(object):
         line += 'lenght instructions: %s\n' % len(self.instructions)
         line += '\n\n'
         return line
-'''
-    def show(self):
-        attrs = vars(self)
-        return '\n'.join("%s: %s" % item for item in attrs.items())
-'''

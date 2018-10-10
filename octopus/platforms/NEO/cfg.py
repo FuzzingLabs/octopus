@@ -160,7 +160,7 @@ class NeoCFG(CFG):
         self.basicblocks, self.edges = enum_blocks_edges(self.instructions)
         self.functions = assign_blocks_to_func(self.basicblocks, self.functions)
 
-    def show(self):
+    def __str__(self):
         print("len bb = %d" % len(self.basicblocks))
         print("len func = %d" % len(self.functions))
         print("len instructions = %d" % len(self.instructions))
