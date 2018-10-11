@@ -16,7 +16,7 @@ logging = getLogger(__name__)
 # =======================================
 
 
-class WasmEmulatorEngine(EmulatorEngine):
+class WasmSSAEmulatorEngine(EmulatorEngine):
 
     def __init__(self, bytecode, function_name, ssa=True):
 
@@ -148,6 +148,7 @@ class WasmEmulatorEngine(EmulatorEngine):
         logging.warning('--')
         logging.warning('stack %s' % state.ssa_stack)
         logging.warning('instr %s' % instr.name)
+        logging.warning('operand %s' % instr.operand)
         logging.warning('xref %s' % instr.xref)
 
         if instr.is_control:
@@ -215,8 +216,9 @@ class WasmEmulatorEngine(EmulatorEngine):
             arg = [state.ssa_stack.pop()]
             instr.ssa = SSA(method_name=instr.name, args=arg)
             # TODO branch if
-            # inst + 1 == true block 
+            # inst + 1 == true block
             # need to find offset false block using edges or basicblocks list
+            logging.warning('SSA: branch if not yet supported')
         elif instr.name == 'end':
             instr.ssa = SSA(method_name=instr.name)
             # check if it's the last instructions of the function
@@ -273,7 +275,8 @@ class WasmEmulatorEngine(EmulatorEngine):
         elif instr.name == 'br_table':
             arg = [state.ssa_stack.pop()]
             instr.ssa = SSA(method_name=instr.name, args=arg)
-            # TODO banch br_table
+            # TODO branch br_table
+            logging.warning('SSA: branch br_table not yet supported')
         elif instr.name == 'return':
             arg = [state.ssa_stack.pop()]
             instr.ssa = SSA(method_name=instr.name, args=arg)
@@ -286,7 +289,7 @@ class WasmEmulatorEngine(EmulatorEngine):
             instr.ssa = SSA(method_name=instr.name + '_to_' + name)
             if param_str:
                 num_arg = len(param_str.split(' '))
-                print(hex(state.ssa_stack[-1].offset))
+                #print(hex(state.ssa_stack[-1].offset))
                 arg = [state.ssa_stack.pop() for x in range(1, num_arg+1)]
                 instr.ssa.args = arg
             if return_str:
@@ -295,8 +298,27 @@ class WasmEmulatorEngine(EmulatorEngine):
                 self.ssa_counter += 1
         elif instr.name == 'call_indirect':
             arg = [state.ssa_stack.pop()]
+            ''' # issue when table is imported
+            # arg is constant
+            if arg[0].ssa.instr_type == SSA_TYPE_CONSTANT:
+                f_offset = int.from_bytes(instr.operand, 'big')
+                target_func = self.ana.func_prototypes[f_offset]
+
+                name, param_str, return_str, f_type = target_func
+                # format_func_name()
+                instr.ssa = SSA(method_name=instr.name + '_to_' + name)
+                if param_str:
+                    num_arg = len(param_str.split(' '))
+                    print(hex(state.ssa_stack[-1].offset))
+                    arg = [state.ssa_stack.pop() for x in range(1, num_arg+1)]
+                    instr.ssa.args = arg
+                if return_str:
+                    instr.ssa.new_assignement = self.ssa_counter
+                    state.ssa_stack.append(instr)
+                    self.ssa_counter += 1
+            else:
+            '''
             instr.ssa = SSA(method_name=instr.name, args=arg)
-            # TODO call_indirect
             # test if arg is constant --> do like call
             # else - stay like that
         return halt

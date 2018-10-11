@@ -39,7 +39,7 @@ Octopus support the following types of programs/smart contracts:
 |**Disassembler** | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
 |**Control Flow Analysis** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | | :heavy_check_mark: |
 |**Call Flow Analysis** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_check_mark: | :heavy_check_mark: | :heavy_plus_sign: | | :heavy_check_mark: |
-|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
+|**IR conversion (SSA)** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_check_mark: |
 |**Symbolic Execution** | :heavy_multiplication_x: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_plus_sign: | :heavy_multiplication_x: | | :heavy_plus_sign: |
 
 
@@ -285,6 +285,32 @@ Legend:
 <p align="center">
     <img src="/images/legend_callgraph.png" height="400px"/>
 </p>
+
+#### IR conversion (SSA)
+
+```python
+from octopus.arch.wasm.emulator import WasmSSAEmulatorEngine
+
+# complete wasm module
+file_name = "examples/wasm/samples/fib.wasm"
+
+# read file
+with open(file_name, 'rb') as f:
+    raw = f.read()
+
+
+# run the emulator for SSA
+emul = WasmSSAEmulatorEngine(raw, 'fib')
+emul.emulate()
+
+# visualization of the cfg with SSA
+emul.cfg.visualize(ssa=True)
+```
+
+<p align="center">
+    <img src="/images/ssa-cfg-fib-wasm.png" height="400px"/>
+</p>
+
 
 </p>
 </details>

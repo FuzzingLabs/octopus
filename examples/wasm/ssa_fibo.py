@@ -1,4 +1,4 @@
-from octopus.arch.wasm.emulator import WasmEmulatorEngine
+from octopus.arch.wasm.emulator import WasmSSAEmulatorEngine
 
 # complete wasm module
 file_name = "examples/wasm/samples/fib.wasm"
@@ -9,7 +9,7 @@ with open(file_name, 'rb') as f:
 
 
 # run the emulator for SSA
-emul = WasmEmulatorEngine(raw, 'fib')
+emul = WasmSSAEmulatorEngine(raw, 'fib')
 emul.emulate()
 
 # visualization of the cfg with SSA
