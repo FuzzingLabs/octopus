@@ -12,7 +12,7 @@ from logging import getLogger
 logging = getLogger(__name__)
 
 
-SIGNATURE_FILE_PATH = '/signatures.txt'
+SIGNATURE_FILE_PATH = '/signatures.json'
 
 
 def enum_func_static(instructions):
@@ -61,12 +61,15 @@ def find_signature(sign):
     path = os.path.dirname(os.path.realpath(__file__)) + SIGNATURE_FILE_PATH
     with open(path) as data_file:
         data = json.load(data_file)
-    try:
-        pref_name = data[str(hex(sign))]
-        return pref_name
-    except:
-        pass
-    return None
+
+    list_name = [name for name, hexa in data.items() if hexa == str(hex(sign))]
+    if list_name == 0:
+        return None
+    elif len(list_name) > 1:
+        logging.warning('function signatures collision: %s', list_name)
+        return '_or_'.join(list_name)
+    else:
+        return list_name[0]
 
 
 def enum_blocks_static(instructions):
