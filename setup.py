@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="octopus",
-    version="0.1.6",
+    version="0.1.7",
     author="QuoScient",
     license='MIT',
     description="Security analysis framework for WebAssembly module (wasm) and Blockchain Smart Contract (BTC/ETH/EOS/NEO).",
