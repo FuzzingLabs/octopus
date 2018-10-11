@@ -148,6 +148,7 @@ class WasmEmulatorEngine(EmulatorEngine):
         logging.warning('--')
         logging.warning('stack %s' % state.ssa_stack)
         logging.warning('instr %s' % instr.name)
+        logging.warning('xref %s' % instr.xref)
 
         if instr.is_control:
             halt = self.emul_control_instr(instr, state, depth)
@@ -208,15 +209,14 @@ class WasmEmulatorEngine(EmulatorEngine):
         if instr.name == 'unreachable':
             instr.ssa = SSA(method_name=instr.name)
             halt = True
-        elif instr.name in ['nop', 'block', 'loop']:
+        elif instr.name in ['nop', 'block', 'loop', 'else']:
             instr.ssa = SSA(method_name=instr.name)
         elif instr.name == 'if':
             arg = [state.ssa_stack.pop()]
             instr.ssa = SSA(method_name=instr.name, args=arg)
             # TODO branch if
-        elif instr.name == 'else':
-            instr.ssa = SSA(method_name=instr.name)
-            # TODO branch else
+            # inst + 1 == true block 
+            # need to find offset false block using edges or basicblocks list
         elif instr.name == 'end':
             instr.ssa = SSA(method_name=instr.name)
             # check if it's the last instructions of the function
@@ -225,7 +225,23 @@ class WasmEmulatorEngine(EmulatorEngine):
                 halt = True
         elif instr.name == 'br':
             instr.ssa = SSA(method_name=instr.name)
-            # TODO banch br
+            jump_addr = instr.xref
+
+            # get instruction with this value as offset
+            target = next(filter(lambda element: element.offset == jump_addr[0], self.current_f_instructions))
+
+            if target.offset not in state.instructions_visited:
+                # condition are True
+                logging.warning('[X] follow br branch offset 0x%x' % (target.offset))
+                new_state = copy.deepcopy(state)
+                new_state.pc = self.current_f_instructions.index(target)
+                # follow the br
+                self.emulate(new_state, depth=depth + 1)
+            else:
+                logging.warning('[X] Loop detected, skipping br 0x%x' % jump_addr[0])
+                halt = True
+            halt = True
+
         elif instr.name == 'br_if':
             arg = [state.ssa_stack.pop()]
             instr.ssa = SSA(method_name=instr.name, args=arg)
@@ -247,11 +263,11 @@ class WasmEmulatorEngine(EmulatorEngine):
                 new_state = copy.deepcopy(state)
                 new_state.pc = self.current_f_instructions.index(target)
 
-                # follow the JUMPI
+                # follow the br_if
                 self.emulate(new_state, depth=depth + 1)
 
             else:
-                logging.warning('[X] Loop detected, skipping br_if 0x%x' % jump_addr)
+                logging.warning('[X] Loop detected, skipping br_if 0x%x' % jump_addr[0])
                 halt = True
             halt = True
         elif instr.name == 'br_table':
