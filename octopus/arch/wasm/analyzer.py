@@ -76,7 +76,7 @@ class WasmModuleAnalyzer(object):
         self.func_prototypes = list()
 
     def __str__(self):
-        return self.show()
+        return str(self.show())
 
     def show(self):
         """Return dict with WasmModuleAnalyzer attributes"""

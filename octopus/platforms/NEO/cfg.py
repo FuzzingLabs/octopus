@@ -161,7 +161,8 @@ class NeoCFG(CFG):
         self.functions = assign_blocks_to_func(self.basicblocks, self.functions)
 
     def __str__(self):
-        print("len bb = %d" % len(self.basicblocks))
-        print("len func = %d" % len(self.functions))
-        print("len instructions = %d" % len(self.instructions))
-        print("len edges = %d" % len(self.edges))
+        line = ("length functions = %d\n" % len(self.functions))
+        line += ("length basicblocks = %d\n" % len(self.basicblocks))
+        line += ("length instructions = %d\n" % len(self.instructions))
+        line += ("length edges = %d\n" % len(self.edges))
+        return line

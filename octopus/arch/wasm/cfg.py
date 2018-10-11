@@ -327,9 +327,10 @@ class WasmCFG(CFG):
         return (nodes, edges)
 
     def __str__(self):
-        print("length functions = %d" % len(self.functions))
-        print("length basicblocks = %d" % len(self.basicblocks))
-        print("length edges = %d" % len(self.edges))
+        line = ("length functions = %d\n" % len(self.functions))
+        line += ("length basicblocks = %d\n" % len(self.basicblocks))
+        line += ("length edges = %d\n" % len(self.edges))
+        return line
 
     def visualize(self, function=True, simplify=False, ssa=False):
         """Visualize the cfg
