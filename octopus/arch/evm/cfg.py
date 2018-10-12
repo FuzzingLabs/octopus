@@ -52,7 +52,7 @@ def enum_func_static(instructions):
 
                     functions.append(function)
         except:
-            logging.info('enum_func_static Exception')
+            logging.warning('enum_func_static Exception')
             pass
     return functions
 
@@ -63,13 +63,14 @@ def find_signature(sign):
         data = json.load(data_file)
 
     list_name = [name for name, hexa in data.items() if hexa == str(hex(sign))]
-    if list_name == 0:
-        return None
-    elif len(list_name) > 1:
+
+    if len(list_name) > 1:
         logging.warning('function signatures collision: %s', list_name)
         return '_or_'.join(list_name)
-    else:
+    elif list_name:
         return list_name[0]
+    else:
+        return None
 
 
 def enum_blocks_static(instructions):
