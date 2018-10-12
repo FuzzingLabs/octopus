@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="octopus",
-    version="0.1.7",
+    version="0.1.8",
     author="QuoScient",
     license='MIT',
     description="Security analysis framework for WebAssembly module (wasm) and Blockchain Smart Contract (BTC/ETH/EOS/NEO).",
@@ -34,6 +34,7 @@ setup(
         'wasm>=1.1'
     ],
 
-    python_requires='>=3.5'
+    python_requires='>=3.5',
 
+    scripts=['octopus-eth-evm']
 )
