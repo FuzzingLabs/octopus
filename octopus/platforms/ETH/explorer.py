@@ -24,6 +24,8 @@ INFURA_KOVAN = "kovan.infura.io/"
 INFURA_RINKEBY = "rinkeby.infura.io/"
 INFURA_RPC_PORT = 8545
 
+INFURA_APIKEY = "bHuaQhX91nkQBac8Wtgj"
+
 
 class EthereumExplorerRPC(Explorer):
     """
@@ -1217,7 +1219,7 @@ class EthereumInfuraExplorer(EthereumExplorerRPC):
     EthereumExplorer subclass for using Infura
     """
 
-    def __init__(self, key, network=INFURA_MAINNET):
+    def __init__(self, key=INFURA_APIKEY, network=INFURA_MAINNET):
         EthereumExplorerRPC.__init__(self, host=network + key,
                                      port=INFURA_RPC_PORT, tls=True)
 
