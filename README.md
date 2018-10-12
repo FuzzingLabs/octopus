@@ -95,9 +95,6 @@ cd octopus/tests/
 ./wasm_run_tests.sh
 ```
 
-## Command-line examples
-
-
 ## Examples
 
 <details><summary>WebAssembly</summary>
