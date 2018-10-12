@@ -34,7 +34,7 @@ _table = {
     0x0c: ('br', BranchImm(), 0, 0, 'break that targets an outer nested block'),
     0x0d: ('br_if', BranchImm(), 1, 0, 'conditional break that targets an outer nested block'),
     0x0e: ('br_table', BranchTableImm(), 1, 0, 'branch table control flow construct'),
-    0x0f: ('return', None, 0, 0, 'return zero or one value from this function'),
+    0x0f: ('return', None, 1, 0, 'return zero or one value from this function'),
     0x10: ('call', CallImm(), 0, 0, 'call a function by its index'),
     0x11: ('call_indirect', CallIndirectImm(), 1, 0, 'call a function indirect with an expected signature'),
 
@@ -43,7 +43,7 @@ _table = {
 
     0x20: ('get_local', LocalVarXsImm(), 0, 1, 'read a local variable or parameter'),
     0x21: ('set_local', LocalVarXsImm(), 1, 0, 'write a local variable or parameter'),
-    0x22: ('tee_local', LocalVarXsImm(), 0, 0, 'write a local variable or parameter and return the same value'),
+    0x22: ('tee_local', LocalVarXsImm(), 0, 1, 'write a local variable or parameter and return the same value'),
     0x23: ('get_global', GlobalVarXsImm(), 0, 1, 'read a global variable'),
     0x24: ('set_global', GlobalVarXsImm(), 1, 0, 'write a global variable'),
 
@@ -126,6 +126,7 @@ _table = {
     0x6e: ('i32.div_u', None, 2, 1, 'unsigned division (result is floored)'),
     0x6f: ('i32.rem_s', None, 2, 1, 'signed remainder (result has the sign of the dividend)'),
     0x70: ('i32.rem_u', None, 2, 1, 'unsigned remainder'),
+
     0x71: ('i32.and', None, 2, 1, 'sign-agnostic bitwise and'),
     0x72: ('i32.or', None, 2, 1, 'sign-agnostic bitwise inclusive or'),
     0x73: ('i32.xor', None, 2, 1, 'sign-agnostic bitwise exclusive or'),
@@ -145,6 +146,7 @@ _table = {
     0x80: ('i64.div_u', None, 2, 1, 'unsigned division (result is floored)'),
     0x81: ('i64.rem_s', None, 2, 1, 'signed remainder (result has the sign of the dividend)'),
     0x82: ('i64.rem_u', None, 2, 1, 'unsigned remainder'),
+
     0x83: ('i64.and', None, 2, 1, 'sign-agnostic bitwise and'),
     0x84: ('i64.or', None, 2, 1, 'sign-agnostic bitwise inclusive or'),
     0x85: ('i64.xor', None, 2, 1, 'sign-agnostic bitwise exclusive or'),
