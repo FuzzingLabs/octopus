@@ -74,6 +74,9 @@ class EthereumEmulatorEngine(EmulatorEngine):
 
         # beginning of a function
         if instr in self.functions_start_instr:
+
+            # cleaning duplicate block in previous function
+            self.current_function.basicblocks = list(set(self.current_function.basicblocks))
             # retrive matching function
             self.current_function = next(filter(lambda f: f.start_instr == instr, self.functions))
             # self.ssa_counter = 0
@@ -98,10 +101,11 @@ class EthereumEmulatorEngine(EmulatorEngine):
             if instr.name == 'JUMPDEST':
                 # doesn't match new block that start with JUMPDEST
                 if self.current_basicblock.start_offset != instr.offset:
-                    self.edges.append(Edge(self.current_basicblock.name, 'block_%x'%instr.offset, EDGE_FALLTHROUGH))
+                    self.edges.append(Edge(self.current_basicblock.name, 'block_%x' % instr.offset, EDGE_FALLTHROUGH))
 
             # get current basicblock
             self.current_basicblock = self.basicblock_per_instr[instr.offset]
+            self.current_function.basicblocks.append(self.current_basicblock)
 
             # add this instruction to his functions
             # TODO: verify if it's not useless for ethereum
