@@ -154,7 +154,7 @@ def main() -> None:
         print(octo_disasm.disassemble(octo_bytecode, r_format='text'))
 
     # Control Flow Analysis
-    elif args.cfg or args.ssa:
+    if args.cfg or args.ssa:
         from octopus.platforms.ETH.cfg import EthereumCFG
         from octopus.analysis.graph import CFGGraph
 
@@ -173,15 +173,12 @@ def main() -> None:
             octo_graph.view(simplify=args.simplify, ssa=args.ssa)
 
     # Call Flow Analysis
-    elif args.call:
+    if args.call:
         error_print('Call Flow Analysis not yet supported')
-    elif args.ssa:
-        # already done
-        pass
-    elif args.explore:
-        # already done
-        pass
-    else:
+
+    if not args.disassemble and not args.ssa \
+            and not args.cfg and not args.call\
+            and not args.explore:
         parser.print_help()
 
 

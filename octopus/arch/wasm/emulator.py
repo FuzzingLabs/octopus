@@ -18,7 +18,7 @@ logging = getLogger(__name__)
 
 class WasmSSAEmulatorEngine(EmulatorEngine):
 
-    def __init__(self, bytecode, function_name, ssa=True):
+    def __init__(self, bytecode, ssa=True):
 
         self.ssa = ssa
 
@@ -26,14 +26,37 @@ class WasmSSAEmulatorEngine(EmulatorEngine):
         self.cfg = WasmCFG(bytecode)
         self.ana = self.cfg.analyzer
 
-        self.functions = self.cfg.functions
-        if function_name not in [x.name for x in self.functions]:
-            raise Exception('function_name not in this module - available: %s', self.ana.func_prototypes)
-
         self.current_function = None
+        self.current_f_instructions = None
+        self.reverse_instructions = dict()
+        self.current_f_basicblocks = None
 
         self.basicblock_per_instr = dict()
         self.current_basicblock = None
+
+        # connection between basicblocks
+        # will be generate dynamically by the Emulator
+
+        self.states = dict()
+        self.states_total = 0
+        self.ssa_counter = 0
+
+        logging.warning("Function available: %s" % [x.name for x in self.cfg.functions])
+
+    def emulate_functions(self, list_functions_name=None, state=WasmVMstate(), depth=0):
+
+        if list_functions_name:
+            if set(list_functions_name).issubset([x.name for x in self.cfg.functions]):  # function_name not in [x.name for x in self.functions]:
+                raise Exception('Some function_name given not in this module - available: %s', self.ana.func_prototypes)
+        else:
+            list_functions_name = [x.name for x in self.cfg.functions]
+        for f in list_functions_name:
+            self.emulate_one_function(function_name=f, state=state, depth=depth)
+
+    def emulate_one_function(self, function_name, state=WasmVMstate(), depth=0):
+
+        if function_name not in [x.name for x in self.cfg.functions]:
+            raise Exception('function_name not in this module - available: %s', self.ana.func_prototypes)
 
         self.current_function = self.cfg.get_function(function_name)
         self.current_f_instructions = self.current_function.instructions
@@ -55,15 +78,13 @@ class WasmSSAEmulatorEngine(EmulatorEngine):
         self.states_total = 0
         self.ssa_counter = 0
 
-        logging.warning("=======================================")
-        logging.warning("#      Wasm Emulator Engine")
-        logging.warning("#      class: %s", self.__class__.__name__)
-        logging.warning("=======================================")
-        #for f in self.functions:
         logging.warning("[+] current_function detected - %x: %s/%s",
                         self.current_function.start_offset,
                         self.current_function.name,
                         self.current_function.prefered_name)
+
+        # launch emulation
+        self.emulate(state=state, depth=depth)
 
     def emulate(self, state=WasmVMstate(), depth=0):
 

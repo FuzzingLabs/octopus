@@ -95,6 +95,9 @@ cd octopus/tests/
 ./wasm_run_tests.sh
 ```
 
+## Command-line examples
+
+
 ## Examples
 
 <details><summary>WebAssembly</summary>
@@ -300,8 +303,10 @@ with open(file_name, 'rb') as f:
 
 
 # run the emulator for SSA
-emul = WasmSSAEmulatorEngine(raw, 'fib')
-emul.emulate()
+emul = WasmSSAEmulatorEngine(raw)
+emul.emulate_one_function('fib')
+# or emul.emulate_functions(['fib'])
+# or emul.emulate_functions() # emulate all the function
 
 # visualization of the cfg with SSA
 emul.cfg.visualize(ssa=True)
@@ -315,7 +320,7 @@ emul.cfg.visualize(ssa=True)
 </p>
 </details>
 
-<details><summary>Ethereum (ETH)</summary>
+<details><summary>Ethereum (ETH) - EVM</summary>
 <p>
 
 #### Explorer
