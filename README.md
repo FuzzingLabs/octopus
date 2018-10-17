@@ -68,11 +68,7 @@ Dependencies:
 sudo apt-get update && sudo apt-get install python-pip graphviz -y
 ```
 
-- Install Octopus easily with:
-```
-pip3 install octopus
-```
-or
+- Install Octopus:
 ```
 # Download Octopus
 git clone https://github.com/quoscient/octopus
@@ -80,6 +76,11 @@ cd octopus
 
 # Install Octopus and its dependencies
 pip3 install -r requirements.txt
+```
+or
+```
+# but prefer the first way to install if possible
+pip3 install octopus
 ```
 
 - Run tests
