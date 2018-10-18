@@ -951,8 +951,9 @@ Please find examples in [examples](examples) folder.
 
 ## Publications and Videos
 
-* ToorCon XX - 2018 [Reversing Ethereum Smart Contracts (Introduction)](https://frab.toorcon.net/en/toorcon20/public/events/97)
-* ToorCon XX - 2018 [Dissection of WebAssembly module](https://frab.toorcon.net/en/toorcon20/public/events/92)
+* hack.lu 2018 [Reversing and Vulnerability research of Ethereum Smart Contracts](https://patrickventuzelo.com/wp-content/uploads/2018/10/hack_lu_2018_Reversing_and_Vulnerability_research_of_Ethereum_Smart_Contracts.pdf)
+* ToorCon XX - 2018 [Reversing Ethereum Smart Contracts (Introduction)](https://patrickventuzelo.com/wp-content/uploads/2018/10/Toorcon_2018_reversing_ETH_smart_contract.pdf)
+* ToorCon XX - 2018 [Dissection of WebAssembly module](https://patrickventuzelo.com/wp-content/uploads/2018/10/Toorcon20_2018_Dissection_WebAssembly_module_full.pdf)
 * REcon Montreal 2018: [Reverse Engineering Of Blockchain Smart Contracts](https://recon.cx/2018/montreal/schedule/system/event_attachments/attachments/000/000/053/original/RECON-MTL-2018-Reversing_blockchains_smart_contracts.pdf)
 
 ## Authors
