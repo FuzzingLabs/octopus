@@ -951,6 +951,7 @@ Please find examples in [examples](examples) folder.
 
 ## Publications and Videos
 
+* BLACKALPS 2018 [Reversing and Vulnerability research of Ethereum Smart Contracts](https://www.blackalps.ch/ba-18/talks.php#111)
 * hack.lu 2018 [Reversing and Vulnerability research of Ethereum Smart Contracts](https://2018.hack.lu/talks/#Reversing+and+Vulnerability+research+of+Ethereum+Smart+Contracts)
 * ToorCon XX - 2018 [Reversing Ethereum Smart Contracts (Introduction)](https://frab.toorcon.net/en/toorcon20/public/events/97)
 * ToorCon XX - 2018 [Dissection of WebAssembly module](https://frab.toorcon.net/en/toorcon20/public/events/92)
