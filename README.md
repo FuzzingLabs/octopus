@@ -20,7 +20,7 @@ The purpose of Octopus is to provide an easy way to analyze smart contract secur
 - **Control Flow Analysis**: Octopus can generate a Control Flow Graph (CFG) 
 - **Call Flow Analysis**: Octopus can generate a Call Flow Graph (function level) 
 - **IR conversion (SSA)**: Octopus can simplify assembly into Static Single Assignment (SSA) representation
-- **Symbolic Execution**: Octopus can use symbolic execution to find new paths into a program
+- **Symbolic Execution**: Octopus use symbolic execution to find new paths into a program
 
 ## Platforms / Architectures
 
@@ -965,7 +965,7 @@ Please find examples in [examples](examples) folder.
 
 ## Authors
 
-* **Patrick Ventuzelo** - *Creator* - [@Pat_Ventuzelo](https://twitter.com/pat_ventuzelo)
+**Patrick Ventuzelo** - *Creator* - [@Pat_Ventuzelo](https://twitter.com/pat_ventuzelo)
 
 See also the list of [contributors](https://github.com/quoscient/octopus/contributors) who participated in this project.
 
