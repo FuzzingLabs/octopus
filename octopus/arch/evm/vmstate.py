@@ -1,7 +1,7 @@
 from octopus.engine.engine import VMstate
 
 
-class EthereumVMstate(VMstate):
+class EvmVMstate(VMstate):
 
     def __init__(self, gas=1000000):
         self.storage = {}
@@ -17,7 +17,6 @@ class EthereumVMstate(VMstate):
         self.instr = None
 
         self.instructions_visited = list()
-        #self.instructions_visited = dict()
 
     def details(self):
 
@@ -29,18 +28,3 @@ class EthereumVMstate(VMstate):
                 'last_returned': self.last_returned,
                 'gas': self.gas,
                 'pc': self.pc}
-
-    def mem_extend(self, start, sz):
-
-        if (start < 4096 and sz < 4096):
-
-            if sz and start + sz > len(self.memory):
-
-                n_append = start + sz - len(self.memory)
-
-                while n_append > 0:
-                    self.memory.append(0)
-                    n_append -= 1
-
-        else:
-            raise Exception

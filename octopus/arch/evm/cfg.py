@@ -167,9 +167,9 @@ class EvmCFG(CFG):
 
     def run_dynamic_analysis(self):
 
-        from octopus.platforms.ETH.emulator import EthereumSSAEngine
+        from octopus.platforms.ETH.emulator import EvmSSAEngine
 
-        emul = EthereumSSAEngine(self.bytecode)
+        emul = EvmSSAEngine(self.bytecode)
         emul.emulate()
         self.functions = emul.functions
         self.basicblocks = emul.basicblocks

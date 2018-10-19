@@ -16,11 +16,15 @@ logging = getLogger(__name__)
 # =======================================
 
 
+class WasmEmulatorEngine(EmulatorEngine):
+
+    def __init__(self, bytecode):
+        raise NotImplementedError
+
+
 class WasmSSAEmulatorEngine(EmulatorEngine):
 
-    def __init__(self, bytecode, ssa=True):
-
-        self.ssa = ssa
+    def __init__(self, bytecode):
 
         # retrive instructions, basicblocks & functions statically
         self.cfg = WasmCFG(bytecode)

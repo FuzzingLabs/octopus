@@ -9,7 +9,7 @@ logging = getLogger(__name__)
 # =======================================
 
 
-class EthereumSSASimplifier(object):
+class EvmSSASimplifier(object):
     def __init__(self):
         self._dispatch_function = {
             # arithmetic
