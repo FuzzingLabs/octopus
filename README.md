@@ -44,8 +44,8 @@ Octopus support the following types of programs/smart contracts:
 
 
 * PyPI package :heavy_check_mark:
-* IDA plugin :heavy_plus_sign:
-* Binary ninja plugin :heavy_plus_sign:
+* IDA plugin :heavy_multiplication_x:
+* Binary ninja plugin :heavy_multiplication_x:
 
 :heavy_check_mark: **DONE** / :heavy_plus_sign: **WIP** / :heavy_multiplication_x: **TODO** / :o: **N/A**
 
@@ -96,7 +96,13 @@ cd octopus/tests/
 ./wasm_run_tests.sh
 ```
 
-## Examples
+## Command-line tools
+
+* WebAssembly: [octopus_wasm.py](octopus_wasm.py)
+* Ethereum (EVM): [octopus_eth_evm.py](octopus_eth_evm.py)
+
+
+## In-depth Examples using APIs
 
 <details><summary>WebAssembly</summary>
 <p>
