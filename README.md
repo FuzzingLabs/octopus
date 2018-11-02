@@ -958,6 +958,7 @@ Please find examples in [examples](examples) folder.
 ## Publications and Videos
 
 * BLACKALPS 2018 [Reversing and Vulnerability research of Ethereum Smart Contracts](https://www.blackalps.ch/ba-18/talks.php#111)
+* Devcon iv. [Reversing Ethereum Smart Contracts to find out what's behind EVM bytecode](https://guidebook.com/guide/117233/event/21956134/)
 * hack.lu 2018 [Reversing and Vulnerability research of Ethereum Smart Contracts](https://2018.hack.lu/talks/#Reversing+and+Vulnerability+research+of+Ethereum+Smart+Contracts)
 * ToorCon XX - 2018 [Reversing Ethereum Smart Contracts (Introduction)](https://frab.toorcon.net/en/toorcon20/public/events/97)
 * ToorCon XX - 2018 [Dissection of WebAssembly module](https://frab.toorcon.net/en/toorcon20/public/events/92)
@@ -978,4 +979,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Inspired by:
 * [Manticore](https://github.com/trailofbits/manticore)
 * [Mythril](https://github.com/ConsenSys/mythril)
+* [Rattle](https://github.com/trailofbits/rattle)
+* [ethersplay](https://github.com/trailofbits/ethersplay)
 * ...
