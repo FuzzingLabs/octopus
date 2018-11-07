@@ -74,8 +74,8 @@ sudo apt-get update && sudo apt-get install python-pip graphviz -y
 git clone https://github.com/quoscient/octopus
 cd octopus
 
-# Install Octopus and its dependencies
-pip3 install -r requirements.txt
+# Install Octopus library/CLI and its dependencies
+python3 setup.py install
 ```
 or
 ```
