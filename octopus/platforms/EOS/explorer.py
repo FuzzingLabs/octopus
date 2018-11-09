@@ -1,11 +1,10 @@
 from octopus.engine.explorer import Explorer
-from octopus.config.EOS_EXPLORER import EOS_DEFAULT_RPC_PORT
-
 from requests.exceptions import ConnectionError as RequestsConnectionError
 import json
 
 EOS_DEFAULT_RPC_PORT = 8888
 EOS_WALLET_RPC_PORT = 8889
+
 
 class EosExplorer(Explorer):
     """
@@ -55,6 +54,14 @@ class EosExplorer(Explorer):
         '''
         data = {'block_num_or_id': block_num_or_id}
         return self.call('get_block', data)
+
+    def get_raw_code_and_abi(self, account_name):
+        '''Fetch smart contract code.
+
+        TESTED
+        '''
+        data = {'account_name': account_name}
+        return self.call('get_raw_code_and_abi', data)
 
     def get_account(self, account_name):
         '''Get information related to an account.

@@ -766,7 +766,50 @@ graph.view_functions()
 #### Explorer
 
 ```python
-# TODO
+from octopus.platforms.EOS.explorer import EosExplorer
+
+host = "api.cypherglass.com"
+
+# by defaul the port is 8888
+explo = EosExplorer(host=host)
+
+# get info about the node
+explo.get_info()
+
+'''
+{'block_cpu_limit': 180289,
+ 'block_net_limit': 1045680,
+ 'chain_id': 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+ 'head_block_id': '018d6e2bcf6295126cd74cf694b5cca3529eefc42b334b394ef87c3a43876739',
+ 'head_block_num': 26045995,
+ 'head_block_producer': 'eosswedenorg',
+ 'head_block_time': '2018-11-09T14:11:29.500',
+ 'last_irreversible_block_id': '018d6cdcff78bbd9f25c605b02fb67c47a337ece78ddcf73089cee4bf6a410ee',
+ 'last_irreversible_block_num': 26045660,
+ 'server_version': 'c71d2245',
+ 'server_version_string': 'mainnet-1.3.0',
+ 'virtual_block_cpu_limit': 38092879,
+ 'virtual_block_net_limit': 1048576000}
+'''
+explo.get_block(1337)
+
+'''
+{'action_mroot': 'bcb9763baa3bbf98ed36379b4be0ecb2d9cd21c75df01729c63b2b021001c10c',
+ 'block_extensions': [],
+ 'block_num': 1337,
+ 'confirmed': 0,
+ 'header_extensions': [],
+ 'id': '00000539d17a03af7126e073be4c4d99a72b7f58793cf2c87b9bfd41b6c711fb',
+ 'new_producers': None,
+ 'previous': '00000538b374c1cbfaeed7253ad3075ddc72a28f0a0515301fc1bbed675f2316',
+ 'producer': 'eosio',
+ 'producer_signature': 'SIG_K1_K5jWf36t6j454Hb2fGuV37YTwMTvuQ51ZPBtpru8Ud2axtMTEauWyvtpJuTpnvqzReUndDgEDXvoeEP4jdj2bpnYKBt6g2',
+ 'ref_block_prefix': 1944069745,
+ 'schedule_version': 0,
+ 'timestamp': '2018-06-09T12:09:21.500',
+ 'transaction_mroot': '0000000000000000000000000000000000000000000000000000000000000000',
+ 'transactions': []}
+'''
 ```
 
 #### Disassembler
