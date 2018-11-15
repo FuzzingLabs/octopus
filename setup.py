@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="octopus",
-    version="0.3.2",
+    version="0.3.3",
     author="QuoScient",
     license='MIT',
     description="Security analysis framework for WebAssembly module (wasm) and Blockchain Smart Contract (BTC/ETH/EOS/NEO).",
@@ -43,8 +43,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'octopus_eth_evm = octopus_eth_evm:main',
-            'octopus_wasm = octopus_wasm:main',
+            'octopus_eth_evm = octopus.octopus_eth_evm:main',
+            'octopus_wasm = octopus.octopus_wasm:main',
         ],
 
     },
