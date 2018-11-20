@@ -963,7 +963,21 @@ cfg.visualize_instrs_per_funcs()
 #### Explorer
 
 ```python
-# TODO
+from octopus.platforms.BTC.explorer import BitcoinExplorerRPC
+
+RPC_USER = 'test'
+RPC_PASSWORD = 'test'
+RPC_HOST = 'localhost'
+
+host = '%s:%s@%s' % (RPC_USER, RPC_PASSWORD, RPC_HOST)
+
+explorer = BitcoinExplorerRPC(host)
+
+explorer.getbestblockhash()
+# '00000000000000000012085cfe8c79bcdacf81fbd82f6ab52c3cb3a454d4987c'
+
+explorer.getblockcount()
+#550859
 ```
 
 #### Disassembler
