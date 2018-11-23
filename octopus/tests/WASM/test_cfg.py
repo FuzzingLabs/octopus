@@ -1,8 +1,9 @@
 import unittest
+import os
 
 from octopus.arch.wasm.cfg import WasmCFG
 
-EXAMPLE_PATH = "examples/wasm/samples/"
+EXAMPLE_PATH = "/../../../examples/wasm/samples/"
 
 
 class WasmCFGraphTestCase(unittest.TestCase):
@@ -32,8 +33,9 @@ class WasmCFGraphTestCase(unittest.TestCase):
                 module_bytecode = f.read()
             return module_bytecode
 
+        path = os.path.dirname(os.path.realpath(__file__)) + EXAMPLE_PATH
         # Helloworld
-        module_bytecode = read_file(EXAMPLE_PATH + "helloworld.wasm")
+        module_bytecode = read_file(path + "helloworld.wasm")
         r_nodes = ['print(i32)', 'main()']
         r_nodes2 = ['print', 'main']
         callgraph(module_bytecode, r_nodes, 1, fname=True)
@@ -41,7 +43,7 @@ class WasmCFGraphTestCase(unittest.TestCase):
         controlflowgraph(module_bytecode, 1, 1, 0)
 
         # fibonacci
-        module_bytecode = read_file(EXAMPLE_PATH + "fib.wasm")
+        module_bytecode = read_file(path + "fib.wasm")
         r_nodes = ['i32 fib(i32)']
         r_nodes2 = ['fib']
         len_call_edges = 2
@@ -50,7 +52,7 @@ class WasmCFGraphTestCase(unittest.TestCase):
         controlflowgraph(module_bytecode, 1, 3, 2)
 
         # fibonacci 2 with if-else
-        module_bytecode = read_file(EXAMPLE_PATH + "fibc.wasm")
+        module_bytecode = read_file(path + "fibc.wasm")
         r_nodes = ['i32 _fib(i32)', 'runPostSets()', '__post_instantiate()']
         r_nodes2 = ['_fib', 'runPostSets', '__post_instantiate']
         len_call_edges = 2
