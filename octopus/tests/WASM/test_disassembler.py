@@ -1,8 +1,9 @@
 import unittest
+import os
 
 from octopus.arch.wasm.disassembler import WasmDisassembler
 
-EXAMPLE_PATH = "examples/wasm/samples/"
+EXAMPLE_PATH = "/../../../examples/wasm/samples/"
 
 
 class WasmDisassemblerTestCase(unittest.TestCase):
@@ -42,12 +43,14 @@ class WasmDisassemblerTestCase(unittest.TestCase):
         bytecode_hex = "0061736d0100000001110460017f0060017e0060000060027e7e00021b0203656e76067072696e746e000103656e76067072696e7473000003030202030404017000000503010001071903066d656d6f7279020004696e69740002056170706c7900030a20020600411010010b17004120100120001000413010012001100041c00010010b0b3f050041040b04504000000041100b0d496e697420576f726c64210a000041200b0e48656c6c6f20576f726c643a20000041300b032d3e000041c0000b020a000029046e616d6504067072696e746e0100067072696e7473010004696e697400056170706c790201300131"
         disasmModule(bytecode_hex, 2, 14)
 
+        path = os.path.dirname(os.path.realpath(__file__)) + EXAMPLE_PATH
+
         # Helloworld - 2
-        module_bytecode = read_file(EXAMPLE_PATH + "helloworld.wasm")
+        module_bytecode = read_file(path + "helloworld.wasm")
         disasmModule(module_bytecode, 1, 3)
 
         # fibonacci
-        module_bytecode = read_file(EXAMPLE_PATH + "fib.wasm")
+        module_bytecode = read_file(path + "fib.wasm")
         disasmModule(module_bytecode, 1, 20)
 
 if __name__ == '__main__':
