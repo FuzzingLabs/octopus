@@ -14,6 +14,7 @@ class EvmDisassembler(Disassembler):
         Disassembler.__init__(self, asm=EVM(), bytecode=bytecode)
         self.loader_code = None
         self.swarm_hash = None
+        self.constructor_args = None
 
     def runtime_code_detector(self):
         '''Check for presence of runtime code
@@ -29,17 +30,26 @@ class EvmDisassembler(Disassembler):
         '''Check for presence of Swarm hash at the end of bytecode
             https://github.com/ethereum/wiki/wiki/Swarm-Hash
         '''
-        # we reduce to last 50 bytes to be sure it's the swarm hash
-        # and not fake code
-        swarm_hash_off = self.bytecode[-100:].find('a165627a7a72')
+        #swarm_hash_off = self.bytecode.find('a165627a7a72.*0029')
+        result = list(re.finditer('a165627a7a7230.*0029', self.bytecode))
         # bzzr == 0x65627a7a72
-        if swarm_hash_off > 0:
-            logging.info("[+] Swarm hash detected in bytecodes")
-            swarm_hash = self.bytecode[-100 + swarm_hash_off:]
-            logging.info("[+] Swarm hash value: 0x%s", swarm_hash)
-            logging.info("[+] Swarm hash removed")
-            self.swarm_hash = self.bytecode[-100 + swarm_hash_off:]
-            self.bytecode = self.bytecode[:-len(self.swarm_hash)]
+
+        if len(result) > 0:
+            swarm_hash_off = result[-1].start()
+            swarm_hash_end = result[-1].end()
+            if swarm_hash_off > 0:
+                logging.info("[+] Swarm hash detected in bytecode")
+                self.swarm_hash = self.bytecode[swarm_hash_off:swarm_hash_end]
+                logging.info("[+] Swarm hash value: 0x%s", self.swarm_hash)
+
+                # there is possibly constructor argument
+                # if there is swarm storage
+                if swarm_hash_end != len(self.bytecode):
+                    self.constructor_args = self.bytecode[swarm_hash_end:]
+                    logging.info("[+] Constructor arguments detected in bytecode")
+                    logging.info("[+] Constructor arguments removed from bytecode")
+                logging.info("[+] Swarm hash removed from bytecode")
+                self.bytecode = self.bytecode[:swarm_hash_off]
 
     def analysis(self):
         self.runtime_code_detector()
