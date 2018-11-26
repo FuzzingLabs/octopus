@@ -153,6 +153,7 @@ class EthereumExplorerRPC(Explorer):
                                         gas_price=gas_price, value=value)
         '''
         return NotImplementedError()
+
     ####################
     # JSON-RPC METHODS #
     ####################
