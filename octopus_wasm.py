@@ -50,8 +50,6 @@ def main() -> None:
                           help='generate the CFG with SSA representation')
 
     graph = parser.add_argument_group('Graph options')
-    graph.add_argument('--onlystatic', action='store_true',
-                       help='generate the CFG without stack emulation (fastest but less accurate)')
     graph.add_argument('--simplify', action='store_true',
                        help='generate a simplify CFG')
     graph.add_argument('--functions', action='store_true',

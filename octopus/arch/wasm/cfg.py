@@ -87,7 +87,12 @@ def enum_func_call_edges(functions, len_imports):
                 logging.info('%s', inst.operand_interpretation)
                 #if inst.name == "call":
                 # only get the import_id
-                node_to = int(inst.operand_interpretation.split(' ')[1])
+                import_id = inst.operand_interpretation.split(' ')[1]
+                if import_id.startswith('0x'):
+                    import_id = int(import_id, 16)
+                else:
+                    import_id = int(import_id)
+                node_to = int(import_id)
                 # The `call_indirect` operator takes a list of function arguments and as the last operand the index into the table.
                 #elif inst.name == "call_indirect":
                 # the last operand is the index on the table
