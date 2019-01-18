@@ -32,6 +32,7 @@ class WasmInstruction(Instruction):
         """ Instructions are equal if all features match  """
         return self.opcode == other.opcode and\
             self.name == other.name and\
+            self.offset == other.offset and\
             self.insn_byte == other.insn_byte and\
             self.operand_size == other.operand_size and\
             self.pops == other.pops and\
