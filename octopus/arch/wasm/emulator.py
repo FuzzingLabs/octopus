@@ -170,11 +170,11 @@ class WasmSSAEmulatorEngine(EmulatorEngine):
 
         halt = False
 
-        logging.warning('--')
-        logging.warning('stack %s' % state.ssa_stack)
-        logging.warning('instr %s' % instr.name)
-        logging.warning('operand %s' % instr.operand)
-        logging.warning('xref %s' % instr.xref)
+        logging.debug('--')
+        logging.debug('stack %s' % state.ssa_stack)
+        logging.debug('instr %s' % instr.name)
+        logging.debug('operand %s' % instr.operand)
+        logging.debug('xref %s' % instr.xref)
 
         if instr.is_control:
             halt = self.emul_control_instr(instr, state, depth)
@@ -243,6 +243,33 @@ class WasmSSAEmulatorEngine(EmulatorEngine):
             # TODO branch if
             # inst + 1 == true block
             # need to find offset false block using edges or basicblocks list
+            if (instr.offset_end + 1) not in state.instructions_visited:
+                logging.warning('[X]')
+                logging.warning('[X] follow br_if default branch offset 0x%x' % (instr.offset_end + 1))
+                new_state = copy.deepcopy(state)
+
+                self.emulate(new_state, depth=depth + 1)
+                # after we return from emul - restore current_basicblock
+                self.current_basicblock = self.basicblock_per_instr[instr.offset]
+                #state.instructions_visited += new_state.instructions_visited
+
+            jump_addr = instr.xref
+            # get instruction with this value as offset
+            target = next(filter(lambda element: element.offset == jump_addr[0], self.current_f_instructions))
+
+            if target.offset not in state.instructions_visited:
+                # condition are True
+                logging.warning('[X] follow br_if branch offset 0x%x' % (target.offset))
+                new_state = copy.deepcopy(state)
+                new_state.pc = self.current_f_instructions.index(target)
+
+                # follow the br_if
+                self.emulate(new_state, depth=depth + 1)
+
+            else:
+                logging.warning('[X] Loop detected, skipping br_if 0x%x' % jump_addr[0])
+                halt = True
+            halt = True
             logging.warning('SSA: branch if not yet supported')
         elif instr.name == 'end':
             instr.ssa = SSA(method_name=instr.name)
@@ -273,12 +300,15 @@ class WasmSSAEmulatorEngine(EmulatorEngine):
             arg = [state.ssa_stack.pop()]
             instr.ssa = SSA(method_name=instr.name, args=arg)
 
+            #if (instr.offset_end + 1) not in state.instructions_visited:
+            logging.warning('[X]')
             logging.warning('[X] follow br_if default branch offset 0x%x' % (instr.offset_end + 1))
             new_state = copy.deepcopy(state)
 
             self.emulate(new_state, depth=depth + 1)
             # after we return from emul - restore current_basicblock
             self.current_basicblock = self.basicblock_per_instr[instr.offset]
+            #state.instructions_visited += new_state.instructions_visited
 
             jump_addr = instr.xref
             # get instruction with this value as offset
@@ -307,7 +337,7 @@ class WasmSSAEmulatorEngine(EmulatorEngine):
             instr.ssa = SSA(method_name=instr.name, args=arg)
             halt = True
         elif instr.name == 'call':
-            f_offset = int.from_bytes(instr.operand, 'big')
+            f_offset = int(instr.operand_interpretation.split(' ')[1])
             target_func = self.ana.func_prototypes[f_offset]
             name, param_str, return_str, f_type = target_func
             # format_func_name()
