@@ -35,7 +35,7 @@ _table = {
     0x0d: ('br_if', BranchImm(), 1, 0, 'conditional break that targets an outer nested block'),
     0x0e: ('br_table', BranchTableImm(), 1, 0, 'branch table control flow construct'),
     0x0f: ('return', None, 1, 0, 'return zero or one value from this function'),
-    0x10: ('call', CallImm(), 0, 0, 'call a function by its index'),
+    0x10: ('call', CallImm(), 0, 0, 'call a function by its index'),#TODO:the actual pops and pushes would be determined dynamically by the signature of the function called
     0x11: ('call_indirect', CallIndirectImm(), 1, 0, 'call a function indirect with an expected signature'),
 
     0x1a: ('drop', None, 1, 0, 'ignore value'),
@@ -43,7 +43,7 @@ _table = {
 
     0x20: ('get_local', LocalVarXsImm(), 0, 1, 'read a local variable or parameter'),
     0x21: ('set_local', LocalVarXsImm(), 1, 0, 'write a local variable or parameter'),
-    0x22: ('tee_local', LocalVarXsImm(), 0, 1, 'write a local variable or parameter and return the same value'),
+    0x22: ('tee_local', LocalVarXsImm(), 1, 1, 'write a local variable or parameter and read the same value'),
     0x23: ('get_global', GlobalVarXsImm(), 0, 1, 'read a global variable'),
     0x24: ('set_global', GlobalVarXsImm(), 1, 0, 'write a global variable'),
 
