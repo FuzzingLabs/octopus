@@ -65,7 +65,7 @@ Dependencies:
 - Install system dependencies
 ```
 # Install system dependencies
-sudo apt-get update && sudo apt-get install python-pip graphviz -y
+sudo apt-get update && sudo apt-get install python-pip graphviz xdg-utils -y
 ```
 
 - Install Octopus:
@@ -94,6 +94,18 @@ pip3 install octopus
 # {btc, eth, eos, neo, wasm}_run_tests.sh
 cd octopus/tests/
 ./wasm_run_tests.sh
+```
+
+#### Docker container
+
+A docker container providing the toolset is available at [docker hub](https://hub.docker.com/r/smartbugs/octopus). 
+In a terminal, run the following commands:
+
+```
+docker pull smartbugs/octopus
+docker run -it octopus
+cd octopus
+python3 octopus_eth_evm.py -s -f examples/ETH/evm_bytecode/61EDCDf5bb737ADffE5043706e7C5bb1f1a56eEA.bytecode
 ```
 
 ## Command-line tools
