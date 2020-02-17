@@ -29,8 +29,7 @@ The purpose of Octopus is to provide an easy way to analyze closed-source WebAss
 Octopus support the following types of programs/smart contracts:
 * WebAssembly module (WASM)
 * Bitcoin script (BTC script)
-* Ethereum smart contracts (EVM bytecode)
-* Ethereum smart contracts (WASM)
+* Ethereum smart contracts (EVM bytecode & Ewasm)
 * EOS smart contracts (WASM)
 * NEO smart contracts (AVM bytecode)
 
@@ -46,8 +45,7 @@ Octopus support the following types of programs/smart contracts:
 
 
 * PyPI package :heavy_check_mark:
-* IDA plugin :heavy_multiplication_x:
-* Binary ninja plugin :heavy_multiplication_x:
+* Docker :heavy_check_mark:
 
 :heavy_check_mark: **DONE** / :heavy_plus_sign: **WIP** / :heavy_multiplication_x: **TODO** / :o: **N/A**
 
