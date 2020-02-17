@@ -1047,6 +1047,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
+Sponsor:
+* [QuoScient](https://www.quoscient.io/)
+
 Inspired by:
 * [Manticore](https://github.com/trailofbits/manticore)
 * [Mythril](https://github.com/ConsenSys/mythril)
