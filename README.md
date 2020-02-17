@@ -1,16 +1,18 @@
 # Octopus
 
 <p align="center">
-	<img src="/images/logo-medium.png" height="400px"/>
+	<img src="/images/logo-medium.png" height="300px"/>
 </p>
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/quoscient/octopus/graphs/commit-activity)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+Huge thanks to [QuoScient](https://www.quoscient.io/) for having sponsored this project.
+
 **Octopus is a security analysis framework for WebAssembly module and Blockchain Smart Contract.**
 
-The purpose of Octopus is to provide an easy way to analyze smart contract security and understand better what is really stored on the blockchain.
+The purpose of Octopus is to provide an easy way to analyze closed-source WebAssembly module and smart contracts bytecode to understand deeper their internal behaviours.
 
 
 ## Features
