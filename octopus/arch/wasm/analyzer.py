@@ -16,10 +16,9 @@ from octopus.arch.wasm.format import (format_kind_function,
                                       format_kind_memory,
                                       format_kind_global)
 
-from octopus.arch.wasm.decode import decode_module
-
+from wasm.decode import decode_module
 from octopus.core.utils import bytecode_to_bytes
-# from wasm.decode import decode_module
+
 import io
 import json
 import os
