@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setup(
     name="octopus",
-    version="0.3.3",
-    author="QuoScient",
+    version="0.3.5",
+    author="Patrick Ventuzelo",
     license='MIT',
     description="Security analysis framework for WebAssembly module (wasm) and Blockchain Smart Contract (BTC/ETH/EOS/NEO).",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/quoscient/octopus",
+    url="https://github.com/pventuzelo/octopus",
     keywords='disassembler security webassembly ethereum eos neo',
     packages=find_packages(),
     classifiers=(
