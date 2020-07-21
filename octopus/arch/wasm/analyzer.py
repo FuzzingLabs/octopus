@@ -8,7 +8,11 @@ from wasm.modtypes import (TypeSection,
                            StartSection,
                            ElementSection,
                            CodeSection,
-                           DataSection)
+                           DataSection,
+                           NameSubSection,
+                           # Name subsection types.
+                           NAME_SUBSEC_FUNCTION,
+                           NAME_SUBSEC_LOCAL)
 
 from octopus.arch.wasm.constant import LANG_TYPE, KIND_TYPE
 from octopus.arch.wasm.format import (format_kind_function,
@@ -16,10 +20,9 @@ from octopus.arch.wasm.format import (format_kind_function,
                                       format_kind_memory,
                                       format_kind_global)
 
-from octopus.arch.wasm.decode import decode_module
-
+from wasm.decode import decode_module
 from octopus.core.utils import bytecode_to_bytes
-# from wasm.decode import decode_module
+
 import io
 import json
 import os
@@ -97,7 +100,7 @@ class WasmModuleAnalyzer(object):
                 'func_prototypes': self.func_prototypes}
 
     def __get_section(self, section_type):
-        mod_iter = iter(decode_module(self.module_bytecode))
+        mod_iter = iter(decode_module(self.module_bytecode, True))
         _, _ = next(mod_iter)
         sections = list(mod_iter)
 
@@ -325,31 +328,28 @@ class WasmModuleAnalyzer(object):
             data_list.append(fmt)
         return data_list
 
-    def __decode_name_section(self, name_section):
+
+    def __decode_name_section(self, name_subsection):
         """
         .. seealso:: https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
         """
-        payload = name_section.payload.tobytes()
-        #print(payload)
-
-        total = 0
         names_list = list()
 
-        f = io.BytesIO(payload)
-        f.read(2)  # drop 2 bytes
-        total += 2
-        count = int.from_bytes(f.read(1), byteorder='little')
-        total += 1
+        if name_subsection.name_type == NAME_SUBSEC_FUNCTION:
+            subsection_function = name_subsection.payload
+            for name in subsection_function.names:
+                try:
+                    name_str = name.name_str.tobytes().decode('utf-8')
+                except UnicodeDecodeError:
+                    name_str = name.name_str.tobytes()
+                names_list.append((name.index, name.name_len, name_str))
 
-        while total < len(payload):
-            index = int.from_bytes(f.read(1), byteorder='big')
-            total += 1
-            name_len = int.from_bytes(f.read(1), byteorder='big')
-            total += 1
-            name_str = f.read(name_len)
-            total += name_len
-            names_list.append((index, name_len, name_str))
-        f.close()
+        elif name_subsection.name_type == NAME_SUBSEC_LOCAL:
+            print("__decode_name_section NAME_SUBSEC_LOCAL not implemented")
+
+        else:
+            print("__decode_name_section name_type unknown")
+
         return names_list
 
     def __decode_unknown_section(self, unknown_section):
@@ -383,6 +383,10 @@ class WasmModuleAnalyzer(object):
                     name = x.get('field_str')
                     f_type = 'export'
 
+            for name_index, _, name_str in self.names:
+                if real_index == name_index:
+                    name = name_str
+
             # TODO: need to test
             if real_index == self.start:
                 name = '* ' + name
@@ -408,7 +412,7 @@ class WasmModuleAnalyzer(object):
         # reset attributes
         self.attributes_reset()
 
-        mod_iter = iter(decode_module(self.module_bytecode))
+        mod_iter = iter(decode_module(self.module_bytecode, True))
         # decode header version - usefull in the future (multiple versions)
         header, header_data = next(mod_iter)
         self.magic, self.version = self.__decode_header(header, header_data)
@@ -416,9 +420,8 @@ class WasmModuleAnalyzer(object):
         #
         # Wasm sections
         #
-        sections = list(mod_iter)
 
-        for cur_sec, cur_sec_data in sections:
+        for cur_sec, cur_sec_data in mod_iter:
             sec = cur_sec_data.get_decoder_meta()['types']['payload']
 
             if isinstance(sec, TypeSection):
@@ -446,13 +449,11 @@ class WasmModuleAnalyzer(object):
                 self.codes = self.__decode_code_section(cur_sec_data)
             elif isinstance(sec, DataSection):
                 self.datas = self.__decode_data_section(cur_sec_data)
+            # name section
+            elif isinstance(cur_sec, NameSubSection):
+                self.names = self.__decode_name_section(cur_sec_data)
             else:
-                # name section
-                if cur_sec_data.id == 0 and cur_sec_data.name.tobytes() == b'name':
-                    self.names = self.__decode_name_section(cur_sec_data)
-                else:
-                    # TODO - handle properly .debug_str section
-                    self.customs.append(self.__decode_unknown_section(cur_sec_data))
+                self.customs.append(self.__decode_unknown_section(cur_sec_data))
 
         # create ordered list of functions
         self.func_prototypes = self.get_func_prototypes_ordered()
