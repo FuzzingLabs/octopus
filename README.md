@@ -5,7 +5,6 @@
 </p>
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/quoscient/octopus/graphs/commit-activity)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Huge thanks to [QuoScient](https://www.quoscient.io/) for having sponsored this project.
@@ -71,7 +70,7 @@ sudo apt-get update && sudo apt-get install python-pip graphviz xdg-utils -y
 - Install Octopus:
 ```
 # Download Octopus
-git clone https://github.com/quoscient/octopus
+git clone https://github.com/pventuzelo/octopus
 cd octopus
 
 # Install Octopus library/CLI and its dependencies
