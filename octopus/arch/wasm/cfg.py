@@ -133,7 +133,7 @@ def enum_blocks_edges(function_id, instructions):
                 end = inst.offset_end
             blocks_list.append((intent, start, end, name))
             intent -= 1
-        if inst.is_block_starter:  # in ['block', 'loop']:
+        if inst.is_block_starter:  # in ['block', 'loop', 'if', 'else']:
             blocks_tmp.append((inst.offset, inst.name))
             intent += 1
         if inst.is_branch:
@@ -220,7 +220,6 @@ def enum_blocks_edges(function_id, instructions):
             block.end_offset = inst.offset_end
             block.end_instr = inst
             basicblocks.append(block)
-            new_block = True
 
     # enumerate edges
     for index, block in enumerate(basicblocks):
