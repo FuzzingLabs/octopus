@@ -1,5 +1,5 @@
 from octopus.engine.helper import helper as hlp
-from z3 import UDiv, ULT, UGT
+import z3
 
 from logging import getLogger
 logging = getLogger(__name__)
@@ -89,7 +89,7 @@ class EvmSSASimplifier(object):
         if values[1] == 0:
             return 0
         else:
-            return hlp.get_concrete_int(UDiv(values[0] / values[1]))
+            return hlp.get_concrete_int(z3.UDiv(values[0] / values[1]))
 
     def operate_MOD(self, *values):
         return hlp.get_concrete_int(0 if values[1] == 0 else values[0] % values[1])
@@ -121,12 +121,12 @@ class EvmSSASimplifier(object):
     def operate_LT(self, *values):
         s0 = hlp.convert_to_bitvec(values[0])
         s1 = hlp.convert_to_bitvec(values[1])
-        return hlp.get_concrete_int(ULT(s0, s1))
+        return hlp.get_concrete_int(z3.ULT(s0, s1))
 
     def operate_GT(self, *values):
         s0 = hlp.convert_to_bitvec(values[0])
         s1 = hlp.convert_to_bitvec(values[1])
-        return hlp.get_concrete_int(UGT(s0, s1))
+        return hlp.get_concrete_int(z3.UGT(s0, s1))
 
     def operate_SLT(self, *values):
         s0 = hlp.convert_to_bitvec(values[0])

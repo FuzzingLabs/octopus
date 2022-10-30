@@ -231,6 +231,7 @@ class EvmEmulatorEngine(EmulatorEngine):
         return halt
 
     def emul_arithmetic_instruction(self, instr, state):
+        global args
 
         if instr.name in ['ADD', 'SUB', 'MUL', 'DIV', 'MOD', 'SDIV', 'SMOD', 'EXP', 'SIGNEXTEND']:
             args = [state.ssa_stack.pop(), state.ssa_stack.pop()]
@@ -249,9 +250,10 @@ class EvmEmulatorEngine(EmulatorEngine):
             state.stack.append(result)
 
     def emul_comparaison_logic_instruction(self, instr, state):
+        global args
 
         if instr.name in ['LT', 'GT', 'SLT', 'SGT',
-                          'EQ', 'AND', 'OR', 'XOR', 'BYTE']:
+                          'EQ', 'AND', 'OR', 'XOR', 'BYTE', 'SHL', 'SHR', 'SAR']:
             args = [state.ssa_stack.pop(), state.ssa_stack.pop()]
         elif instr.name in ['ISZERO', 'NOT']:
             args = [state.ssa_stack.pop()]

@@ -26,6 +26,9 @@ _table = {
     0x18: ('XOR', 0, 2, 1, 3, 'Bitwise XOR operation.'),
     0x19: ('NOT', 0, 1, 1, 3, 'Bitwise NOT operation.'),
     0x1a: ('BYTE', 0, 2, 1, 3, 'Retrieve single byte from word.'),
+    0x1b: ('SHL', 0, 2, 1, 3, '256bit shift left.'),
+    0x1c: ('SHR', 0, 2, 1, 3, '256bit shift right.'),
+    0x1d: ('SAR', 0, 2, 1, 3, 'int256 shift right.'),
     0x20: ('SHA3', 0, 2, 1, 30, 'Compute Keccak-256 hash.'),  # SHA3
     0x30: ('ADDRESS', 0, 0, 1, 2, 'Get address of currently executing account.'),
     0x31: ('BALANCE', 0, 1, 1, 20, 'Get balance of the given account.'),
