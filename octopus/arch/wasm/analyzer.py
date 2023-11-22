@@ -1,4 +1,4 @@
-from wasm.modtypes import (TypeSection,
+from wasm_tob.modtypes import (TypeSection,
                            ImportSection,
                            FunctionSection,
                            TableSection,
@@ -20,7 +20,7 @@ from octopus.arch.wasm.format import (format_kind_function,
                                       format_kind_memory,
                                       format_kind_global)
 
-from wasm.decode import decode_module
+from wasm_tob.decode import decode_module
 from octopus.core.utils import bytecode_to_bytes
 
 import io

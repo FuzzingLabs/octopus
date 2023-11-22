@@ -6,11 +6,11 @@ from octopus.arch.wasm.instruction import WasmInstruction
 from octopus.arch.wasm.wasm import Wasm
 
 # from octopus.arch.wasm.decode import decode_module
-from wasm.decode import decode_module
-from wasm.modtypes import CodeSection
-from wasm.compat import byte2int
-from wasm.opcodes import OPCODE_MAP
-from wasm.formatter import format_instruction
+from wasm_tob.decode import decode_module
+from wasm_tob.modtypes import CodeSection
+from wasm_tob.compat import byte2int
+from wasm_tob.opcodes import OPCODE_MAP
+from wasm_tob.formatter import format_instruction
 
 from collections import namedtuple
 inst_namedtuple = namedtuple('Instruction', 'op imm len')

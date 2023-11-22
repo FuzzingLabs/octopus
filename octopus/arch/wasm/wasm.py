@@ -3,7 +3,7 @@
 # * https://webassembly.github.io/spec/core/binary/instructions.html
 # * https://github.com/athre0z/wasm/blob/master/wasm/opcodes.py
 
-from wasm.immtypes import *
+from wasm_tob.immtypes import *
 
 _groups = {0x00: 'Control',
            0x1A: 'Parametric',

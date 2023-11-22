@@ -28,9 +28,9 @@
 from __future__ import print_function, absolute_import, division, unicode_literals
 
 from collections import namedtuple
-from wasm.modtypes import ModuleHeader, Section, SEC_UNK, SEC_NAME, NameSubSection
-from wasm.opcodes import OPCODE_MAP
-from wasm.compat import byte2int
+from wasm_tob.modtypes import ModuleHeader, Section, SEC_UNK, SEC_NAME, NameSubSection
+from wasm_tob.opcodes import OPCODE_MAP
+from wasm_tob.compat import byte2int
 
 
 Instruction = namedtuple('Instruction', 'op imm len')

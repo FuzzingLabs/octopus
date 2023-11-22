@@ -20,6 +20,9 @@ from octopus.core.edge import (Edge,
 from octopus.core.function import Function
 from octopus.core.utils import bytecode_to_bytes
 
+import networkx as nx
+from networkx.drawing.nx_agraph import to_agraph
+
 
 logging = getLogger(__name__)
 
@@ -436,6 +439,88 @@ class WasmCFG(CFG):
                 c.edge(edge.node_from, edge.node_to, label=label)
 
         g.render(filename, view=True)
+
+    def check_backdoor(self):
+        """Visualize the cfg call flow graph
+        """
+        filename = "inkscope.gv"
+        nodes, edges = self.get_functions_call_edges()
+       
+        nx_graph = nx.DiGraph()
+        g = Digraph(filename, filename=filename)
+        g.attr(rankdir='LR')
+
+        with g.subgraph(name='global') as c:
+
+            export_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'export']
+            import_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'import']
+            call_indirect_list = enum_func_name_call_indirect(self.functions)
+
+            try:
+                indirect_target = [self.analyzer.func_prototypes[index][0] for index in self.analyzer.elements[0].get('elems')]
+            except IndexError:
+                indirect_target = []
+            # create all the graph nodes (function name)
+            for idx, node in enumerate(nodes):
+                # name graph bubble
+                node_name = node
+                
+
+                # default style value
+                fillcolor = "white"
+                shape = "ellipse"
+                style = "filled"
+
+                if node in import_list:
+                    logging.debug('import ' + node)
+                    fillcolor = DESIGN_IMPORT.get('fillcolor')
+                    shape = DESIGN_IMPORT.get('shape')
+                    style = DESIGN_IMPORT.get('style')
+                    c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                    nx_graph.add_node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                elif node in export_list:
+                    logging.debug('export ' + node)
+                    fillcolor = DESIGN_EXPORT.get('fillcolor')
+                    shape = DESIGN_EXPORT.get('shape')
+                    style = DESIGN_EXPORT.get('style')
+                    c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                    nx_graph.add_node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                if node in indirect_target:
+                    logging.debug('indirect_target ' + node)
+                    shape = "hexagon"
+
+                if node in call_indirect_list:
+                    logging.debug('contain call_indirect ' + node)
+                    style = "dashed"
+                c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                nx_graph.add_node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+            # check if multiple same edges
+            # in that case, put the number into label
+            edges_counter = dict((x, edges.count(x)) for x in set(edges))
+            # insert edges on the graph
+            for edge, count in edges_counter.items():
+                label = None
+                if count > 1:
+                    label = str(count)
+                c.edge(edge.node_from, edge.node_to, label=label)
+                nx_graph.add_edge(edge.node_from, edge.node_to, label=label)
+
+        g.render(filename, view=True)
+        # agraph = to_agraph(nx_graph)
+        # agraph.render(filename, view=True)
+
+        source_node = "call" 
+        target_node = "input"
+
+        all_paths = list(nx.all_simple_paths(nx_graph, source=source_node, target=target_node))
+        #print(f"{directory[2:]}: Found {len(all_paths)} paths from {source_node} to {target_node}:\n")
+
+        if len(all_paths) == 1:
+            print(f"✅ Check passed\n")
+            print(f"There is only one path from {source_node} to {target_node}.")
+        else:
+            print(f"❌ Check failed\n")
+            print(f"There are multiple paths from {source_node} to {target_node}.")
 
     def visualize_instrs_per_funcs(self, show=True, save=True,
                                    out_filename="wasm_func_analytic.png",
