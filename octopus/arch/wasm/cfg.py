@@ -1,6 +1,8 @@
 # for graph visualisation
 
 from logging import getLogger
+
+from matplotlib import pyplot as plt
 from graphviz import Digraph
 
 from octopus.analysis.cfg import CFG
@@ -505,7 +507,6 @@ class WasmCFG(CFG):
                 c.edge(edge.node_from, edge.node_to, label=label)
                 nx_graph.add_edge(edge.node_from, edge.node_to, label=label)
 
-        g.render(filename, view=True)
         # agraph = to_agraph(nx_graph)
         # agraph.render(filename, view=True)
 
@@ -513,8 +514,25 @@ class WasmCFG(CFG):
         target_node = "input"
 
         all_paths = list(nx.all_simple_paths(nx_graph, source=source_node, target=target_node))
-        #print(f"{directory[2:]}: Found {len(all_paths)} paths from {source_node} to {target_node}:\n")
 
+        # Get all nodes reachable from the source_node
+        reachable_nodes = nx.descendants(nx_graph, source_node)
+        reachable_nodes.add(source_node)
+        print(reachable_nodes)
+        # Identify nodes to remove
+        nodes_to_remove = set(nx_graph.nodes) - set(reachable_nodes)
+        print(nodes_to_remove)
+        # Remove nodes that are not reachable from the source_node
+        nx_graph.remove_nodes_from("deploy")
+        #g.remove_node(nodes_to_remove)
+        #g.render(filename, view=True)
+        # Draw the graph using Matplotlib
+        pos = nx.spring_layout(nx_graph)  # You can choose different layout algorithms
+        nx.draw(nx_graph, pos)
+
+        # Show the plot
+        plt.show()
+        
         if len(all_paths) == 1:
             print(f"✅ Check passed\n")
             print(f"There is only one path from {source_node} to {target_node}.")
