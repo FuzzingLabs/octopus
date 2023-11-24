@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "inkscope-octopus"
+version = "0.1.0"
+description = "Inkscope fork of FuzzingLabs octopus tool for Polkadot wasm artifacts"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "octopus"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = ">=2.18.4"
+graphviz = ">=0.8.3"
+matplotlib = ">=2.2.2"
+numpy = ">=1.15.0"
+z3-solver = ">=4.5"
+wasm-tob = ">=1.0.1"
+networkx = "^3.2.1"
+
+[tool.poetry.scripts]
+inkscope = "inkscope_wasm:main"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+include = '.*\.py$'

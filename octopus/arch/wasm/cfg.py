@@ -1,6 +1,8 @@
 # for graph visualisation
 
 from logging import getLogger
+
+from matplotlib import pyplot as plt
 from graphviz import Digraph
 
 from octopus.analysis.cfg import CFG
@@ -19,6 +21,9 @@ from octopus.core.edge import (Edge,
                                EDGE_FALLTHROUGH, EDGE_CALL)
 from octopus.core.function import Function
 from octopus.core.utils import bytecode_to_bytes
+
+import networkx as nx
+from networkx.drawing.nx_agraph import to_agraph
 
 
 logging = getLogger(__name__)
@@ -436,6 +441,111 @@ class WasmCFG(CFG):
                 c.edge(edge.node_from, edge.node_to, label=label)
 
         g.render(filename, view=True)
+
+    def check_backdoor(self):
+        """Visualize the cfg call flow graph
+        """
+        filename = "inkscope.gv"
+        nodes, edges = self.get_functions_call_edges()
+       
+        nx_graph = nx.DiGraph()
+
+        export_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'export']
+        import_list = [p[0] for p in self.analyzer.func_prototypes if p[3] == 'import']
+        call_indirect_list = enum_func_name_call_indirect(self.functions)
+
+        try:
+            indirect_target = [self.analyzer.func_prototypes[index][0] for index in self.analyzer.elements[0].get('elems')]
+        except IndexError:
+            indirect_target = []
+        # create all the graph nodes (function name)
+        for idx, node in enumerate(nodes):
+            # name graph bubble
+            node_name = node
+
+
+            # default style value
+            fillcolor = "white"
+            shape = "ellipse"
+            style = "filled"
+
+            if node in import_list:
+                logging.debug('import ' + node)
+                fillcolor = DESIGN_IMPORT.get('fillcolor')
+                shape = DESIGN_IMPORT.get('shape')
+                style = DESIGN_IMPORT.get('style')
+                #c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                nx_graph.add_node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+            elif node in export_list:
+                logging.debug('export ' + node)
+                fillcolor = DESIGN_EXPORT.get('fillcolor')
+                shape = DESIGN_EXPORT.get('shape')
+                style = DESIGN_EXPORT.get('style')
+                #c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+                nx_graph.add_node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+            if node in indirect_target:
+                logging.debug('indirect_target ' + node)
+                shape = "hexagon"
+
+            if node in call_indirect_list:
+                logging.debug('contain call_indirect ' + node)
+                style = "dashed"
+            #c.node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+            nx_graph.add_node(node_name, fillcolor=fillcolor, shape=shape, style=style)
+            # check if multiple same edges
+            # in that case, put the number into label
+            edges_counter = dict((x, edges.count(x)) for x in set(edges))
+            # insert edges on the graph
+            for edge, count in edges_counter.items():
+                label = None
+                if count > 1:
+                    label = str(count)
+                nx_graph.add_edge(edge.node_from, edge.node_to, label=label)
+
+
+        source_node = "call" 
+        target_node = "input"
+
+        all_paths = list(nx.all_simple_paths(nx_graph, source=source_node, target=target_node))
+
+        # Get all nodes reachable from the source_node
+        reachable_nodes = nx.descendants(nx_graph, source_node)
+        reachable_nodes.add(source_node)
+        # Identify nodes to remove
+        nodes_to_remove = set(nx_graph.nodes) - set(reachable_nodes)
+        # Remove nodes that are not reachable from the source_node
+        nx_graph.remove_nodes_from(nodes_to_remove)
+
+        paths_call_input = nx.all_simple_paths(nx_graph, source="call", target="input", cutoff=203)
+        nodes_in_paths_from_call_to_input = set(sum(paths_call_input, []))
+        g = Digraph(filename, filename=filename)
+        g.attr(rankdir='LR')
+        with g.subgraph(name='global') as c:
+            for node_name, node in nx_graph.nodes.items():
+                attr = dict(node)
+                if node_name in nodes_in_paths_from_call_to_input:
+                    attr["color"] = "red"
+                c.node(node_name, **attr)
+
+            for edge_names, edge in nx_graph.edges.items():
+                attr = dict(edge)
+                if edge_names[0] in nodes_in_paths_from_call_to_input and edge_names[1] in nodes_in_paths_from_call_to_input:
+                    attr["color"] = "red"
+                c.edge(*edge_names, **attr)
+
+        g.render(filename, view=True)
+        # Draw the graph using Matplotlib
+        #pos = nx.spring_layout(nx_graph)  # You can choose different layout algorithms
+        #nx.draw(nx_graph, pos)
+        # Show the plot
+        #plt.show()
+        
+        if len(all_paths) == 1:
+            print(f"✅ Check passed\n")
+            print(f"There is only one path from {source_node} to {target_node}.")
+        else:
+            print(f"❌ Check failed\n")
+            print(f"There are multiple paths from {source_node} to {target_node}.")
 
     def visualize_instrs_per_funcs(self, show=True, save=True,
                                    out_filename="wasm_func_analytic.png",
